@@ -1,8 +1,29 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# 
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMS.Domain", "PMS.Domain\PMS.Domain.csproj", "{EE644FCE-1296-41CB-B274-3784C66CF2F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMS.Applciation", "PMS.Applciation\PMS.Applciation.csproj", "{D5376DE0-43F6-496D-BD26-5680F6D10A44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMS.Infrastructure", "PMS.Infrastructure\PMS.Infrastructure.csproj", "{69442195-A9CD-45DA-BE51-5435C2001AA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE644FCE-1296-41CB-B274-3784C66CF2F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE644FCE-1296-41CB-B274-3784C66CF2F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE644FCE-1296-41CB-B274-3784C66CF2F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE644FCE-1296-41CB-B274-3784C66CF2F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5376DE0-43F6-496D-BD26-5680F6D10A44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5376DE0-43F6-496D-BD26-5680F6D10A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5376DE0-43F6-496D-BD26-5680F6D10A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5376DE0-43F6-496D-BD26-5680F6D10A44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69442195-A9CD-45DA-BE51-5435C2001AA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69442195-A9CD-45DA-BE51-5435C2001AA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69442195-A9CD-45DA-BE51-5435C2001AA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69442195-A9CD-45DA-BE51-5435C2001AA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
