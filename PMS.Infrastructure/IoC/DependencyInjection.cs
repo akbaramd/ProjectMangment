@@ -2,12 +2,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using PMS.Infrastructure.Seeding;
 using PMS.Domain.Repositories;
+using PMS.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace PMS.Infrastructure.IoC
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddCoreServices(this IServiceCollection services, string connectionString)
+        public static IServiceCollection AddCore(this IServiceCollection services, string connectionString)
         {
             // Application Layer Services
             // (Add application layer services here if needed)
@@ -16,6 +18,10 @@ namespace PMS.Infrastructure.IoC
             // (Add domain layer services here if needed)
 
             // Infrastructure Layer Services
+            // Identity
+             services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
             // Register repository services
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IUserRepository, UserRepository>();

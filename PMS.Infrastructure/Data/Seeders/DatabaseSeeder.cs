@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using PMS.Infrastructure.Extensions;
 using System.Linq;
 using System;
+using Microsoft.AspNetCore.Builder;
 
 namespace PMS.Infrastructure.Seeding
 {
@@ -25,7 +26,7 @@ namespace PMS.Infrastructure.Seeding
             _userTenantSeeder = userTenantSeeder;
         }
 
-        public async Task SeedDefaultUserAsync()
+        public async Task SeedDefaultUserAsync(WebApplication )
         {
             var policyNames = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(c => c.GetAllPolicyNames())

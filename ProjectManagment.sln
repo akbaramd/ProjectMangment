@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMS.Applciation", "PMS.Appl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMS.Infrastructure", "PMS.Infrastructure\PMS.Infrastructure.csproj", "{69442195-A9CD-45DA-BE51-5435C2001AA2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMS.WebApi", "PMS.WebApi\PMS.WebApi.csproj", "{418D924B-68C4-4712-BBE3-DBCA0DF3C572}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,5 +27,9 @@ Global
 		{69442195-A9CD-45DA-BE51-5435C2001AA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69442195-A9CD-45DA-BE51-5435C2001AA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69442195-A9CD-45DA-BE51-5435C2001AA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{418D924B-68C4-4712-BBE3-DBCA0DF3C572}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{418D924B-68C4-4712-BBE3-DBCA0DF3C572}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{418D924B-68C4-4712-BBE3-DBCA0DF3C572}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{418D924B-68C4-4712-BBE3-DBCA0DF3C572}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
