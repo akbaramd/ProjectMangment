@@ -10,6 +10,7 @@ public abstract class TenantEntity : AggregateRoot<Guid>
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
 
+    protected  TenantEntity(){}
     protected TenantEntity(Tenant tenant)
     {
         if (tenant == null)

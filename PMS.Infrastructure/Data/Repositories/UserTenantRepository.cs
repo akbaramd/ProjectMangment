@@ -23,4 +23,9 @@ public class UserTenantRepository : EfGenericRepository<ApplicationDbContext, Us
     {
         return _context.UserTenants.Where(ut => ut.UserId == userId).ToListAsync();
     }
+
+    public Task<bool> IsUserInTenantAsync(Guid id, Guid tenantId)
+    {
+        return _context.UserTenants.AnyAsync(ut => ut.UserId == id && ut.TenantId == tenantId);
+    }
 }

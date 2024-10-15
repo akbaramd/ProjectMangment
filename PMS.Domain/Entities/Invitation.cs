@@ -12,7 +12,7 @@ namespace PMS.Domain.Entities
         public InvitationStatus Status { get; private set; }
 
         // Parameterless constructor for EF Core
-        protected Invitation() : base(null!)  // Call base constructor with a dummy value
+        protected Invitation()  // Call base constructor with a dummy value
         {
             // Initialize non-nullable properties for EF Core
         }

@@ -4,6 +4,10 @@ using PMS.Infrastructure.Seeding;
 using PMS.Domain.Repositories;
 using PMS.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using ProjectName.Infrastructure.Services;
+using PMS.Infrastructure.Services;
+using PMS.Application.Interfaces;
+using ProjectName.Application.Interfaces;
 
 namespace PMS.Infrastructure.IoC
 {
@@ -13,7 +17,8 @@ namespace PMS.Infrastructure.IoC
         {
             // Application Layer Services
             // (Add application layer services here if needed)
-
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IJwtService, JwtService>();
             // Domain Layer Services
             // (Add domain layer services here if needed)
 

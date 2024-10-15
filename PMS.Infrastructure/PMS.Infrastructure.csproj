@@ -6,11 +6,13 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AkbarAmd.SharedKernal" Version="1.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PMS.Domain\PMS.Domain.csproj" />
+    <ProjectReference Include="..\PMS.Applciation\PMS.Applciation.csproj" />
   </ItemGroup>
 </Project>

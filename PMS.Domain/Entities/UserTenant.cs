@@ -12,7 +12,7 @@ namespace PMS.Domain.Entities
         // Change from ApplicationRole to UserTenantRole
         public UserTenantRole Role { get; private set; }
 
-        protected UserTenant(): base(null!) { }
+        protected UserTenant() { }
 
         public UserTenant(ApplicationUser user, Tenant tenant, UserTenantRole role)
             : base(tenant)
