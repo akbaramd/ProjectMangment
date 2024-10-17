@@ -1,17 +1,51 @@
-using Consul;
 using PMS.Infrastructure.IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
+using PMS.WebApi.Endpoints;
+using SharedKernel;
+using SharedKernel.DomainDrivenDesign.Domain.Extensions;
+using SharedKernel.ExceptionHandling.Extensions;
+using SharedKernel.Mediator.Extensions;
+using SharedKernel.Tenants.Extensions;
+using SharedKernel.Tenants.Swaggers.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddEndpointsApiExplorer();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.OperationFilter<TenantHeaderParameter>();
+    c.ConfigureTenant();
+
+    // Add the security definition for JWT Bearer
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer' [space] and then your valid JWT token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIs...\""
+    });
+
+    // Add the security requirement to include the Bearer token globally
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            // Put the security scheme you defined above
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>() // No scopes needed
+        }
+    });
 });
 builder.Services.AddCore(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("رشته اتصال 'DefaultConnection' یافت نشد."));
 
@@ -37,22 +71,33 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddKernel(c =>
+{
+    c.AddTenant();
+    c.AddPublicCors();
+    c.AddKernelMediator();
+    c.AddKernelDomain();
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
       app.UseSwagger();
     app.UseSwaggerUI();
-    app.MapOpenApi();
-}
 
-app.UseHttpsRedirection();
+app.UseKernel(c =>
+{
+    c.UseHttpsRedirection();
+    c.UsePublicCors();
+    c.UseExceptionHandlingMiddleware();
+    c.UseTenant();
+  
+});
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAuthenticationEndpoints();
-
+app.MapInvitationEndpoints();
 await app.UseCore();
 
 app.Run();

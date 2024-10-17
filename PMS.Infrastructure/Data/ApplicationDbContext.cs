@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PMS.Domain.Entities;
 
+namespace PMS.Infrastructure.Data;
+
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
 {
     public DbSet<Tenant> Tenants { get; set; }
@@ -18,9 +20,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         base.OnModelCreating(builder);
 
         builder.Entity<IdentityUserRole<Guid>>(entity =>
-               {
-                   entity.ToTable("UserRoles"); // Renaming AspNetUserRoles to UserRoles
-               });
+        {
+            entity.ToTable("UserRoles"); // Renaming AspNetUserRoles to UserRoles
+        });
 
         builder.Entity<ApplicationRole>(entity =>
         {
@@ -51,6 +53,3 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 }
-
-
-

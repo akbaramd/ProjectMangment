@@ -1,9 +1,5 @@
 using PMS.Domain.Entities;
-using SharedKernel.Domain;
-using SharedKernel.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using SharedKernel.DomainDrivenDesign.Domain.Repository;
 
 namespace PMS.Domain.Repositories
 {
@@ -12,5 +8,7 @@ namespace PMS.Domain.Repositories
         Task<Invitation?> GetInvitationByEmailAsync(string email);
         Task<List<Invitation>> GetInvitationsByStatusAsync(InvitationStatus status);
         Task<List<Invitation>> GetInvitationsByTenantIdAsync(Guid tenantId);
+        Task<Invitation?> GetInvitationByPhoneNumberAndTenantAsync(string phoneNumber, Guid tenantId);
+        IQueryable<Invitation> Query();
     }
 }

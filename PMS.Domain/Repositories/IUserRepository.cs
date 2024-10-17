@@ -1,6 +1,5 @@
 using PMS.Domain.Entities;
-using SharedKernel.Domain;
-using System.Threading.Tasks;
+using SharedKernel.DomainDrivenDesign.Domain.Repository;
 
 namespace PMS.Domain.Repositories
 {

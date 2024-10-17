@@ -1,13 +1,15 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using PMS.Infrastructure.Seeding;
 using PMS.Domain.Repositories;
 using PMS.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using ProjectName.Infrastructure.Services;
-using PMS.Infrastructure.Services;
 using PMS.Application.Interfaces;
-using ProjectName.Application.Interfaces;
+using PMS.Application.Services;
+using PMS.Infrastructure.Data;
+using PMS.Infrastructure.Data.Repositories;
+using PMS.Infrastructure.Data.Seeders;
+using PMS.Infrastructure.Data.Seeders.Absractions;
+using PMS.Infrastructure.Services;
 
 namespace PMS.Infrastructure.IoC
 {
@@ -18,7 +20,9 @@ namespace PMS.Infrastructure.IoC
             // Application Layer Services
             // (Add application layer services here if needed)
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IInvitationService, InvitationService>();
             services.AddScoped<IJwtService, JwtService>();
+            services.AddSingleton<ISmsService,FakeSmsService>();
             // Domain Layer Services
             // (Add domain layer services here if needed)
 

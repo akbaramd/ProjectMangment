@@ -1,4 +1,4 @@
-namespace PMS.Infrastructure.Seeding
+namespace PMS.Infrastructure.Data.Seeders.Absractions
 {
     public interface IRoleSeeder
     {

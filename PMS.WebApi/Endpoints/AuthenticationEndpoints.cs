@@ -1,47 +1,56 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
 using PMS.Application.DTOs;
 using PMS.Application.Interfaces;
-using Microsoft.AspNetCore.Http;
+using SharedKernel.Extensions;
+using SharedKernel.Tenants.Abstractions; // Assuming your RequiredTenant is here
+
+namespace PMS.WebApi.Endpoints;
 
 public static class AuthenticationEndpoints
 {
     public static WebApplication MapAuthenticationEndpoints(this WebApplication app)
     {
-        app.MapPost("/api/auth/register", [AllowAnonymous] async (RegisterDto registerDto, IAuthService authService, HttpContext httpContext) =>
+        // Register endpoint (public, no tenant required)
+        app.MapPost("/api/auth/register", [AllowAnonymous] async (RegisterDto registerDto, IAuthService authService) =>
         {
-            // Use tenantId as needed
             await authService.RegisterAsync(registerDto);
             return Results.Ok("Registration successful.");
         });
 
-        app.MapPost("/api/auth/login", [AllowAnonymous] async (LoginDto loginDto, IAuthService authService, HttpContext httpContext) =>
+        // Login endpoint (tenant required)
+        app.MapPost("/api/auth/login", [AllowAnonymous] async (LoginDto loginDto, IAuthService authService, ITenantAccessor tenantAccessor) =>
         {
-            var tenantId = httpContext.Request.Headers["X-Tenant"].ToString();
-            // Use tenantId as needed
-            var response = await authService.LoginAsync(loginDto, tenantId);
+            if (tenantAccessor.Tenant == null)
+            {
+                return Results.BadRequest("Tenant is required.");
+            }
+            
+            var response = await authService.LoginAsync(loginDto, tenantAccessor.Tenant);
             return Results.Ok(response);
-        });
+        }).RequiredTenant();  
 
-        app.MapPost("/api/auth/send-invitation", [AllowAnonymous] async (SendInvitationDto sendInvitationDto, IAuthService authService, HttpContext httpContext) =>
-        {
-            var tenantId = httpContext.Request.Headers["X-Tenant"].ToString();
-            // Use tenantId as needed
-            await authService.SendInvitationAsync(sendInvitationDto, tenantId);
-            return Results.Ok("Invitation sent.");
-        });
 
-        app.MapGet("/api/auth/invitation-details/{invitationToken:guid}", [AllowAnonymous] async (Guid invitationToken, IAuthService authService, HttpContext httpContext) =>
-        {
-            var details = await authService.GetInvitationDetailsAsync(invitationToken);
-            return Results.Ok(details);
-        });
+        app.MapGet("/api/auth/profile",
+            [Authorize] async (ClaimsPrincipal user, IAuthService authService) =>
+            {
+                // Extract the user ID from the JWT claims
+                var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    return Results.Unauthorized();
+                }
 
-        app.MapPost("/api/auth/accept-invitation", [AllowAnonymous] async (AcceptInvitationDto acceptInvitationDto, IAuthService authService, HttpContext httpContext) =>
-        {
-            await authService.AcceptInvitationAsync(acceptInvitationDto);
-            return Results.Ok("Invitation accepted.");
-        });
+                if (!Guid.TryParse(userIdClaim.Value, out var userId))
+                {
+                    return Results.BadRequest("Invalid user ID.");
+                }
+
+                // Call the service to get the user profile
+                var userProfile = await authService.GetUserProfileAsync(userId);
+                return Results.Ok(userProfile);
+            });
 
         return app;
     }

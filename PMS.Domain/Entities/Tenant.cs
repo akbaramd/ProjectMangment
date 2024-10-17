@@ -1,8 +1,8 @@
-﻿using SharedKernel.Domain;
+﻿using SharedKernel.DomainDrivenDesign.Domain;
 
 namespace PMS.Domain.Entities;
 
-public  class Tenant : AggregateRoot<Guid>
+public class Tenant : AggregateRoot<Guid>
 {
     public string Name { get; private set; }
     public string Subdomain { get; private set; }
@@ -10,15 +10,18 @@ public  class Tenant : AggregateRoot<Guid>
 
     // List of users associated with this tenant
     private List<UserTenant> _users = new List<UserTenant>();
-    public IReadOnlyCollection<UserTenant> Users => _users.AsReadOnly();
+    public ICollection<UserTenant> Users => _users;
 
-        private List<Invitation> _ivitations = new List<Invitation>();
-    public IReadOnlyCollection<Invitation> Invitations => _ivitations.AsReadOnly();
+    private List<Invitation> _ivitations = new List<Invitation>();
+    public ICollection<Invitation> Invitations => _ivitations;
 
-    protected Tenant() { }
+    protected Tenant()
+    {
+    }
+
     public Tenant(string name, string subdomain)
     {
-        Id = Guid.NewGuid();  // Tenant ID
+        Id = Guid.NewGuid(); // Tenant ID
         Name = name;
         Subdomain = subdomain;
         Status = TenantStatus.Active;

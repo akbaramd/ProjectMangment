@@ -1,9 +1,9 @@
-
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using PMS.Domain.Entities;
-using System.Security.Claims;
+using PMS.Infrastructure.Data.Seeders.Absractions;
 
-namespace PMS.Infrastructure.Seeding
+namespace PMS.Infrastructure.Data.Seeders
 {
     public class RoleSeeder : IRoleSeeder
     {

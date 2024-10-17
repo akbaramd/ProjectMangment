@@ -1,5 +1,5 @@
 ﻿using PMS.Domain.Entities;
-using SharedKernel.Domain;
+using SharedKernel.DomainDrivenDesign.Domain;
 
 namespace PMS.Domain.Core;
 

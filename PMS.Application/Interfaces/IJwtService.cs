@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace ProjectName.Application.Interfaces
+namespace PMS.Application.Interfaces
 {
     public interface IJwtService
     {

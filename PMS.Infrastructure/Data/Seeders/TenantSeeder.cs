@@ -1,6 +1,7 @@
 using PMS.Domain.Entities;
+using PMS.Infrastructure.Data.Seeders.Absractions;
 
-namespace PMS.Infrastructure.Seeding
+namespace PMS.Infrastructure.Data.Seeders
 {
     public class TenantSeeder : ITenantSeeder
     {

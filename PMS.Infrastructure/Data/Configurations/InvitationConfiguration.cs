@@ -2,13 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PMS.Domain.Entities;
 
+namespace PMS.Infrastructure.Data.Configurations;
+
 public class InvitationConfiguration : IEntityTypeConfiguration<Invitation>
 {
     public void Configure(EntityTypeBuilder<Invitation> builder)
     {
         builder.HasKey(i => i.Id);
 
-        builder.Property(i => i.Email)
+        builder.Property(i => i.PhoneNumber)
             .IsRequired()
             .HasMaxLength(200);
 

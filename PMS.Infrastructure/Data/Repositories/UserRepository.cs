@@ -3,6 +3,8 @@ using PMS.Domain.Entities;
 using PMS.Domain.Repositories;
 using SharedKernel.EntityFrameworkCore;
 
+namespace PMS.Infrastructure.Data.Repositories;
+
 public class UserRepository : EfGenericRepository<ApplicationDbContext, ApplicationUser>, IUserRepository{
     public UserRepository(ApplicationDbContext context) : base(context)
     {

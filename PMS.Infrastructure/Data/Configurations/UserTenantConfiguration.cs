@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PMS.Domain.Entities;
 
+namespace PMS.Infrastructure.Data.Configurations;
+
 public class UserTenantConfiguration : IEntityTypeConfiguration<UserTenant>
 {
     public void Configure(EntityTypeBuilder<UserTenant> builder)

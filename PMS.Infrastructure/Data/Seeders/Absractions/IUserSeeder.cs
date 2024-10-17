@@ -1,6 +1,6 @@
 using PMS.Domain.Entities;
 
-namespace PMS.Infrastructure.Seeding
+namespace PMS.Infrastructure.Data.Seeders.Absractions
 {
     public interface IUserSeeder
     {

@@ -1,8 +1,8 @@
-
 using Microsoft.AspNetCore.Identity;
 using PMS.Domain.Entities;
+using PMS.Infrastructure.Data.Seeders.Absractions;
 
-namespace PMS.Infrastructure.Seeding
+namespace PMS.Infrastructure.Data.Seeders
 {
     public class UserSeeder : IUserSeeder
     {
@@ -19,6 +19,7 @@ namespace PMS.Infrastructure.Seeding
             if (user == null)
             {
                 user = new ApplicationUser(fullName, phoneNumber, email, deletable: false);
+                user.GenerateRefreshToken();
                 var result = await _userManager.CreateAsync(user, password);
                 if (result.Succeeded)
                 {

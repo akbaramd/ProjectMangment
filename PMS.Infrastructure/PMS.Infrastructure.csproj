@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AkbarAmd.SharedKernal" Version="1.0.0" />
+    <PackageReference Include="AkbarAmd.SharedKernal" Version="1.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
@@ -13,6 +13,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PMS.Domain\PMS.Domain.csproj" />
-    <ProjectReference Include="..\PMS.Applciation\PMS.Applciation.csproj" />
+    <ProjectReference Include="..\PMS.Application\PMS.Application.csproj" />
   </ItemGroup>
 </Project>

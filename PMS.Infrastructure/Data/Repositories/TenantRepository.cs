@@ -3,6 +3,8 @@ using PMS.Domain.Entities;
 using PMS.Domain.Repositories;
 using SharedKernel.EntityFrameworkCore;
 
+namespace PMS.Infrastructure.Data.Repositories;
+
 public class TenantRepository : EfGenericRepository<ApplicationDbContext, Tenant>, ITenantRepository
 {
     public TenantRepository(ApplicationDbContext context) : base(context)

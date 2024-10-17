@@ -1,9 +1,8 @@
-using System.Threading.Tasks;
+using PMS.Domain.Entities;
+using PMS.Infrastructure.Data.Seeders.Absractions;
 using PMS.Infrastructure.Extensions;
-using System.Linq;
-using System;
 
-namespace PMS.Infrastructure.Seeding
+namespace PMS.Infrastructure.Data.Seeders
 {
 
     public class DatabaseSeeder
@@ -32,6 +31,7 @@ namespace PMS.Infrastructure.Seeding
                 .Distinct();
 
             await _roleSeeder.SeedRoleAsync("Developer", policyNames);
+            await _roleSeeder.SeedRoleAsync("User", []);
 
             var user = await _userSeeder.SeedUserAsync("akbarsafari00@gmail.com", "Akbar Ahmadi Saray", "09371770774", "Password123!");
 
