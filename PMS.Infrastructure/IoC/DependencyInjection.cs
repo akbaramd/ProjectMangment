@@ -25,13 +25,13 @@ namespace PMS.Infrastructure.IoC
             services.AddScoped<ITenantService, TenantService>();
             services.AddScoped<IInvitationService, InvitationService>();
             services.AddScoped<IJwtService, JwtService>();
-            services.AddSingleton<ISmsService,FakeSmsService>();
+            services.AddSingleton<ISmsService, FakeSmsService>();
             // Domain Layer Services
             // (Add domain layer services here if needed)
 
             // Infrastructure Layer Services
             // Identity
-             services.AddIdentity<ApplicationUser, ApplicationRole>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
             // Register repository services
@@ -40,14 +40,16 @@ namespace PMS.Infrastructure.IoC
             services.AddScoped<IInvitationRepository, InvitationRepository>();
             services.AddScoped<ITenantMemberRepository, TenantMemberRepository>();
             services.AddScoped<ITenantRepository, TenantRepository>();
-            
+            services.AddScoped<IPermissionRepository, PermissionRepository>();
+
             // Register seeder services
+            services.AddScoped<IPermissionSeeder, PermissionSeeder>();
             services.AddScoped<IRoleSeeder, RoleSeeder>();
             services.AddScoped<IUserSeeder, UserSeeder>();
             services.AddScoped<ITenantSeeder, TenantSeeder>();
             services.AddScoped<IUserTenantSeeder, UserTenantSeeder>();
             services.AddScoped<DatabaseSeeder>();
-            
+
             // Configure database context
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite("Data Source=pms.db"));

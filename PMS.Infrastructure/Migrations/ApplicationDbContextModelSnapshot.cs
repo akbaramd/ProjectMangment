@@ -17,6 +17,21 @@ namespace PMS.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
 
+            modelBuilder.Entity("ApplicationPermissionApplicationRole", b =>
+                {
+                    b.Property<string>("PermissionsKey")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RolesId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("PermissionsKey", "RolesId");
+
+                    b.HasIndex("RolesId");
+
+                    b.ToTable("ApplicationPermissionApplicationRole");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
@@ -116,6 +131,40 @@ namespace PMS.Infrastructure.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PMS.Domain.Entities.ApplicationPermission", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("GroupKey")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("GroupKey");
+
+                    b.ToTable("Permissions", (string)null);
+                });
+
+            modelBuilder.Entity("PMS.Domain.Entities.ApplicationPermissionGroup", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("PermissionGroup", (string)null);
+                });
+
             modelBuilder.Entity("PMS.Domain.Entities.ApplicationRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -129,12 +178,23 @@ namespace PMS.Infrastructure.Migrations
                     b.Property<bool>("Deletable")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsSystemRole")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Key");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -142,6 +202,8 @@ namespace PMS.Infrastructure.Migrations
                     b.HasIndex("NormalizedName")
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
+
+                    b.HasIndex("TenantId");
 
                     b.ToTable("Roles", (string)null);
                 });
@@ -338,6 +400,21 @@ namespace PMS.Infrastructure.Migrations
                     b.ToTable("TenantMembers", (string)null);
                 });
 
+            modelBuilder.Entity("ApplicationPermissionApplicationRole", b =>
+                {
+                    b.HasOne("PMS.Domain.Entities.ApplicationPermission", null)
+                        .WithMany()
+                        .HasForeignKey("PermissionsKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PMS.Domain.Entities.ApplicationRole", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("PMS.Domain.Entities.ApplicationRole", null)
@@ -389,6 +466,24 @@ namespace PMS.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PMS.Domain.Entities.ApplicationPermission", b =>
+                {
+                    b.HasOne("PMS.Domain.Entities.ApplicationPermissionGroup", null)
+                        .WithMany("Permissions")
+                        .HasForeignKey("GroupKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PMS.Domain.Entities.ApplicationRole", b =>
+                {
+                    b.HasOne("PMS.Domain.Entities.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.Navigation("Tenant");
+                });
+
             modelBuilder.Entity("PMS.Domain.Entities.Invitation", b =>
                 {
                     b.HasOne("PMS.Domain.Entities.Tenant", "Tenant")
@@ -417,6 +512,11 @@ namespace PMS.Infrastructure.Migrations
                     b.Navigation("Tenant");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PMS.Domain.Entities.ApplicationPermissionGroup", b =>
+                {
+                    b.Navigation("Permissions");
                 });
 
             modelBuilder.Entity("PMS.Domain.Entities.ApplicationUser", b =>

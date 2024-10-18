@@ -33,8 +33,14 @@ public static class AuthenticationEndpoints
 
 
         app.MapGet("/api/auth/profile",
-            [Authorize] async (ClaimsPrincipal user, IAuthService authService) =>
+            [Authorize] async (ClaimsPrincipal user, IAuthService authService, ITenantAccessor tenantAccessor) =>
             {
+                
+                if (tenantAccessor.Tenant == null)
+                {
+                    return Results.BadRequest("Tenant is required.");
+                }
+                
                 // Extract the user ID from the JWT claims
                 var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
                 if (userIdClaim == null)
@@ -48,9 +54,9 @@ public static class AuthenticationEndpoints
                 }
 
                 // Call the service to get the user profile
-                var userProfile = await authService.GetUserProfileAsync(userId);
+                var userProfile = await authService.GetUserProfileAsync(userId,tenantAccessor.Tenant);
                 return Results.Ok(userProfile);
-            });
+            }).RequiredTenant();  
 
         return app;
     }
