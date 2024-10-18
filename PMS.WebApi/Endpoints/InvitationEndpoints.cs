@@ -40,31 +40,6 @@ namespace PMS.WebApi.Endpoints
             })
             .RequiredTenant();
 
-            // Get pending invitations (tenant required)
-            invitationsGroup.MapGet("/pending", [Authorize] async (
-                [FromQuery(Name = "pageNumber")] int pageNumber,
-                [FromQuery(Name = "pageSize")] int pageSize,
-                [FromQuery(Name = "search")] string? searchQuery,
-                [FromServices] IInvitationService invitationService,
-                [FromServices] ITenantAccessor tenantAccessor) =>
-            {
-                if (tenantAccessor.Tenant == null)
-                {
-                    return Results.BadRequest("Tenant is required.");
-                }
-
-                var paginationParams = new PaginationParams
-                {
-                    PageNumber = pageNumber > 0 ? pageNumber : 1,
-                    PageSize = pageSize > 0 ? pageSize : 10,
-                    Search = searchQuery
-                };
-
-                var invitations = await invitationService.GetPendingInvitationsAsync(paginationParams, tenantAccessor.Tenant);
-                return Results.Ok(invitations);
-            })
-            .RequiredTenant();
-
             // Get invitation detail (no tenant required)
             invitationsGroup.MapGet("/{invitationId:guid}", [AllowAnonymous] async (Guid invitationId, [FromServices] IInvitationService invitationService) =>
             {

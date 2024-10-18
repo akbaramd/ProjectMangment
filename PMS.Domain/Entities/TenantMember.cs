@@ -2,41 +2,41 @@
 
 namespace PMS.Domain.Entities;
 
-public class UserTenant : TenantEntity
+public class TenantMember : TenantEntity
 {
     public Guid UserId { get; private set; }
     public ApplicationUser User { get; private set; }
 
-    public UserTenantStatus Status { get; private set; }
+    public TenantMemberStatus MemberStatus { get; private set; }
         
     // Change from ApplicationRole to UserTenantRole
-    public UserTenantRole Role { get; private set; }
+    public TenantMemberRole MemberRole { get; private set; }
 
-    protected UserTenant() { }
+    protected TenantMember() { }
 
-    public UserTenant(ApplicationUser user, Tenant tenant, UserTenantRole role)
+    public TenantMember(ApplicationUser user, Tenant tenant, TenantMemberRole memberRole)
         : base(tenant)
     {
         UserId = user.Id;
         User = user;
-        Role = role;
-        Status = UserTenantStatus.Active;
+        MemberRole = memberRole;
+        MemberStatus = TenantMemberStatus.Active;
     }
 
     // Change user status in tenant
-    public void ChangeStatus(UserTenantStatus status)
+    public void ChangeStatus(TenantMemberStatus memberStatus)
     {
-        Status = status;
+        MemberStatus = memberStatus;
     }
 
     // Change the role of a user in the tenant
-    public void ChangeRole(UserTenantRole role)
+    public void ChangeRole(TenantMemberRole memberRole)
     {
-        Role = role;
+        MemberRole = memberRole;
     }
 }
 
-public enum UserTenantStatus
+public enum TenantMemberStatus
 {
     Active,
     Inactive,
@@ -44,7 +44,7 @@ public enum UserTenantStatus
 }
 
 
-public enum UserTenantRole
+public enum TenantMemberRole
 {
     Owner,      // Full control over the tenant
     Manager,    // Manages projects and teams

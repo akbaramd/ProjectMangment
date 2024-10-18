@@ -9,8 +9,8 @@ public class Tenant : AggregateRoot<Guid>
     public TenantStatus Status { get; private set; }
 
     // List of users associated with this tenant
-    private List<UserTenant> _users = new List<UserTenant>();
-    public ICollection<UserTenant> Users => _users;
+    private List<TenantMember> _users = new List<TenantMember>();
+    public ICollection<TenantMember> Users => _users;
 
     private List<Invitation> _ivitations = new List<Invitation>();
     public ICollection<Invitation> Invitations => _ivitations;
@@ -35,11 +35,11 @@ public class Tenant : AggregateRoot<Guid>
     }
 
     // Add a user to the tenant
-    public void AddUser(UserTenant userTenant)
+    public void AddUser(TenantMember tenantMember)
     {
-        if (!_users.Exists(u => u.UserId == userTenant.UserId))
+        if (!_users.Exists(u => u.UserId == tenantMember.UserId))
         {
-            _users.Add(userTenant);
+            _users.Add(tenantMember);
         }
     }
 

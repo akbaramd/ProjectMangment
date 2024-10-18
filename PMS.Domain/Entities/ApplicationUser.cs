@@ -14,7 +14,7 @@ namespace PMS.Domain.Entities
         }
 
         public UserStatus Status { get; private set; }
-        public ICollection<UserTenant> UserTenants { get; private set; } = new List<UserTenant>();
+        public ICollection<TenantMember> UserTenants { get; private set; } = new List<TenantMember>();
         
         // Refresh token properties
         public string RefreshToken { get; private set; }

@@ -8,7 +8,7 @@ namespace PMS.Infrastructure.Data;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
 {
     public DbSet<Tenant> Tenants { get; set; }
-    public DbSet<UserTenant> UserTenants { get; set; }
+    public DbSet<TenantMember> TenantMember { get; set; }
     public DbSet<Invitation> Invitations { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)

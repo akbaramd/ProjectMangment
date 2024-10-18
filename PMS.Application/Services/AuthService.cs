@@ -16,7 +16,7 @@ namespace PMS.Application.Services
         IInvitationRepository invitationRepository,
         ITenantRepository tenantRepository,
         ISmsService smsService,
-        IUserTenantRepository userTenantRepository,
+        ITenantMemberRepository tenantMemberRepository,
         IUserRepository userRepository)
         : IAuthService
     {
@@ -76,7 +76,7 @@ namespace PMS.Application.Services
             // If login is successful, reset failed login attempts
             user.ResetFailedLoginAttempts();
 
-            var isUserInTenant = await userTenantRepository.IsUserInTenantAsync(user.Id, tenant.Id);
+            var isUserInTenant = await tenantMemberRepository.IsUserInTenantAsync(user.Id, tenant.Id);
             if (!isUserInTenant)
             {
                 throw new UnauthorizedAccessException("User is not part of the tenant.");
@@ -133,7 +133,7 @@ namespace PMS.Application.Services
             // Map the user entity to UserProfileDto
             var userProfile = new UserProfileDto
             {
-                UserId = user.Id,
+                Id = user.Id,
                 FullName = user.FullName,
                 PhoneNumber = user.PhoneNumber,
                 Email = user.Email,

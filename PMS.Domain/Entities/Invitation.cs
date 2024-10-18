@@ -6,10 +6,8 @@ namespace PMS.Domain.Entities
     {
         public string PhoneNumber { get; private set; } = null!;  // Non-nullable property initialization
         public DateTime SentAt { get; private set; }
-        public bool IsAccepted { get; private set; }
         public DateTime? AcceptedAt { get; private set; }
         public DateTime ExpirationDate { get; set; }
-        public bool IsCanceled { get; set; }
         public DateTime? CanceledAt { get; set; }
         public InvitationStatus Status { get; private set; }
 
@@ -25,25 +23,29 @@ namespace PMS.Domain.Entities
             PhoneNumber = phoneNumber;
             SentAt = DateTime.UtcNow;
             Status = InvitationStatus.Pending;
-            IsAccepted = false;
-            IsCanceled = false;
             ExpirationDate = CreatedAt.Add(expirationDuration);
         }
 
         // Accept the invitation
         public void Accept()
         {
-            if (IsAccepted) throw new InvalidOperationException("Invitation already accepted.");
-            IsAccepted = true;
+            if (Status== InvitationStatus.Accepted) throw new InvalidOperationException("Invitation already accepted.");
             AcceptedAt = DateTime.UtcNow;
             Status = InvitationStatus.Accepted;
         }
         
         public void Renew(TimeSpan newExpirationDuration)
         {
-            IsAccepted = false;
-            IsCanceled = false;
+            if (Status== InvitationStatus.Accepted) throw new InvalidOperationException("Invitation already accepted.");
+            Status = InvitationStatus.Pending;
             ExpirationDate = CreatedAt.Add(newExpirationDuration);
+        }
+        
+        public void Cancel()
+        {
+            if (Status== InvitationStatus.Accepted) throw new InvalidOperationException("Invitation already accepted.");
+            Status = InvitationStatus.Cancel;
+            CanceledAt = DateTime.UtcNow;
         }
 
         public bool IsExpired()
@@ -62,6 +64,7 @@ namespace PMS.Domain.Entities
     {
         Pending,
         Accepted,
-        Rejected
+        Rejected,
+        Cancel
     }
 }

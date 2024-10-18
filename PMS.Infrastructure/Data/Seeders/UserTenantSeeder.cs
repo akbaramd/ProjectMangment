@@ -12,14 +12,14 @@ namespace PMS.Infrastructure.Data.Seeders
             _dbContext = dbContext;
         }
 
-        public async Task SeedUserTenantAsync(ApplicationUser user, Tenant tenant, UserTenantRole role)
+        public async Task SeedUserTenantAsync(ApplicationUser user, Tenant tenant, TenantMemberRole memberRole)
         {
-            var userTenant = _dbContext.UserTenants
+            var userTenant = _dbContext.TenantMember
                 .FirstOrDefault(ut => ut.UserId == user.Id && ut.TenantId == tenant.Id);
             if (userTenant == null)
             {
-                userTenant = new UserTenant(user, tenant, role);
-                _dbContext.UserTenants.Add(userTenant);
+                userTenant = new TenantMember(user, tenant, memberRole);
+                _dbContext.TenantMember.Add(userTenant);
                 await _dbContext.SaveChangesAsync();
             }
         }

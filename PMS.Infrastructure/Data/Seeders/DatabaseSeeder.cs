@@ -37,7 +37,7 @@ namespace PMS.Infrastructure.Data.Seeders
 
             var tenant = await _tenantSeeder.SeedTenantAsync("Akbar AMD", "akbaramd");
 
-            await _userTenantSeeder.SeedUserTenantAsync(user, tenant, UserTenantRole.Owner);
+            await _userTenantSeeder.SeedUserTenantAsync(user, tenant, TenantMemberRole.Owner);
         }
     }
 }

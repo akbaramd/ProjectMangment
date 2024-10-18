@@ -1,3 +1,5 @@
+using PMS.Domain.Entities;
+
 namespace PMS.Application.DTOs;
 
 public class InvitationDto
@@ -6,10 +8,12 @@ public class InvitationDto
     public string PhoneNumber { get; set; }
     public string TenantId { get; set; }
     public DateTime CreatedAt { get; set; }
-    public bool IsAccepted { get; set; }
     public DateTime? AcceptedAt { get; set; }
     public DateTime ExpirationDate { get; set; }
-    public bool IsCanceled { get; set; }
     public DateTime? CanceledAt { get; set; }
+
+    public InvitationStatus Status { get; set; }
+    
+    public TenantDto Tenant { get; set; }
     // Add other relevant fields
 }

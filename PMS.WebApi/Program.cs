@@ -96,9 +96,10 @@ app.UseKernel(c =>
 app.UseAuthentication();
 app.UseAuthorization();
 
+await app.UseCore();
 app.MapAuthenticationEndpoints();
 app.MapInvitationEndpoints();
-await app.UseCore();
+app.MapTenantEndpoints();
 
 app.Run();
 

@@ -19,7 +19,10 @@ namespace PMS.Infrastructure.IoC
         {
             // Application Layer Services
             // (Add application layer services here if needed)
+            // Add AutoMapper
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ITenantService, TenantService>();
             services.AddScoped<IInvitationService, InvitationService>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddSingleton<ISmsService,FakeSmsService>();
@@ -35,7 +38,7 @@ namespace PMS.Infrastructure.IoC
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IInvitationRepository, InvitationRepository>();
-            services.AddScoped<IUserTenantRepository, UserTenantRepository>();
+            services.AddScoped<ITenantMemberRepository, TenantMemberRepository>();
             services.AddScoped<ITenantRepository, TenantRepository>();
             
             // Register seeder services

@@ -4,13 +4,13 @@ using PMS.Domain.Entities;
 
 namespace PMS.Infrastructure.Data.Configurations;
 
-public class UserTenantConfiguration : IEntityTypeConfiguration<UserTenant>
+public class TenantMemberConfiguration : IEntityTypeConfiguration<TenantMember>
 {
-    public void Configure(EntityTypeBuilder<UserTenant> builder)
+    public void Configure(EntityTypeBuilder<TenantMember> builder)
     {
         builder.HasKey(ut => new { ut.UserId, ut.TenantId });
 
-        builder.Property(ut => ut.Status)
+        builder.Property(ut => ut.MemberStatus)
             .HasConversion<string>()
             .IsRequired();
 
@@ -26,6 +26,6 @@ public class UserTenantConfiguration : IEntityTypeConfiguration<UserTenant>
             .HasForeignKey(ut => ut.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.ToTable("UserTenants");
+        builder.ToTable("TenantMembers");
     }
 }
