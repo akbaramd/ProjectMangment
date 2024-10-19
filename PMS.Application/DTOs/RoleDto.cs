@@ -14,9 +14,12 @@ public class UpdateRoleDto
 
 public class RoleWithPermissionsDto
 {
-    public Guid RoleId { get; set; }
-    public string RoleName { get; set; }
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string Title { get; set; }
     public List<PermissionDto> Permissions { get; set; }
+    public bool Deletable { get; set; }
+    public bool IsSystemRole { get; set; }
 }
 
 public class PermissionGroupDto

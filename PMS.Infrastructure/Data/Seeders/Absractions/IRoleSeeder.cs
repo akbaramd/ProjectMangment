@@ -2,6 +2,6 @@ namespace PMS.Infrastructure.Data.Seeders.Absractions
 {
     public interface IRoleSeeder
     {
-        Task SeedRoleAsync(string roleName, IEnumerable<string> policyNames);
+        System.Threading.Tasks.Task SeedRoleAsync(string roleName, IEnumerable<string> policyNames);
     }
 }

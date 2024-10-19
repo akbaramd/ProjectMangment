@@ -8,11 +8,11 @@ namespace PMS.Application.Interfaces
     {
         Task<PaginatedList<InvitationDto>> GetAllInvitationsAsync(PaginationParams paginationParams, string tenantId);
         Task<InvitationDetailsDto> GetInvitationDetailsAsync(Guid invitationId);
-        Task SendInvitationAsync(SendInvitationDto sendInvitationDto, string tenantId);
-        Task AcceptInvitationAsync(Guid invitationId);
-        Task RejectInvitationAsync(Guid invitationId);
-        Task CancelInvitationAsync(Guid invitationId, string tenantId);
-        Task ResendInvitationAsync(Guid invitationId, string tenantId);
-        Task UpdateInvitationAsync(Guid invitationId, UpdateInvitationDto updateInvitationDto, string tenantId);
+        System.Threading.Tasks.Task SendInvitationAsync(SendInvitationDto sendInvitationDto, string tenantId,Guid userId);
+        System.Threading.Tasks.Task AcceptInvitationAsync(Guid invitationId);
+        System.Threading.Tasks.Task RejectInvitationAsync(Guid invitationId);
+        System.Threading.Tasks.Task CancelInvitationAsync(Guid invitationId, string tenantId,Guid userId);
+        System.Threading.Tasks.Task ResendInvitationAsync(Guid invitationId, string tenantId);
+        System.Threading.Tasks.Task UpdateInvitationAsync(Guid invitationId, UpdateInvitationDto updateInvitationDto, string tenantId);
     }
 }

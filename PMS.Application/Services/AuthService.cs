@@ -15,7 +15,6 @@ namespace PMS.Application.Services
     {
         
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IJwtService _jwtService;
         private readonly ITenantRepository _tenantRepository;
         private readonly ITenantMemberRepository _tenantMemberRepository;
@@ -25,14 +24,12 @@ namespace PMS.Application.Services
 
         public AuthService(
             UserManager<ApplicationUser> userManager,
-            RoleManager<ApplicationRole> roleManager,
             IJwtService jwtService,
             ITenantRepository tenantRepository,
             IPermissionRepository permissionRepository,
             IRoleRepository roleRepository, IUserRepository userRepository, ITenantMemberRepository tenantMemberRepository)
         {
             _userManager = userManager;
-            this._roleManager = roleManager;
             _jwtService = jwtService;
             _tenantRepository = tenantRepository;
             _permissionRepository = permissionRepository;
@@ -62,7 +59,7 @@ namespace PMS.Application.Services
             }
 
             // Add user to the "User" role after successful registration
-            await _userManager.AddToRoleAsync(user, "User");
+            // await _userManager.AddToRoleAsync(user, "User");
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto, string tenantId)
@@ -159,8 +156,8 @@ namespace PMS.Application.Services
             }
 
             // Check if the user is part of the tenant
-            var tenantMember = await _tenantMemberRepository.IsUserInTenantAsync(user.Id, tenant.Id);
-            if (!tenantMember)
+            var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(user.Id, tenant.Id);
+            if (tenantMember == null)
             {
                 throw new UnauthorizedAccessException("User is not part of this tenant.");
             }
@@ -172,9 +169,8 @@ namespace PMS.Application.Services
             var rolePermissions = new List<string>();
             foreach (var roleName in roles)
             {
-                var role = await _roleManager.Roles
-                    .Include(r => r.Permissions)
-                    .FirstOrDefaultAsync(r => r.Name == roleName && (r.TenantId == tenant.Id || r.TenantId == null));
+                var role =  tenantMember.Roles
+                    .FirstOrDefault(r => r.Key == roleName && (r.TenantId == tenant.Id || r.TenantId == null));
 
                 if (role != null)
                 {
@@ -198,124 +194,7 @@ namespace PMS.Application.Services
         }
 
         
-         public async Task<List<RoleWithPermissionsDto>> GetRolesForTenantAsync(string tenantId)
-        {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
-            if (tenant == null) throw new TenantNotFoundException();
-
-            var roles =  _roleManager.Roles.Where(x=>x.TenantId == tenant.Id);
-
-            var roleDtos = roles.Select(r => new RoleWithPermissionsDto
-            {
-                RoleId = r.Id,
-                RoleName = r.Name,
-                Permissions = r.Permissions.Select(p => new PermissionDto
-                {
-                    Key = p.Key,
-                    Name = p.Name
-                }).ToList()
-            }).ToList();
-
-            return roleDtos;
-        }
-
-        // Add a new role with permissions for a tenant
-        public async Task AddRoleAsync(string tenantId, CreateRoleDto createRoleDto)
-        {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
-            if (tenant == null) throw new TenantNotFoundException();
-
-            // Create new role entity
-            var role = new ApplicationRole(createRoleDto.RoleName, tenantId: tenant.Id, deletable: true,
-                isSystemRole: false);
-
-            // Add the role using the repository
-            await _roleRepository.AddAsync(role);
-
-            // Add permissions to the role
-            foreach (var permissionKey in createRoleDto.PermissionKeys)
-            {
-                var permission = await _permissionRepository.GetPermissionByKeyAsync(permissionKey);
-                if (permission == null)
-                {
-                    throw new Exception(permissionKey);
-                }
-
-                role.Permissions.Add(permission);
-            }
-
-            // Save changes to the role and its permissions
-            await _roleRepository.UpdateAsync(role);
-        }
-
-        // Update role permissions and name for a tenant
-        public async Task UpdateRoleAsync(string tenantId, Guid roleId, UpdateRoleDto updateRoleDto)
-        {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
-            if (tenant == null) throw new TenantNotFoundException();
-            
-            var role =  await _roleManager.Roles.Include(c=>c.Permissions).FirstOrDefaultAsync(c=>c.Id == roleId);
-            if (role == null || role.TenantId == null || role.TenantId != tenant.Id)
-            {
-                throw new Exception();
-            }
-
-            // Update role name
-            role.Name = updateRoleDto.RoleName;
-
-            // Clear existing permissions
-            role.Permissions.Clear();
-
-            // Add updated permissions
-            foreach (var permissionKey in updateRoleDto.PermissionKeys)
-            {
-                var permission = await _permissionRepository.GetPermissionByKeyAsync(permissionKey);
-                if (permission == null)
-                {
-                    throw new Exception(permissionKey);
-                }
-
-                role.Permissions.Add(permission);
-            }
-
-            // Update role in the repository
-            await _roleRepository.UpdateAsync(role);
-        }
-
-        // Delete a role if no users are assigned
-        public async Task DeleteRoleAsync(string tenantId, Guid roleId)
-        {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
-            if (tenant == null) throw new TenantNotFoundException();
-            
-            var role =  await _roleManager.Roles.Include(c=>c.Permissions).FirstOrDefaultAsync(c=>c.Id == roleId);
-            if (role == null || role.TenantId == null || role.TenantId != tenant.Id)
-            {
-                throw new Exception();
-            }
-
-            // Delete the role from the repository
-            await _roleRepository.DeleteAsync(role);
-        }
-
-        // Fetch permission groups and their permissions
-        public async Task<List<PermissionGroupDto>> GetPermissionGroupsAsync()
-        {
-            var permissionGroups = await _permissionRepository.GetPermissionGroupsAsync();
-
-            var permissionGroupDtos = permissionGroups.Select(pg => new PermissionGroupDto
-            {
-                Key = pg.Key,
-                Name = pg.Name,
-                Permissions = pg.Permissions.Select(p => new PermissionDto
-                {
-                    Key = p.Key,
-                    Name = p.Name
-                }).ToList()
-            }).ToList();
-
-            return permissionGroupDtos;
-        }
+       
 
     }
     

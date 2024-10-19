@@ -5,6 +5,11 @@ using PMS.Application.Exceptions;
 using PMS.Application.Interfaces;
 using PMS.Domain.Entities;
 using PMS.Domain.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using UnauthorizedAccessException = PMS.Application.Exceptions.UnauthorizedAccessException;
 
 namespace PMS.Application.Services
 {
@@ -85,13 +90,20 @@ namespace PMS.Application.Services
             };
         }
 
-        // Send invitation
-        public async Task SendInvitationAsync(SendInvitationDto sendInvitationDto, string tenantId)
+        // Send invitation (with permission check)
+        public async Task SendInvitationAsync(SendInvitationDto sendInvitationDto, string tenantId, Guid userId)
         {
             var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
             if (tenant == null)
             {
                 throw new TenantNotFoundException();
+            }
+
+            // Retrieve the current user as a tenant member and check their permission
+            var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
+            if (tenantMember == null || !tenantMember.HasPermission("invitation:send"))
+            {
+                throw new UnauthorizedAccessException("You do not have permission to create invitations.");
             }
 
             // Check if the phone number is already a member
@@ -121,13 +133,59 @@ namespace PMS.Application.Services
             else
             {
                 // Create a new invitation
-                var newInvitation = new Invitation(sendInvitationDto.PhoneNumber, tenant, expirationDuration);
-                await _invitationRepository.AddAsync(newInvitation);
+                existingInvitation = new Invitation(sendInvitationDto.PhoneNumber, tenant, expirationDuration);
+                await _invitationRepository.AddAsync(existingInvitation);
             }
 
             var invitationLink = $"http://{tenant.Subdomain}.yourdomain.com/invitation/{existingInvitation.Id}";
             var message = $"You have been invited to join {tenant.Name}. Click here: {invitationLink}";
             await _smsService.SendSmsAsync(sendInvitationDto.PhoneNumber, message);
+        }
+
+        // Cancel invitation (with permission check)
+        public async Task CancelInvitationAsync(Guid invitationId, string tenantId, Guid userId)
+        {
+            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
+            if (tenant == null)
+            {
+                throw new TenantNotFoundException();
+            }
+
+            // Retrieve the current user as a tenant member and check their permission
+            var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
+            if (tenantMember == null || !tenantMember.HasPermission("invitation:cancel"))
+            {
+                throw new UnauthorizedAccessException("You do not have permission to cancel invitations.");
+            }
+
+            var invitation = await _invitationRepository.GetByIdAsync(invitationId);
+            if (invitation == null || invitation.TenantId != tenant.Id || invitation.Status == InvitationStatus.Cancel)
+            {
+                throw new InvalidInvitationTokenException("Invalid or already canceled invitation.");
+            }
+
+            invitation.Cancel();
+            await _invitationRepository.UpdateAsync(invitation);
+        }
+
+        // Resend invitation
+        public async Task ResendInvitationAsync(Guid invitationId, string tenantId)
+        {
+            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
+            if (tenant == null)
+            {
+                throw new TenantNotFoundException();
+            }
+
+            var invitation = await _invitationRepository.GetByIdAsync(invitationId);
+            if (invitation == null || invitation.IsExpired() || invitation.Status == InvitationStatus.Cancel)
+            {
+                throw new InvalidInvitationTokenException("Cannot resend an expired or canceled invitation.");
+            }
+
+            var invitationLink = $"http://{tenant.Subdomain}.yourdomain.com/invitation/{invitation.Id}";
+            var message = $"Reminder: You have been invited to join {tenant.Name}. Click here: {invitationLink}";
+            await _smsService.SendSmsAsync(invitation.PhoneNumber, message);
         }
 
         // Accept invitation
@@ -152,7 +210,7 @@ namespace PMS.Application.Services
             }
 
             // Add the user to the tenant
-            await _tenantMemberRepository.AddAsync(new TenantMember(user, tenant, TenantMemberRole.Employee));
+            await _tenantMemberRepository.AddAsync(new TenantMember(user, tenant));
 
             invitation.Accept();
             await _invitationRepository.UpdateAsync(invitation);
@@ -169,46 +227,6 @@ namespace PMS.Application.Services
 
             invitation.Reject();
             await _invitationRepository.UpdateAsync(invitation);
-        }
-
-        // Cancel invitation
-        public async Task CancelInvitationAsync(Guid invitationId, string tenantId)
-        {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
-            if (tenant == null)
-            {
-                throw new TenantNotFoundException();
-            }
-
-            var invitation = await _invitationRepository.GetByIdAsync(invitationId);
-            if (invitation == null || invitation.TenantId != tenant.Id || invitation.Status == InvitationStatus.Cancel)
-            {
-                throw new InvalidInvitationTokenException("Invalid or already canceled invitation.");
-            }
-
-            invitation.Cancel();
-
-            await _invitationRepository.UpdateAsync(invitation);
-        }
-
-        // Resend invitation
-        public async Task ResendInvitationAsync(Guid invitationId, string tenantId)
-        {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
-            if (tenant == null)
-            {
-                throw new TenantNotFoundException();
-            }
-
-            var invitation = await _invitationRepository.GetByIdAsync(invitationId);
-            if (invitation == null || invitation.IsExpired() || invitation.Status == InvitationStatus.Cancel)
-            {
-                throw new InvalidInvitationTokenException("Cannot resend an expired or canceled invitation.");
-            }
-
-            var invitationLink = $"http://{tenant.Subdomain}.yourdomain.com/invitation/{invitation.Id}";
-            var message = $"Reminder: You have been invited to join {tenant.Name}. Click here: {invitationLink}";
-            await _smsService.SendSmsAsync(invitation.PhoneNumber, message);
         }
 
         // Update invitation

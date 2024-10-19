@@ -4,6 +4,6 @@ namespace PMS.Infrastructure.Data.Seeders.Absractions
 {
     public interface IUserTenantSeeder
     {
-        Task SeedUserTenantAsync(ApplicationUser user, Tenant tenant, TenantMemberRole memberRole);
+        Task SeedUserTenantAsync(ApplicationUser user, Tenant tenant, string memberRole);
     }
 }

@@ -100,6 +100,8 @@ await app.UseCore();
 app.MapAuthenticationEndpoints();
 app.MapInvitationEndpoints();
 app.MapTenantEndpoints();
+app.MapTenantRolesEndpoints();
+app.MapProjectEndpoints();
 
 app.Run();
 

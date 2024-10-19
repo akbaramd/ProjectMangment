@@ -9,22 +9,20 @@ namespace PMS.Infrastructure.Data.Seeders
 {
     public class RoleSeeder : IRoleSeeder
     {
-        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ApplicationDbContext _context;  // DbContext to query permissions
 
-        public RoleSeeder(RoleManager<ApplicationRole> roleManager, ApplicationDbContext context)
+        public RoleSeeder( ApplicationDbContext context)
         {
-            _roleManager = roleManager;
             _context = context;  // Inject DbContext
         }
 
         public async Task SeedRoleAsync(string roleName, IEnumerable<string> policyNames)
         {
             // Check if the role already exists
-            if (!await _roleManager.RoleExistsAsync(roleName))
+            if (await _context.TenantRole.FirstOrDefaultAsync(x=>x.Key.Equals(roleName)) == null)
             {
                 // Create the role if it doesn't exist
-                var role = new ApplicationRole(roleName, deletable: false, isSystemRole: true);
+                var role = new TenantRole(roleName, deletable: false, isSystemRole: true);
 
                 // Retrieve all permissions from the database that match the policyNames
                 var permissions = await _context.Permissions
@@ -38,13 +36,9 @@ namespace PMS.Infrastructure.Data.Seeders
                 }
 
                 // Create the role in the database
-                await _roleManager.CreateAsync(role);
+                 _context.TenantRole.Add(role);
+                 await _context.SaveChangesAsync();
 
-                // Add claims (permissions) to the role
-                foreach (var permission in permissions)
-                {
-                    await _roleManager.AddClaimAsync(role, new Claim(ClaimTypes.Role, permission.Key));
-                }
             }
         }
     }

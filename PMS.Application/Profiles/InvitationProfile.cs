@@ -19,8 +19,7 @@ public class InvitationProfile : Profile
         
         // Map Tenant to TenantDto
         CreateMap<Tenant, TenantDto>()
-            .ForMember(dest => dest.Members, opt => opt.Ignore()) // We'll manually handle members
-            .ForMember(dest => dest.CurrentUserRole, opt => opt.Ignore()); // Manually handle
+            .ForMember(dest => dest.Members, opt => opt.Ignore()); // We'll manually handle members
 
         // Map TenantMember to TenantMemberDto and include UserDto
         CreateMap<TenantMember, TenantMemberDto>()
@@ -28,5 +27,15 @@ public class InvitationProfile : Profile
 
         // Map User to UserDto
         CreateMap<ApplicationUser, UserProfileDto>();
+        CreateMap<RoleWithPermissionsDto, TenantRole>().ReverseMap();
+        CreateMap<PermissionDto, ApplicationPermission>().ReverseMap();
+        CreateMap<PermissionGroupDto, ApplicationPermissionGroup>().ReverseMap();
+        
+        CreateMap<Project, ProjectDto>().ReverseMap();
+        CreateMap<Project, ProjectDetailsDto>().ReverseMap();
+        CreateMap<Sprint, SprintDto>().ReverseMap();
+        CreateMap<Board,BoardDto>().ReverseMap();
+        CreateMap<BoardColumn,BoardColumnDto>().ReverseMap();
+        
     }
 }

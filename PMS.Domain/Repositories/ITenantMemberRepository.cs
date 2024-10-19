@@ -14,5 +14,6 @@ namespace PMS.Domain.Repositories
         Task<List<TenantMember>> GetMembersByTenantIdAsync(Guid tenantId);
 
         Task<TenantMember?> GetTenantMemberByPhoneNumberAsync(string phoneNumber, Guid tenantId);
+   
     }
 }

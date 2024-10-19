@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PMS.Domain.Entities;
+using PMS.Domain.Repositories;
 
 namespace PMS.Infrastructure.Data.Repositories
 {

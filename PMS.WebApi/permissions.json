@@ -1,0 +1,116 @@
+{
+  "permissionGroups": [
+    {
+      "key": "role",
+      "name": "Role Operations",
+      "permissions": [
+        { "key": "role:define", "name": "Define Role" },
+        { "key": "role:read", "name": "Read Role" },
+        { "key": "role:update", "name": "Update Role" },
+        { "key": "role:remove", "name": "Remove Role" }
+      ]
+    },
+    {
+      "key": "tenant",
+      "name": "Tenant Operations",
+      "permissions": [
+        { "key": "tenant:create", "name": "Create Tenant" },
+        { "key": "tenant:read", "name": "Read Tenant" },
+        { "key": "tenant:update", "name": "Update Tenant" },
+        { "key": "tenant:remove", "name": "Remove Tenant" }
+      ]
+    },
+    {
+      "key": "member",
+      "name": "Member Operations",
+      "permissions": [
+        { "key": "member:add", "name": "Add Member" },
+        { "key": "member:read", "name": "Read Member" },
+        { "key": "member:update", "name": "Update Member" },
+        { "key": "member:remove", "name": "Remove Member" }
+      ]
+    },
+    {
+      "key": "project",
+      "name": "Project Operations",
+      "permissions": [
+        { "key": "project:create", "name": "Create Project" },
+        { "key": "project:read", "name": "Read Project" },
+        { "key": "project:update", "name": "Update Project" },
+        { "key": "project:remove", "name": "Remove Project" }
+      ]
+    },
+    {
+      "key": "document",
+      "name": "Document Operations",
+      "permissions": [
+        { "key": "document:upload", "name": "Upload Document" },
+        { "key": "document:read", "name": "Read Document" },
+        { "key": "document:update", "name": "Update Document" },
+        { "key": "document:remove", "name": "Remove Document" }
+      ]
+    },
+    {
+      "key": "task",
+      "name": "Task Operations",
+      "permissions": [
+        { "key": "task:create", "name": "Create Task" },
+        { "key": "task:read", "name": "Read Task" },
+        { "key": "task:update", "name": "Update Task" },
+        { "key": "task:remove", "name": "Remove Task" }
+      ]
+    },
+    {
+      "key": "invitation",
+      "name": "Invitation Operations",
+      "permissions": [
+        { "key": "invitation:send", "name": "Send Invitation" },
+        { "key": "invitation:read", "name": "Read Invitation" },
+        { "key": "invitation:cancel", "name": "Cancel Invitation" }
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "roleName": "Owner",
+      "permissions": [
+        "role:define", "role:read", "role:update", "role:remove",
+        "tenant:create", "tenant:read", "tenant:update", "tenant:remove",
+        "member:add", "member:read", "member:update", "member:remove",
+        "project:create", "project:read", "project:update", "project:remove",
+        "document:upload", "document:read", "document:update", "document:remove",
+        "task:create", "task:read", "task:update", "task:remove",
+        "invitation:send", "invitation:read", "invitation:cancel"
+      ]
+    },
+    {
+      "roleName": "Manager",
+      "permissions": [
+        "tenant:create", "tenant:read", "tenant:update", "tenant:remove",
+        "member:add", "member:read", "member:update", "member:remove",
+        "project:create", "project:read", "project:update", "project:remove",
+        "document:upload", "document:read", "document:update", "document:remove",
+        "task:create", "task:read", "task:update", "task:remove",
+        "invitation:send", "invitation:read", "invitation:cancel"
+      ]
+    },
+    {
+      "roleName": "Employee",
+      "permissions": [
+        "tenant:read",
+        "project:read",
+        "document:upload", "document:read", "document:update", "document:remove",
+        "task:create", "task:read", "task:update", "task:remove"
+      ]
+    },
+    {
+      "roleName": "Guest",
+      "permissions": [
+        "tenant:read",
+        "project:read",
+        "document:read",
+        "task:read"
+      ]
+    }
+  ]
+}

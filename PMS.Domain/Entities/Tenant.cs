@@ -12,6 +12,9 @@ public class Tenant : AggregateRoot<Guid>
     private List<TenantMember> _users = new List<TenantMember>();
     public ICollection<TenantMember> Users => _users;
 
+    private List<TenantRole> _roles = new List<TenantRole>();
+    public ICollection<TenantRole> Roles => _roles;
+    
     private List<Invitation> _ivitations = new List<Invitation>();
     public ICollection<Invitation> Invitations => _ivitations;
 

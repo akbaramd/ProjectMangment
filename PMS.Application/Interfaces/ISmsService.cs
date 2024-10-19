@@ -1,7 +1,7 @@
-namespace PMS.Application.Services
+namespace PMS.Application.Interfaces
 {
     public interface ISmsService
     {
-        Task SendSmsAsync(string phoneNumber, string message);
+        System.Threading.Tasks.Task SendSmsAsync(string phoneNumber, string message);
     }
 }

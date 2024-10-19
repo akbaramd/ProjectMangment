@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PMS.Application.DTOs;
@@ -48,14 +49,24 @@ namespace PMS.WebApi.Endpoints
             });
 
             // Send invitation (tenant required)
-            invitationsGroup.MapPost("/", [Authorize] async ([FromBody] SendInvitationDto sendInvitationDto, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
+            invitationsGroup.MapPost("/", [Authorize] async ([FromBody] SendInvitationDto sendInvitationDto,ClaimsPrincipal user, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
             {
                 if (tenantAccessor.Tenant == null)
                 {
                     return Results.BadRequest("Tenant is required.");
                 }
+                // Extract the user ID from the JWT claims
+                var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    return Results.Unauthorized();
+                }
 
-                await invitationService.SendInvitationAsync(sendInvitationDto, tenantAccessor.Tenant);
+                if (!Guid.TryParse(userIdClaim.Value, out var userId))
+                {
+                    return Results.BadRequest("Invalid user ID.");
+                }
+                await invitationService.SendInvitationAsync(sendInvitationDto, tenantAccessor.Tenant,userId);
                 return Results.Ok("Invitation sent successfully.");
             })
             .RequiredTenant();
@@ -75,14 +86,24 @@ namespace PMS.WebApi.Endpoints
             });
 
             // Cancel invitation (tenant required)
-            invitationsGroup.MapPost("/{invitationId:guid}/cancel", [Authorize] async (Guid invitationId, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
+            invitationsGroup.MapPost("/{invitationId:guid}/cancel", [Authorize] async (Guid invitationId,ClaimsPrincipal user, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
             {
                 if (tenantAccessor.Tenant == null)
                 {
                     return Results.BadRequest("Tenant is required.");
                 }
+                // Extract the user ID from the JWT claims
+                var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    return Results.Unauthorized();
+                }
 
-                await invitationService.CancelInvitationAsync(invitationId, tenantAccessor.Tenant);
+                if (!Guid.TryParse(userIdClaim.Value, out var userId))
+                {
+                    return Results.BadRequest("Invalid user ID.");
+                }
+                await invitationService.CancelInvitationAsync(invitationId, tenantAccessor.Tenant,userId);
                 return Results.Ok("Invitation canceled.");
             })
             .RequiredTenant();

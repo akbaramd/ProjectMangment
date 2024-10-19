@@ -12,6 +12,6 @@ namespace PMS.Application.Interfaces
         Task RemoveMemberAsync(string tenantId, Guid userId, Guid memberToRemoveId);
 
         // Update a member's role in the tenant (only Owner, Manager, Administrator can perform this action)
-        Task UpdateMemberRoleAsync(string tenantId, Guid userId, Guid memberToUpdateId, TenantMemberRole newRole);
+        Task UpdateMemberRoleAsync(string tenantId, Guid userId, Guid memberToUpdateId, Guid newRole);
     }
 }

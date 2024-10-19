@@ -9,7 +9,7 @@ namespace PMS.Infrastructure.IoC
 {
     public static class ApplicationBuilderExtensions
     {
-        public static async Task UseCore(this IApplicationBuilder app)
+        public static async System.Threading.Tasks.Task UseCore(this IApplicationBuilder app)
         {
             using (var scope = app.ApplicationServices.CreateScope())
             {

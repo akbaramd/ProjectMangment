@@ -10,7 +10,8 @@ namespace PMS.Domain.Entities
         public string Name { get; set; }
         public string GroupKey { get; set; }
         
-        public ICollection<ApplicationRole> Roles { get; set; }
+        public ICollection<TenantRole> Roles { get; set; }
+        public ApplicationPermissionGroup Group { get; set; }
         
         public ApplicationPermission(){}
         

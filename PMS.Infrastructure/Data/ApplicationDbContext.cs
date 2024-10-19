@@ -5,8 +5,14 @@ using PMS.Domain.Entities;
 
 namespace PMS.Infrastructure.Data;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
+    public DbSet<TenantRole> TenantRole { get; set; }
+    public DbSet<Project> Projects { get; set; }
+    public DbSet<Sprint> Sprints { get; set; }
+    public DbSet<BoardColumn> BoardColumns { get; set; }
+    public DbSet<SprintTask> SprintTasks { get; set; }
+    public DbSet<Board> Boards { get; set; }
     public DbSet<ApplicationPermission> Permissions { get; set; }
     public DbSet<ApplicationPermissionGroup> PermissionGroups { get; set; }
     public DbSet<Tenant> Tenants { get; set; }
@@ -26,12 +32,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             entity.ToTable("UserRoles"); // Renaming AspNetUserRoles to UserRoles
         });
 
-        builder.Entity<ApplicationRole>(entity =>
+        builder.Entity<TenantRole>(entity =>
         {
-            entity.Property(x => x.Name).HasColumnName("Key");
+            entity.Property(x => x.Key).HasColumnName("Key");
             entity.HasMany(x => x.Permissions).WithMany(c => c.Roles);
-            entity.HasOne(x => x.Tenant).WithMany().HasForeignKey(x=>x.TenantId).IsRequired(false);
-            entity.ToTable("Roles"); // Renaming AspNetRoles to Roles
+            entity.HasOne(x => x.Tenant).WithMany(c=>c.Roles).HasForeignKey(x=>x.TenantId).IsRequired(false);
+            entity.ToTable("TenantRoles"); // Renaming AspNetRoles to Roles
         });
 
         builder.Entity<IdentityUserClaim<Guid>>(entity =>
@@ -57,15 +63,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         builder.Entity<ApplicationPermission>(entity =>
         {
             entity.HasKey(x => x.Key);
-            entity.ToTable("Permissions"); // Renaming AspNetUserTokens to UserTokens
+            entity.ToTable("TenantPermissions"); // Renaming AspNetUserTokens to UserTokens
             entity.HasMany(x => x.Roles).WithMany(c => c.Permissions);
         });
         
         builder.Entity<ApplicationPermissionGroup>(entity =>
         {
             entity.HasKey(x => x.Key);
-            entity.ToTable("PermissionGroup"); // Renaming AspNetUserTokens to UserTokens
-            entity.HasMany(x => x.Permissions).WithOne().HasForeignKey(x => x.GroupKey);
+            entity.ToTable("TenantPermissionGroup"); // Renaming AspNetUserTokens to UserTokens
+            entity.HasMany(x => x.Permissions).WithOne(x=>x.Group).HasForeignKey(x => x.GroupKey);
         });
 
         // Apply all entity configurations

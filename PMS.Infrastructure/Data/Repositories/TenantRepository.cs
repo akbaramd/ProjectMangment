@@ -13,7 +13,10 @@ public class TenantRepository : EfGenericRepository<ApplicationDbContext, Tenant
 
     public Task<Tenant?> GetTenantBySubdomainAsync(string subdomain)
     {
-        return _context.Tenants.FirstOrDefaultAsync(t => t.Subdomain == subdomain);
+        return _context.Tenants.Include(x=>x.Roles)
+            .ThenInclude(x=>x.Permissions)
+            .ThenInclude(x=>x.Group)
+            .FirstOrDefaultAsync(t => t.Subdomain == subdomain);
     }
 
     public Task<Tenant?> GetTenantByNameAsync(string name)

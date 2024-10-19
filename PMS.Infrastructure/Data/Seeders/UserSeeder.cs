@@ -21,10 +21,6 @@ namespace PMS.Infrastructure.Data.Seeders
                 user = new ApplicationUser(fullName, phoneNumber, email, deletable: false);
                 user.GenerateRefreshToken();
                 var result = await _userManager.CreateAsync(user, password);
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(user, "Developer");
-                }
             }
             return user;
         }

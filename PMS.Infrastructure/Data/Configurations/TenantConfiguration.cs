@@ -27,6 +27,12 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
             .WithOne(ut => ut.Tenant)
             .HasForeignKey(ut => ut.TenantId)
             .OnDelete(DeleteBehavior.Cascade); // Cascade delete when Tenant is deleted
+        
+        // One-to-Many relationship: Tenant has many UserTenants
+        builder.HasMany(t => t.Roles)
+            .WithOne(ut => ut.Tenant)
+            .HasForeignKey(ut => ut.TenantId)
+            .OnDelete(DeleteBehavior.Cascade); // Cascade delete when Tenant is deleted
 
         builder.ToTable("Tenants");
     }

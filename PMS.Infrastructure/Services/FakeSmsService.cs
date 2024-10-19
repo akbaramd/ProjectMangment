@@ -14,11 +14,11 @@ namespace PMS.Infrastructure.Services
             _logger = logger;
         }
 
-        public Task SendSmsAsync(string phoneNumber, string message)
+        public System.Threading.Tasks.Task SendSmsAsync(string phoneNumber, string message)
         {
             // Simulate SMS sending by logging the SMS message
             _logger.LogInformation($"FAKE SMS sent to {phoneNumber}: {message}");
-            return Task.CompletedTask;
+            return System.Threading.Tasks.Task.CompletedTask;
         }
     }
 }

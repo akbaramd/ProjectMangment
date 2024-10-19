@@ -10,19 +10,18 @@ namespace PMS.Application.DTOs
         public string Subdomain { get; set; }
         public TenantStatus Status { get; set; }
         public List<TenantMemberDto>? Members { get; set; }
-        public TenantMemberRole? CurrentUserRole { get; set; }
     }
     
     public class TenantMemberDto
     {
         public Guid UserId { get; set; }
         public UserProfileDto User { get; set; }
-        public TenantMemberRole MemberRole { get; set; }
+        public List<RoleWithPermissionsDto> Roles { get; set; }
         public TenantMemberStatus MemberStatus { get; set; }
     }
     
     public class TenantMemberUpdate
     {
-        public TenantMemberRole Role { get; set; }
+        public Guid Role { get; set; }
     }
 }
