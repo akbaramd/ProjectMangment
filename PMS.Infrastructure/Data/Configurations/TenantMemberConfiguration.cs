@@ -28,7 +28,8 @@ public class TenantMemberConfiguration : IEntityTypeConfiguration<TenantMember>
 
         // One-to-Many relationship: Tenant has many UserTenants
         builder.HasMany(t => t.Roles)
-            .WithMany(ut => ut.Members);
+            .WithMany(ut => ut.Members)
+            .UsingEntity("TenantMemberRoles");
         
         builder.ToTable("TenantMembers");
     }

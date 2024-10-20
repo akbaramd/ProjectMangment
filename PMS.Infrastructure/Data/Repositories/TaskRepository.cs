@@ -15,24 +15,41 @@ public class TaskRepository : EfGenericRepository<ApplicationDbContext, SprintTa
     public List<SprintTask> GetAllWithRelations()
     {
         return _context.SprintTasks
-            .Include(t => t.Sprint)
-            .Include(t => t.CurrentColumn)
+            .Include(t => t.BoardColumn)
+            .ThenInclude(t => t.Board)
+            .ThenInclude(t => t.Sprint)
+            .ThenInclude(t => t.Project)
             .ToList();
     }
 
     public Task<SprintTask?> GetByIdWithRelationsAsync(Guid taskId)
     {
         return _context.SprintTasks
-            .Include(t => t.Sprint)
-            .Include(t => t.CurrentColumn)
+            .Include(t => t.BoardColumn)
+            .ThenInclude(t => t.Board)
+            .ThenInclude(t => t.Sprint)
+            .ThenInclude(t => t.Project)
             .FirstOrDefaultAsync(t => t.Id == taskId);
     }
 
     public List<SprintTask> GetBySprintId(Guid sprintId)
     {
         return _context.SprintTasks
-            .Where(t => t.SprintId == sprintId)
-            .Include(t => t.CurrentColumn)
+            .Include(t => t.BoardColumn)
+            .ThenInclude(t => t.Board)
+            .ThenInclude(t => t.Sprint)
+            .ThenInclude(t => t.Project)
             .ToList();
+    }
+
+    public Task<List<SprintTask>> GetTasksByBoardIdAsync(Guid boardId)
+    {
+        return _context.SprintTasks
+            .Where(t => t.BoardColumnId == boardId)
+            .Include(t => t.BoardColumn)
+            .ThenInclude(t => t.Board)
+            .ThenInclude(t => t.Sprint)
+            .ThenInclude(t => t.Project)
+            .ToListAsync();
     }
 }

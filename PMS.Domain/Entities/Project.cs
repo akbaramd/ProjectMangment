@@ -27,10 +27,14 @@ namespace PMS.Domain.Entities
             StartDate = startDate;
         }
 
-     
         public void AddSprint(Sprint sprint)
         {
             _sprints.Add(sprint);
+        }
+
+        public void RemoveSprint(Sprint sprint)
+        {
+            _sprints.Remove(sprint);
         }
 
         // Method to update project details
@@ -39,6 +43,16 @@ namespace PMS.Domain.Entities
             Name = name;
             Description = description;
             EndDate = endDate;
+        }
+
+        public void ChangeStartDate(DateTime newStartDate)
+        {
+            StartDate = newStartDate;
+        }
+
+        public void ChangeEndDate(DateTime? newEndDate)
+        {
+            EndDate = newEndDate;
         }
     }
 

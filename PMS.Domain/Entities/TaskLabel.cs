@@ -1,15 +1,17 @@
 using SharedKernel.DomainDrivenDesign.Domain;
 
-namespace PMS.Domain.Entities;
-
-public abstract class TaskLabel : Entity<Guid>
+namespace PMS.Domain.Entities
 {
-    public string Name { get; private set; }
-
-    protected TaskLabel() { }
-
-    public TaskLabel(string name)
+    public class TaskLabel : Entity<Guid>
     {
-        Name = name;
+        public string Name { get; private set; }
+        public Guid SprintTaskId { get; private set; } // اضافه کردن این ویژگی
+
+        protected TaskLabel() { }
+
+        public TaskLabel(string name)
+        {
+            Name = name;
+        }
     }
 }

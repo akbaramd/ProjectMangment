@@ -57,6 +57,11 @@ namespace PMS.Infrastructure.IoC
             services.AddScoped<IUserTenantSeeder, UserTenantSeeder>();
             services.AddScoped<DatabaseSeeder>();
 
+            // Register application services
+            services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<IBoardService, BoardService>();
+            services.AddScoped<ISprintService, SprintService>();
+
             // Configure database context
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite("Data Source=pms.db"));

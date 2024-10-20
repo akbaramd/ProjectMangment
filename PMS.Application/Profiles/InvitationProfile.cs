@@ -36,6 +36,7 @@ public class InvitationProfile : Profile
         CreateMap<Sprint, SprintDto>().ReverseMap();
         CreateMap<Board,BoardDto>().ReverseMap();
         CreateMap<BoardColumn,BoardColumnDto>().ReverseMap();
+        CreateMap<SprintTask,TaskDto>().ReverseMap();
         
     }
 }

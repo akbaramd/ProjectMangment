@@ -10,10 +10,11 @@ namespace PMS.Domain.Entities
         public Guid UserId { get; private set; }
         public ApplicationUser User { get; private set; }
         public TenantMemberStatus MemberStatus { get; private set; }
+        public Guid SprintTaskId { get; private set; } // اضافه کردن این ویژگی
 
         private readonly List<TenantRole> _roles = new List<TenantRole>();
         public IReadOnlyCollection<TenantRole> Roles => _roles.AsReadOnly(); // Expose as read-only collection
-
+     public ICollection<SprintTask> Tasks { get; private set; } = new List<SprintTask>();
         protected TenantMember() { }
 
         public TenantMember(ApplicationUser user, Tenant tenant)

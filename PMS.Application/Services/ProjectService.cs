@@ -22,7 +22,7 @@ namespace PMS.Application.Services
         private readonly ITenantRepository _tenantRepository;
         private readonly ITenantMemberRepository _tenantMemberRepository;
         private readonly IMapper _mapper;
-
+        private readonly ITaskRepository _taskRepository; // New addition for task management
         public ProjectService(
             IProjectRepository projectRepository,
             ISprintRepository sprintRepository,
@@ -30,6 +30,7 @@ namespace PMS.Application.Services
             IBoardColumnRepository boardColumnRepository,
             ITenantRepository tenantRepository,
             ITenantMemberRepository tenantMemberRepository,
+            ITaskRepository taskRepository, // Injecting task repository
             IMapper mapper)
         {
             _projectRepository = projectRepository;
@@ -38,6 +39,7 @@ namespace PMS.Application.Services
             _boardColumnRepository = boardColumnRepository;
             _tenantRepository = tenantRepository;
             _tenantMemberRepository = tenantMemberRepository;
+            _taskRepository = taskRepository; // Assigning task repository
             _mapper = mapper;
         }
 
@@ -165,5 +167,8 @@ namespace PMS.Application.Services
             await _projectRepository.DeleteAsync(project);
             return true;
         }
+        
+      
+        
     }
 }

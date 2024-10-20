@@ -12,5 +12,6 @@ namespace PMS.Application.Interfaces
         Task<ProjectDetailsDto> GetProjectDetailsAsync(Guid projectId, string tenantId);
         Task<bool> DeleteProjectAsync(Guid projectId, string tenantId, Guid userId);
         Task<ProjectDto?> UpdateProjectAsync(Guid projectId, UpdateProjectDto updateProjectDto, string tenantId, Guid userId);
+
     }
 }

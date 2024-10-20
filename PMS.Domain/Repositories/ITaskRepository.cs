@@ -8,5 +8,6 @@ namespace PMS.Domain.Repositories
         List<SprintTask> GetAllWithRelations();
         Task<SprintTask?> GetByIdWithRelationsAsync(Guid taskId);
         List<SprintTask> GetBySprintId(Guid sprintId);
+        Task< List<SprintTask>> GetTasksByBoardIdAsync(Guid boardId);
     }
 }

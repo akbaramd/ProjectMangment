@@ -1,6 +1,6 @@
 namespace PMS.Domain.Core;
 
-public enum TaskStatus
+public enum SprintTaskStatus
 {
     ToDo,
     Doing,

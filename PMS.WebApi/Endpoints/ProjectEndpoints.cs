@@ -35,6 +35,8 @@ namespace PMS.WebApi.Endpoints
                 var project = await projectService.CreateProjectAsync(createProjectDto, tenantAccessor.Tenant ,userId);
                 return Results.Ok(project);
             })
+            .Produces<ProjectDto>(StatusCodes.Status200OK) // Response model for success
+            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenant
             .RequiredTenant();
 
             // Get list of projects for the tenant (tenant required)
@@ -55,6 +57,8 @@ namespace PMS.WebApi.Endpoints
                 var projects = await projectService.GetProjectListAsync(tenantId);
                 return Results.Ok(projects);
             })
+            .Produces<List<ProjectDto>>(StatusCodes.Status200OK) // Response model for success
+            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenant
             .RequiredTenant();
 
             // Get project details by ID (tenant required)
@@ -76,6 +80,9 @@ namespace PMS.WebApi.Endpoints
                 var projectDetails = await projectService.GetProjectDetailsAsync(projectId, tenantId);
                 return Results.Ok(projectDetails);
             })
+            .Produces<ProjectDetailsDto>(StatusCodes.Status200OK) // Response model for success
+            .Produces(StatusCodes.Status404NotFound) // Project not found
+            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenant
             .RequiredTenant();
 
             // Update a project (tenant required)
@@ -104,6 +111,9 @@ namespace PMS.WebApi.Endpoints
 
                 return Results.Ok(updatedProject);
             })
+            .Produces<ProjectDto>(StatusCodes.Status200OK) // Response model for success
+            .Produces(StatusCodes.Status404NotFound) // Project not found
+            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenant
             .RequiredTenant();
 
             // Delete a project (tenant required)
@@ -131,7 +141,12 @@ namespace PMS.WebApi.Endpoints
 
                 return Results.Ok("Project deleted successfully.");
             })
+            .Produces(StatusCodes.Status200OK) // Project successfully deleted
+            .Produces(StatusCodes.Status404NotFound) // Project not found
+            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenant
             .RequiredTenant();
+
+
 
             return app;
         }

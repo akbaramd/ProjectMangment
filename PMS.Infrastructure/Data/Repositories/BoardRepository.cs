@@ -11,6 +11,14 @@ public class BoardRepository : EfGenericRepository<ApplicationDbContext, Board>,
     {
     }
 
+    public new Task<Board?> GetByIdAsync(Guid id)
+    {
+        return _context.Boards
+            .Include(b => b.Columns)
+            .ThenInclude(b => b.Tasks)
+            .FirstOrDefaultAsync(x=>x.Id == id);
+    }
+
     public List<Board> GetAllWithRelations()
     {
         return _context.Boards
@@ -29,6 +37,14 @@ public class BoardRepository : EfGenericRepository<ApplicationDbContext, Board>,
     {
         return _context.Boards
             .Where(b => b.TenantId == tenantId)
+            .Include(b => b.Columns)
+            .ToList();
+    }
+
+    public List<Board> GetBoardsBySprintIdAsync(Guid sprintId)
+    {
+        return _context.Boards
+            .Where(b => b.SprintId == sprintId)
             .Include(b => b.Columns)
             .ToList();
     }
