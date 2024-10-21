@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PMS.Domain.Entities;
+using SharedKernel.DomainDrivenDesign.Domain;
 
 namespace PMS.Infrastructure.Data;
 
@@ -9,6 +10,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
 {
     public DbSet<TenantRole> TenantRole { get; set; }
     public DbSet<Project> Projects { get; set; }
+    public DbSet<ProjectMember> ProjectsMembers { get; set; }
     public DbSet<Sprint> Sprints { get; set; }
     public DbSet<BoardColumn> BoardColumns { get; set; }
     public DbSet<SprintTask> SprintTasks { get; set; }
@@ -51,6 +53,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         builder.Entity<IdentityUserToken<Guid>>(entity =>
         {
             entity.ToTable("UserTokens"); // Renaming AspNetUserTokens to UserTokens
+        });
+        
+        builder.Entity<ProjectMember>(entity =>
+        {
+            entity.ToTable("ProjectMembers");
+
+            entity.Property(x => x.Access)
+                .HasConversion(c => c.Name.ToString(),
+                    v => Enumeration.FromName<ProjectMemberAccess>(v)); // Renaming AspNetUserTokens to UserTokensl
         });
     }
 

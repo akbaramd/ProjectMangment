@@ -11,6 +11,7 @@ namespace PMS.Application.Profiles
         {
             // Project and Sprint Mappings
             CreateMap<Project, ProjectDetailDto>().ReverseMap();
+            CreateMap<ProjectMember, ProjectMemberDto>().ReverseMap();
             CreateMap<Project, ProjectDto>().ReverseMap();
             CreateMap<Sprint, SprintDetailsDto>().ReverseMap();
             CreateMap<Sprint, SprintDto>().ReverseMap();
@@ -22,6 +23,7 @@ namespace PMS.Application.Profiles
             CreateMap<PaginatedResult<Project>, PaginatedResult<ProjectDto>>().ReverseMap();
             CreateMap<PaginatedResult<Sprint>, PaginatedResult<SprintDto>>().ReverseMap();
             CreateMap<PaginatedResult<Board>, PaginatedResult<BoardDto>>().ReverseMap();
+            CreateMap<PaginatedResult<ProjectMember>, PaginatedResult<ProjectMemberDto>>().ReverseMap();
         }
     }
 }

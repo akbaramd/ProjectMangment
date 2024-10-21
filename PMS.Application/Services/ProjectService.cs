@@ -20,6 +20,7 @@ namespace PMS.Application.Services
         private readonly IBoardRepository _boardRepository;
         private readonly IBoardColumnRepository _boardColumnRepository;
         private readonly ITenantMemberRepository _tenantMemberRepository;
+        private readonly IProjectMemberRepository _projectMemberRepository;
         private readonly IMapper _mapper;
 
         public ProjectService(
@@ -28,6 +29,7 @@ namespace PMS.Application.Services
             IBoardRepository boardRepository,
             IBoardColumnRepository boardColumnRepository,
             ITenantMemberRepository tenantMemberRepository,
+            IProjectMemberRepository projectMemberRepository,
             IMapper mapper,
             IServiceProvider serviceProvider)
             : base(serviceProvider)
@@ -37,6 +39,7 @@ namespace PMS.Application.Services
             _boardRepository = boardRepository;
             _boardColumnRepository = boardColumnRepository;
             _tenantMemberRepository = tenantMemberRepository;
+            _projectMemberRepository = projectMemberRepository;
             _mapper = mapper;
         }
 
@@ -129,6 +132,96 @@ namespace PMS.Application.Services
             // Delete the project
             await _projectRepository.DeleteAsync(project);
             return true;
+        }
+
+        // Add a member to a project
+        public async Task<ProjectMemberDto> AddMemberAsync(Guid projectId, AddProjectMemberDto addMemberDto)
+        {
+            await ValidateTenantAccessAsync("project:member:add");
+
+            var project = await _projectRepository.GetByIdAsync(projectId);
+            if (project == null || project.TenantId != CurrentTenant.Id)
+            {
+                throw new ProjectNotFoundException();
+            }
+
+            // Retrieve the tenant member by ID to ensure they exist
+            var tenantMember = await _tenantMemberRepository.GetByIdAsync(addMemberDto.TenantMemberId);
+            if (tenantMember == null)
+            {
+                throw new TenantNotFoundException("Tenant Member not Found");
+            }
+
+            var member = new ProjectMember(CurrentTenant, tenantMember, project, addMemberDto.Role);
+            project.AddMember(member);
+            await _projectRepository.UpdateAsync(project);
+
+            return _mapper.Map<ProjectMemberDto>(member);
+        }
+
+        // Remove a member from a project
+        public async Task<bool> RemoveMemberAsync(Guid projectId, Guid memberId)
+        {
+            await ValidateTenantAccessAsync("project:member:remove");
+
+            var project = await _projectRepository.GetByIdAsync(projectId);
+            if (project == null || project.TenantId != CurrentTenant.Id)
+            {
+                throw new ProjectNotFoundException();
+            }
+
+            var member = project.Members.FirstOrDefault(m => m.Id == memberId);
+            if (member == null)
+            {
+                throw new MemberNotFoundException("can not found member");
+            }
+
+            project.RemoveMember(member);
+            await _projectRepository.UpdateAsync(project);
+
+            return true;
+        }
+
+        // Get members of a project with optional filtering
+        public async Task<PaginatedResult<ProjectMemberDto>> GetMembersAsync(Guid projectId,
+            ProjectMemberFilterDto filter)
+        {
+            await ValidateTenantAccessAsync("project:member:read");
+
+            var project = await _projectRepository.GetByIdAsync(projectId);
+            if (project == null || project.TenantId != CurrentTenant.Id)
+            {
+                throw new ProjectNotFoundException();
+            }
+
+
+            var paginatedResult =
+                await _projectMemberRepository.PaginatedAsync(new ProjectMembersByProjectSpec(project.Id, filter));
+            return _mapper.Map<PaginatedResult<ProjectMemberDto>>(paginatedResult);
+        }
+
+        // Update member details
+        public async Task<ProjectMemberDto> UpdateMemberAsync(Guid projectId, Guid memberId,
+            UpdateProjectMemberDto updateMemberDto)
+        {
+            await ValidateTenantAccessAsync("project:member:update");
+
+            var project = await _projectRepository.GetByIdAsync(projectId);
+            if (project == null || project.TenantId != CurrentTenant.Id)
+            {
+                throw new ProjectNotFoundException();
+            }
+
+            var member = project.Members.FirstOrDefault(m => m.Id == memberId);
+            if (member == null)
+            {
+                throw new MemberNotFoundException("cannot be found member");
+            }
+
+            member.UpdateDetails(updateMemberDto.Role);
+            await _projectRepository.UpdateAsync(project);
+
+            return _mapper.Map<ProjectMemberDto>(member);
         }
     }
 }

@@ -14,10 +14,15 @@ namespace PMS.Domain.Entities
         public DateTime StartDate { get; private set; }
         public DateTime? EndDate { get; private set; }
 
+        private readonly List<ProjectMember> _members = new List<ProjectMember>();
+        public IReadOnlyCollection<ProjectMember> Members => _members.AsReadOnly();
+
         private readonly List<Sprint> _sprints = new List<Sprint>();
         public IReadOnlyCollection<Sprint> Sprints => _sprints.AsReadOnly();
 
-        protected Project() { }
+        protected Project()
+        {
+        }
 
         public Project(string name, string description, DateTime startDate, Tenant tenant)
             : base(tenant)
@@ -25,10 +30,20 @@ namespace PMS.Domain.Entities
             Name = name;
             Description = description;
             StartDate = startDate;
-            
-            
         }
 
+        // Add members to the project
+        public void AddMember(ProjectMember member)
+        {
+            _members.Add(member);
+        }
+
+        public void RemoveMember(ProjectMember member)
+        {
+            _members.Remove(member);
+        }
+
+        // Sprint-related methods
         public void AddSprint(Sprint sprint)
         {
             _sprints.Add(sprint);
@@ -39,6 +54,7 @@ namespace PMS.Domain.Entities
             _sprints.Remove(sprint);
         }
 
+        
         // Method to update project details
         public void UpdateDetails(string name, string description, DateTime? endDate)
         {
@@ -57,14 +73,4 @@ namespace PMS.Domain.Entities
             EndDate = newEndDate;
         }
     }
-
-    // Entity representing a Sprint
-
-    // Entity representing a Task
-
-    // Enum to represent the status of a Task
-
-    // Entity representing a Board (Kanban board)
-
-    // Entity representing a column in a Board
 }

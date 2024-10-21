@@ -84,6 +84,65 @@ namespace PMS.WebApi.Endpoints
             .Produces(StatusCodes.Status200OK)
             .RequiredTenant();
 
+            // ----- Member Endpoints -----
+
+            // Add a member to a project
+            projectGroup.MapPost("/{projectId:guid}/members", [Authorize] async (
+                Guid projectId,
+                [FromBody] AddProjectMemberDto addMemberDto,
+                [FromServices] IProjectService projectService) =>
+            {
+                var member = await projectService.AddMemberAsync(projectId, addMemberDto);
+                return Results.Ok(member);
+            })
+            .Produces<ProjectMemberDto>()
+            .RequiredTenant();
+
+            // Remove a member from a project
+            projectGroup.MapDelete("/{projectId:guid}/members/{memberId:guid}", [Authorize] async (
+                Guid projectId,
+                Guid memberId,
+                [FromServices] IProjectService projectService) =>
+            {
+                var result = await projectService.RemoveMemberAsync(projectId, memberId);
+                if (!result)
+                {
+                    return Results.NotFound("Member not found or not authorized to remove.");
+                }
+
+                return Results.Ok("Member removed successfully.");
+            })
+            .Produces(StatusCodes.Status200OK)
+            .RequiredTenant();
+
+            // Get members of a project
+            projectGroup.MapGet("/{projectId:guid}/members", [Authorize] async (
+                Guid projectId,
+                [FromQuery] int take,
+                [FromQuery] int skip,
+                [FromQuery] string? search,
+                [FromServices] IProjectService projectService) =>
+            {
+                var filter = new ProjectMemberFilterDto(take, skip, search);
+                var members = await projectService.GetMembersAsync(projectId, filter);
+                return Results.Ok(members);
+            })
+            .Produces<PaginatedResult<ProjectMemberDto>>()
+            .RequiredTenant();
+
+            // Update a project member
+            projectGroup.MapPut("/{projectId:guid}/members/{memberId:guid}", [Authorize] async (
+                Guid projectId,
+                Guid memberId,
+                [FromBody] UpdateProjectMemberDto updateMemberDto,
+                [FromServices] IProjectService projectService) =>
+            {
+                var updatedMember = await projectService.UpdateMemberAsync(projectId, memberId, updateMemberDto);
+                return Results.Ok(updatedMember);
+            })
+            .Produces<ProjectMemberDto>()
+            .RequiredTenant();
+
             return app;
         }
     }

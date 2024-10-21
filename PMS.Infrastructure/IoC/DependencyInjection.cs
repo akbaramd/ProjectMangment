@@ -48,6 +48,7 @@ namespace PMS.Infrastructure.IoC
             services.AddScoped<IPermissionRepository, PermissionRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
 
             // Register seeder services
             services.AddScoped<IPermissionSeeder, PermissionSeeder>();
