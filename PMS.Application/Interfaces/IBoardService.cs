@@ -1,13 +1,16 @@
 using PMS.Application.DTOs;
+using SharedKernel.Model;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PMS.Application.Interfaces
 {
     public interface IBoardService
     {
-        Task<List<BoardDto>> GetBoardsBySprintIdAsync(Guid sprintId, string tenantId, Guid userId);
-        Task<BoardDto> GetBoardDetailsAsync(Guid boardId, string tenantSubdomain, Guid userId);
+        Task<PaginatedResult<BoardDto>> GetBoards(BorderFilterDto dto);
+        Task<BoardDto> GetBoardDetailsAsync(Guid boardId);
+        Task<BoardDto> CreateBoardAsync(CreateBoardDto createBoardDto);
+        Task<BoardDto> UpdateBoardAsync(Guid boardId, UpdateBoardDto updateBoardDto);
+        Task<bool> DeleteBoardAsync(Guid boardId);
     }
 }

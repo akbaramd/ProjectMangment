@@ -30,4 +30,9 @@ public class Board : TenantEntity
     {
         _columns.Add(column);
     }
+
+    public void UpdateDetails(string name)
+    {
+        Name = name;
+    }
 }

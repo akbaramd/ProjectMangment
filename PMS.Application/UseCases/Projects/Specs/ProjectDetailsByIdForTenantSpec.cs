@@ -2,9 +2,9 @@ using PMS.Domain.Entities;
 
 namespace PMS.Application.UseCases.Projects.Specs;
 
-public class ProjectDetailByIdForTenantSpec : Specification<Project>
+public class ProjectDetailsByIdForTenantSpec : Specification<Project>
 {
-    public ProjectDetailByIdForTenantSpec(Guid id,Guid tenantId)
+    public ProjectDetailsByIdForTenantSpec(Guid id,Guid tenantId)
     {
         AddCriteria(x => x.TenantId == tenantId && x.Id == id);
         

@@ -31,4 +31,11 @@ public class Sprint : TenantEntity
     {
         _tasks.Add(task);
     }
+
+    public void UpdateDetails(string name, DateTime startDate, DateTime endDate)
+    {
+        Name = name;
+        StartDate = startDate;
+        EndDate = endDate;
+    }
 }

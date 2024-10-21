@@ -102,6 +102,8 @@ app.MapInvitationEndpoints();
 app.MapTenantEndpoints();
 app.MapTenantRolesEndpoints();
 app.MapProjectEndpoints();
+app.MapSprintEndpoints();
+app.MapBoardEndpoints();
 
 app.Run();
 

@@ -7,168 +7,128 @@ using PMS.Domain.Entities;
 using PMS.Domain.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using UnauthorizedAccessException = PMS.Application.Exceptions.UnauthorizedAccessException;
+using PMS.Application.UseCases.Projects.Specs;
+using SharedKernel.Model;
 
 namespace PMS.Application.Services
 {
-    public class ProjectService : IProjectService
+    public class ProjectService : BaseTenantService, IProjectService
     {
         private readonly IProjectRepository _projectRepository;
         private readonly ISprintRepository _sprintRepository;
         private readonly IBoardRepository _boardRepository;
         private readonly IBoardColumnRepository _boardColumnRepository;
-        private readonly ITenantRepository _tenantRepository;
         private readonly ITenantMemberRepository _tenantMemberRepository;
         private readonly IMapper _mapper;
-        private readonly ITaskRepository _taskRepository; // New addition for task management
+
         public ProjectService(
             IProjectRepository projectRepository,
             ISprintRepository sprintRepository,
             IBoardRepository boardRepository,
             IBoardColumnRepository boardColumnRepository,
-            ITenantRepository tenantRepository,
             ITenantMemberRepository tenantMemberRepository,
-            ITaskRepository taskRepository, // Injecting task repository
-            IMapper mapper)
+            IMapper mapper,
+            IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
             _projectRepository = projectRepository;
             _sprintRepository = sprintRepository;
             _boardRepository = boardRepository;
             _boardColumnRepository = boardColumnRepository;
-            _tenantRepository = tenantRepository;
             _tenantMemberRepository = tenantMemberRepository;
-            _taskRepository = taskRepository; // Assigning task repository
             _mapper = mapper;
         }
 
-        // Create a new project, with default sprint and Kanban board setup
-
-        // Get project list for a tenant
-        public async Task<ProjectDto> CreateProjectAsync(CreateProjectDto createProjectDto,string tenantName, Guid userId)
+        // Get projects for the current tenant with optional filtering
+        public async Task<PaginatedResult<ProjectDto>> GetProjectsAsync(ProjectFilterDto filter)
         {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantName);
-            if (tenant == null)
-            {
-                throw new TenantNotFoundException();
-            }
+            // Ensure the tenant is validated (both exists and user is a part of it)
+            await ValidateTenantAccessAsync("project:read");
 
-            // Validate if the user has permission to create a project
-            var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
-            if (tenantMember == null || !tenantMember.HasPermission("project:create"))
-            {
-                throw new UnauthorizedAccessException("You do not have permission to create projects.");
-            }
-
-            // Create the project
-            var project = new Project(createProjectDto.Name, createProjectDto.Description, createProjectDto.StartDate, tenant);
-            await _projectRepository.AddAsync(project);
-
-            // Create a default sprint
-            var defaultSprint = new Sprint("Default Sprint", createProjectDto.StartDate, createProjectDto.StartDate.AddMonths(1), tenant);
-            project.AddSprint(defaultSprint);
-            await _sprintRepository.AddAsync(defaultSprint);
-
-            // Create a default board with columns (ToDo, Doing, Done)
-            var board = new Board("Default Kanban Board",defaultSprint, tenant);
-
-            await _boardRepository.AddAsync(board);
-
-            var projectDto = _mapper.Map<ProjectDto>(project);
-            return projectDto;
-        }
-
-        public async Task<List<ProjectDto>> GetProjectListAsync(string tenantSubdomain)
-        {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantSubdomain);
-            if (tenant == null)
-            {
-                throw new TenantNotFoundException();
-            }
-
-            var projects = _projectRepository.GetByTenantId(tenant.Id);
-            return _mapper.Map<List<ProjectDto>>(projects);
+            // Fetching projects based on tenant ID
+            var projects = await _projectRepository.PaginatedAsync(new ProjectsByTenantSpec(CurrentTenant.Id, filter));
+            return _mapper.Map<PaginatedResult<ProjectDto>>(projects);
         }
 
         // Get detailed information about a project
-        public async Task<ProjectDetailsDto> GetProjectDetailsAsync(Guid projectId, string tenantSubdomain)
+        public async Task<ProjectDto> GetProjectDetailsAsync(Guid projectId)
         {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantSubdomain);
-            if (tenant == null)
+            // Ensure the tenant is validated (both exists and user is a part of it)
+            await ValidateTenantAccessAsync("project:read");
+
+            // Fetch project by ID for the current tenant
+            var project =
+                await _projectRepository.FindOneAsync(
+                    new ProjectDetailsByIdForTenantSpec(projectId, CurrentTenant.Id));
+            if (project == null)
             {
-                throw new TenantNotFoundException();
+                throw new ProjectNotFoundException();
             }
-
-            var project = await _projectRepository.GetByIdWithRelationsAsync(projectId);
-            if (project == null || project.TenantId != tenant.Id)
-            {
-                throw new Exception();
-            }
-
-            return new ProjectDetailsDto()
-            {
-                Project = _mapper.Map<ProjectDto>(project),
-                Sprints = _mapper.Map<List<SprintDto>>(project.Sprints),
-                Boards = _mapper.Map<List<BoardDto>>(project.Sprints.SelectMany(x=>x.Boards)),
-            };
-        }
-
-        // Update an existing project
-        public async Task<ProjectDto?> UpdateProjectAsync(Guid projectId, UpdateProjectDto updateProjectDto, string tenantSubdomain, Guid userId)
-        {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantSubdomain);
-            if (tenant == null)
-            {
-                throw new TenantNotFoundException();
-            }
-
-            // Validate if the user has permission to update the project
-            var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
-            if (tenantMember == null || !tenantMember.HasPermission("project:update"))
-            {
-                throw new UnauthorizedAccessException("You do not have permission to update projects.");
-            }
-
-            var project = await _projectRepository.GetByIdAsync(projectId);
-            if (project == null || project.TenantId != tenant.Id)
-            {
-                throw new Exception();
-            }
-
-            project.UpdateDetails(updateProjectDto.Name, updateProjectDto.Description, updateProjectDto.EndDate);
-            await _projectRepository.UpdateAsync(project);
 
             return _mapper.Map<ProjectDto>(project);
         }
 
-        // Delete a project
-        public async Task<bool> DeleteProjectAsync(Guid projectId, string tenantSubdomain, Guid userId)
+        // Create a new project in the current tenant
+        public async Task<ProjectDto> CreateProjectAsync(CreateProjectDto createProjectDto)
         {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantSubdomain);
-            if (tenant == null)
-            {
-                throw new TenantNotFoundException();
-            }
+            // Ensure the tenant is validated and the user has permission to create a project
+            await ValidateTenantAccessAsync("project:create");
 
-            // Validate if the user has permission to delete the project
-            var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
-            if (tenantMember == null || !tenantMember.HasPermission("project:delete"))
-            {
-                throw new UnauthorizedAccessException("You do not have permission to delete projects.");
-            }
+            // Create a new project entity
+            var project = new Project(createProjectDto.Name, createProjectDto.Description, createProjectDto.StartDate,
+                CurrentTenant);
+            await _projectRepository.AddAsync(project);
 
+            // Create a default sprint for the project
+            var defaultSprint = new Sprint("Default Sprint", createProjectDto.StartDate,
+                createProjectDto.StartDate.AddMonths(1), CurrentTenant);
+            project.AddSprint(defaultSprint);
+            await _sprintRepository.AddAsync(defaultSprint);
+
+            // Create a default Kanban board with columns (ToDo, Doing, Done)
+            var board = new Board("Default Kanban Board", defaultSprint, CurrentTenant);
+            await _boardRepository.AddAsync(board);
+
+            return _mapper.Map<ProjectDto>(project);
+        }
+
+        // Update an existing project
+        public async Task<ProjectDetailDto?> UpdateProjectAsync(Guid projectId, UpdateProjectDto updateProjectDto)
+        {
+            // Ensure the tenant is validated and the user has permission to update the project
+            await ValidateTenantAccessAsync("project:update");
+
+            // Fetch the project by ID
             var project = await _projectRepository.GetByIdAsync(projectId);
-            if (project == null || project.TenantId != tenant.Id)
+            if (project == null || project.TenantId != CurrentTenant.Id)
             {
-                throw new Exception();
+                throw new ProjectNotFoundException();
             }
 
+            // Update the project details
+            project.UpdateDetails(updateProjectDto.Name, updateProjectDto.Description, updateProjectDto.EndDate);
+            await _projectRepository.UpdateAsync(project);
+
+            return _mapper.Map<ProjectDetailDto>(project);
+        }
+
+        // Delete a project
+        public async Task<bool> DeleteProjectAsync(Guid projectId)
+        {
+            // Ensure the tenant is validated and the user has permission to delete the project
+            await ValidateTenantAccessAsync("project:delete");
+
+            // Fetch the project by ID
+            var project = await _projectRepository.GetByIdAsync(projectId);
+            if (project == null || project.TenantId != CurrentTenant.Id)
+            {
+                throw new ProjectNotFoundException();
+            }
+
+            // Delete the project
             await _projectRepository.DeleteAsync(project);
             return true;
         }
-        
-      
-        
     }
 }

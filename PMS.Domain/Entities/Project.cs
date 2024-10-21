@@ -25,6 +25,8 @@ namespace PMS.Domain.Entities
             Name = name;
             Description = description;
             StartDate = startDate;
+            
+            
         }
 
         public void AddSprint(Sprint sprint)

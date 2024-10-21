@@ -41,6 +41,26 @@
       ]
     },
     {
+      "key": "sprint",
+      "name": "Sprint Operations",
+      "permissions": [
+        { "key": "sprint:create", "name": "Create Sprint" },
+        { "key": "sprint:read", "name": "Read Sprint" },
+        { "key": "sprint:update", "name": "Update Sprint" },
+        { "key": "sprint:remove", "name": "Remove Sprint" }
+      ]
+    },
+    {
+      "key": "board",
+      "name": "board Operations",
+      "permissions": [
+        { "key": "board:create", "name": "Create board" },
+        { "key": "board:read", "name": "Read board" },
+        { "key": "board:update", "name": "Update board" },
+        { "key": "board:remove", "name": "Remove board" }
+      ]
+    },
+    {
       "key": "document",
       "name": "Document Operations",
       "permissions": [
@@ -78,6 +98,8 @@
         "tenant:create", "tenant:read", "tenant:update", "tenant:remove",
         "member:add", "member:read", "member:update", "member:remove",
         "project:create", "project:read", "project:update", "project:remove",
+        "sprint:create", "sprint:read", "sprint:update", "sprint:remove",
+        "board:create", "board:read", "board:update", "board:remove",
         "document:upload", "document:read", "document:update", "document:remove",
         "task:create", "task:read", "task:update", "task:remove",
         "invitation:send", "invitation:read", "invitation:cancel"
@@ -89,6 +111,8 @@
         "tenant:create", "tenant:read", "tenant:update", "tenant:remove",
         "member:add", "member:read", "member:update", "member:remove",
         "project:create", "project:read", "project:update", "project:remove",
+        "sprint:create", "sprint:read", "sprint:update", "sprint:remove",
+        "board:create", "board:read", "board:update", "board:remove",
         "document:upload", "document:read", "document:update", "document:remove",
         "task:create", "task:read", "task:update", "task:remove",
         "invitation:send", "invitation:read", "invitation:cancel"
@@ -99,6 +123,8 @@
       "permissions": [
         "tenant:read",
         "project:read",
+        "sprint:create", "sprint:read", "sprint:update", "sprint:remove",
+        "board:create", "board:read", "board:update", "board:remove",
         "document:upload", "document:read", "document:update", "document:remove",
         "task:create", "task:read", "task:update", "task:remove"
       ]
@@ -108,6 +134,8 @@
       "permissions": [
         "tenant:read",
         "project:read",
+        "board:read", 
+        "sprint:read", 
         "document:read",
         "task:read"
       ]

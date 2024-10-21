@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using PMS.Application.DTOs;
 using PMS.Application.Interfaces;
 using SharedKernel.Extensions;
+using SharedKernel.Model;
 using SharedKernel.Tenants.Abstractions;
-using System.Security.Claims;
 
 namespace PMS.WebApi.Endpoints
 {
@@ -14,96 +14,50 @@ namespace PMS.WebApi.Endpoints
         {
             // Create a group for /api/projects
             var projectGroup = app.MapGroup("/api/projects")
-                .WithTags("Projects"); // Add Swagger tag
+                .WithTags("Projects");
 
             // Create a new project (tenant required)
             projectGroup.MapPost("/", [Authorize] async (
                 [FromBody] CreateProjectDto createProjectDto,
-                [FromServices] IProjectService projectService,
-                [FromServices] ITenantAccessor tenantAccessor,
-                ClaimsPrincipal user) =>
+                [FromServices] IProjectService projectService) =>
             {
-                if (tenantAccessor.Tenant == null)
-                {
-                    return Results.BadRequest("Tenant is required.");
-                }
-
-                // Extract user ID from claims
-                var userId = Guid.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty);
-
-                // Create project
-                var project = await projectService.CreateProjectAsync(createProjectDto, tenantAccessor.Tenant ,userId);
+                var project = await projectService.CreateProjectAsync(createProjectDto);
                 return Results.Ok(project);
             })
-            .Produces<ProjectDto>(StatusCodes.Status200OK) // Response model for success
-            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenant
+            .Produces<ProjectDto>()
             .RequiredTenant();
 
             // Get list of projects for the tenant (tenant required)
             projectGroup.MapGet("/", [Authorize] async (
-                [FromServices] IProjectService projectService,
-                [FromServices] ITenantAccessor tenantAccessor,
-                ClaimsPrincipal user) =>
+                [FromQuery] int take,
+                [FromQuery] int skip,
+                [FromQuery] string? search,
+                [FromServices] IProjectService projectService) =>
             {
-                if (tenantAccessor.Tenant == null)
-                {
-                    return Results.BadRequest("Tenant is required.");
-                }
-
-                // Extract tenant ID
-                var tenantId = tenantAccessor.Tenant;
-
-                // Get projects for tenant
-                var projects = await projectService.GetProjectListAsync(tenantId);
+                var projects = await projectService.GetProjectsAsync(new ProjectFilterDto(take, skip, search));
                 return Results.Ok(projects);
             })
-            .Produces<List<ProjectDto>>(StatusCodes.Status200OK) // Response model for success
-            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenant
+            .Produces<PaginatedResult<ProjectDto>>()
             .RequiredTenant();
 
             // Get project details by ID (tenant required)
             projectGroup.MapGet("/{projectId:guid}", [Authorize] async (
                 Guid projectId,
-                [FromServices] IProjectService projectService,
-                [FromServices] ITenantAccessor tenantAccessor,
-                ClaimsPrincipal user) =>
+                [FromServices] IProjectService projectService) =>
             {
-                if (tenantAccessor.Tenant == null)
-                {
-                    return Results.BadRequest("Tenant is required.");
-                }
-
-                // Extract tenant ID
-                var tenantId = tenantAccessor.Tenant;
-
-                // Get project details
-                var projectDetails = await projectService.GetProjectDetailsAsync(projectId, tenantId);
+                var projectDetails = await projectService.GetProjectDetailsAsync(projectId);
                 return Results.Ok(projectDetails);
             })
-            .Produces<ProjectDetailsDto>(StatusCodes.Status200OK) // Response model for success
-            .Produces(StatusCodes.Status404NotFound) // Project not found
-            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenant
+            .Produces<ProjectDetailDto>()
             .RequiredTenant();
 
             // Update a project (tenant required)
             projectGroup.MapPut("/{projectId:guid}", [Authorize] async (
                 Guid projectId,
                 [FromBody] UpdateProjectDto updateProjectDto,
-                [FromServices] IProjectService projectService,
-                [FromServices] ITenantAccessor tenantAccessor,
-                ClaimsPrincipal user) =>
+                [FromServices] IProjectService projectService) =>
             {
-                if (tenantAccessor.Tenant == null)
-                {
-                    return Results.BadRequest("Tenant is required.");
-                }
-
-                // Extract user ID from claims
-                var userId = Guid.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty);
-                var tenantId = tenantAccessor.Tenant;
-
-                // Update project
-                var updatedProject = await projectService.UpdateProjectAsync(projectId, updateProjectDto, tenantId, userId);
+                var updatedProject = await projectService.UpdateProjectAsync(projectId, updateProjectDto);
                 if (updatedProject == null)
                 {
                     return Results.NotFound("Project not found or not authorized to update.");
@@ -111,29 +65,15 @@ namespace PMS.WebApi.Endpoints
 
                 return Results.Ok(updatedProject);
             })
-            .Produces<ProjectDto>(StatusCodes.Status200OK) // Response model for success
-            .Produces(StatusCodes.Status404NotFound) // Project not found
-            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenant
+            .Produces<ProjectDto>()
             .RequiredTenant();
 
             // Delete a project (tenant required)
             projectGroup.MapDelete("/{projectId:guid}", [Authorize] async (
                 Guid projectId,
-                [FromServices] IProjectService projectService,
-                [FromServices] ITenantAccessor tenantAccessor,
-                ClaimsPrincipal user) =>
+                [FromServices] IProjectService projectService) =>
             {
-                if (tenantAccessor.Tenant == null)
-                {
-                    return Results.BadRequest("Tenant is required.");
-                }
-
-                // Extract user ID from claims
-                var userId = Guid.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty);
-                var tenantId = tenantAccessor.Tenant;
-
-                // Delete project
-                var result = await projectService.DeleteProjectAsync(projectId, tenantId, userId);
+                var result = await projectService.DeleteProjectAsync(projectId);
                 if (!result)
                 {
                     return Results.NotFound("Project not found or not authorized to delete.");
@@ -141,12 +81,8 @@ namespace PMS.WebApi.Endpoints
 
                 return Results.Ok("Project deleted successfully.");
             })
-            .Produces(StatusCodes.Status200OK) // Project successfully deleted
-            .Produces(StatusCodes.Status404NotFound) // Project not found
-            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenant
+            .Produces(StatusCodes.Status200OK)
             .RequiredTenant();
-
-
 
             return app;
         }

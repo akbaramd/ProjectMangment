@@ -1,6 +1,14 @@
-namespace PMS.Application.Exceptions;
+using System;
+using System.Net;
+using ApplicationException = SharedKernel.DomainDrivenDesign.Application.Exceptions.ApplicationException;
 
-public class SprintNotFoundException
+namespace PMS.Application.Exceptions
 {
-    
+    public class SprintNotFoundException : ApplicationException
+    {
+        public SprintNotFoundException(string message = "Sprint not found.", string errorCode = nameof(SprintNotFoundException)) 
+            : base(HttpStatusCode.NotFound, message, errorCode)
+        {
+        }
+    }
 }

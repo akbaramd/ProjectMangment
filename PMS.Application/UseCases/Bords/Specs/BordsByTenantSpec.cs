@@ -2,21 +2,25 @@ using PMS.Application.DTOs;
 using PMS.Domain.Entities;
 using SharedKernel.Specification;
 
-namespace PMS.Application.UseCases.Sprints.Specs;
+namespace PMS.Application.UseCases.Bords.Specs;
 
-public class SprintsByTenantSpec : PaginateSpecification<Sprint>
+public class BordsByTenantSpec : PaginateSpecification<Board>
 {
-    public SprintsByTenantSpec(Guid tenantId, SprintFilterDto dto) : base(dto.Skip,dto.Take)
+    public BordsByTenantSpec(Guid tenantId, BorderFilterDto dto) : base(dto.Skip,dto.Take)
     {
+
+        AddIncludeCollection(x => x.Columns).ThenIncludeCollection(x => x.Tasks);
+        
         AddCriteria(x => x.TenantId == tenantId);
+        
         if (dto.Search != null && !string.IsNullOrWhiteSpace(dto.Search))
         {
             AddCriteria(c => c.Name.Contains(dto.Search));
         }
         
-        if (dto.ProjectId != null &&dto.ProjectId != Guid.Empty)
+        if (dto.SprintId != null &&dto.SprintId != Guid.Empty)
         {
-            AddCriteria(c => c.ProjectId == dto.ProjectId);
+            AddCriteria(c => c.SprintId == dto.SprintId);
         }
     }
 }

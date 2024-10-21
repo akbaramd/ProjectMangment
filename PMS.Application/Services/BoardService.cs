@@ -2,72 +2,119 @@ using AutoMapper;
 using PMS.Application.DTOs;
 using PMS.Application.Exceptions;
 using PMS.Application.Interfaces;
+using PMS.Domain.Entities;
 using PMS.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnauthorizedAccessException = PMS.Application.Exceptions.UnauthorizedAccessException;
+using PMS.Application.UseCases.Bords.Specs;
+using PMS.Application.UseCases.Sprints.Specs;
+using SharedKernel.Model;
 
 namespace PMS.Application.Services
 {
-    public class BoardService : IBoardService
+    public class BoardService : BaseTenantService, IBoardService
     {
         private readonly IBoardRepository _boardRepository;
-        private readonly ITenantRepository _tenantRepository;
-        private readonly ITenantMemberRepository _tenantMemberRepository;
+        private readonly ISprintRepository _sprintRepository;
         private readonly IMapper _mapper;
 
         public BoardService(
             IBoardRepository boardRepository,
-            ITenantRepository tenantRepository,
-            ITenantMemberRepository tenantMemberRepository,
-            IMapper mapper)
+            ISprintRepository sprintRepository,
+            IMapper mapper,
+            IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
             _boardRepository = boardRepository;
-            _tenantRepository = tenantRepository;
-            _tenantMemberRepository = tenantMemberRepository;
+            _sprintRepository = sprintRepository;
             _mapper = mapper;
         }
 
-        public async Task<List<BoardDto>> GetBoardsBySprintIdAsync(Guid sprintId, string tenantSubdomain, Guid userId)
+        // Get all boards by sprint ID
+        public async Task<PaginatedResult<BoardDto>> GetBoards(BorderFilterDto dto)
         {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantSubdomain);
-            if (tenant == null)
-            {
-                throw new TenantNotFoundException();
-            }
+            // Validate tenant and permissions
+            await ValidateTenantAccessAsync("board:read");
 
-            var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
-            if (tenantMember == null || !tenantMember.HasPermission("project:read"))
-            {
-                throw new UnauthorizedAccessException("You do not have permission to read this sprint.");
-            }
-
-            var boards = _boardRepository.GetBoardsBySprintIdAsync(sprintId);
-            return _mapper.Map<List<BoardDto>>(boards);
+            var boards = await _boardRepository.PaginatedAsync(new BordsByTenantSpec(CurrentTenant.Id,dto));
+            return _mapper.Map<PaginatedResult<BoardDto>>(boards);
         }
 
-        public async Task<BoardDto> GetBoardDetailsAsync(Guid boardId, string tenantSubdomain, Guid userId)
+        // Get details of a specific board by ID
+        public async Task<BoardDto> GetBoardDetailsAsync(Guid boardId)
         {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantSubdomain);
-            if (tenant == null)
-            {
-                throw new TenantNotFoundException();
-            }
+            // Validate tenant and permissions
+            await ValidateTenantAccessAsync("board:read");
 
-            var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
-            if (tenantMember == null || !tenantMember.HasPermission("project:read"))
-            {
-                throw new UnauthorizedAccessException("You do not have permission to read this board.");
-            }
-
+            // Fetch the board and ensure it belongs to the current tenant
             var board = await _boardRepository.GetByIdAsync(boardId);
-            if (board == null || board.TenantId != tenant.Id)
+            if (board == null || board.TenantId != CurrentTenant.Id)
             {
-                throw new Exception("Board not found or does not belong to the tenant.");
+                throw new BoardNotFoundException();
             }
 
             return _mapper.Map<BoardDto>(board);
+        }
+
+        // Create a new board
+        public async Task<BoardDto> CreateBoardAsync(CreateBoardDto createBoardDto)
+        {
+            // Validate tenant and permissions
+            await ValidateTenantAccessAsync("board:create");
+
+            // Check if the related sprint exists and belongs to the current tenant
+            var sprint = await _sprintRepository.GetByIdAsync(createBoardDto.SprintId);
+            if (sprint == null || sprint.TenantId != CurrentTenant.Id)
+            {
+                throw new SprintNotFoundException();
+            }
+
+            // Create the new board entity
+            var board = new Board(createBoardDto.Name, sprint,CurrentTenant);
+
+            // Add the board to the repository
+            await _boardRepository.AddAsync(board);
+
+            return _mapper.Map<BoardDto>(board);
+        }
+
+        // Update an existing board
+        public async Task<BoardDto> UpdateBoardAsync(Guid boardId, UpdateBoardDto updateBoardDto)
+        {
+            // Validate tenant and permissions
+            await ValidateTenantAccessAsync("board:update");
+
+            // Fetch the board and ensure it belongs to the current tenant
+            var board = await _boardRepository.GetByIdAsync(boardId);
+            if (board == null || board.TenantId != CurrentTenant.Id)
+            {
+                throw new BoardNotFoundException();
+            }
+
+            // Update board details
+            board.UpdateDetails(updateBoardDto.Name);
+            await _boardRepository.UpdateAsync(board);
+
+            return _mapper.Map<BoardDto>(board);
+        }
+
+        // Delete a board
+        public async Task<bool> DeleteBoardAsync(Guid boardId)
+        {
+            // Validate tenant and permissions
+            await ValidateTenantAccessAsync("board:delete");
+
+            // Fetch the board and ensure it belongs to the current tenant
+            var board = await _boardRepository.GetByIdAsync(boardId);
+            if (board == null || board.TenantId != CurrentTenant.Id)
+            {
+                throw new BoardNotFoundException();
+            }
+
+            // Delete the board
+            await _boardRepository.DeleteAsync(board);
+            return true;
         }
     }
 }
