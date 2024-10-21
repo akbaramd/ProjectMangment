@@ -24,12 +24,9 @@ public class ProjectDto
     public Guid TenantId { get; set; }
 }
 
-
-public class ProjectDetailsDto
+public class ProjectDetailDto : ProjectDto
 {
-    public ProjectDto Project { get; set; }
     public List<SprintDto> Sprints { get; set; }
-    public List<BoardDto> Boards { get; set; }
 }
 
 
@@ -49,7 +46,6 @@ public class BoardColumnDto
     public List<TaskDto> Tasks { get; set; } // Optionally include tasks in the column
 }
 
-
 public class SprintDto
 {
     public Guid Id { get; set; }
@@ -57,7 +53,9 @@ public class SprintDto
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public List<TaskDto> Tasks { get; set; }
+    public List<BoardDto> Boards { get; set; }
 }
+
 public class TaskDto
 {
     public Guid Id { get; set; }
