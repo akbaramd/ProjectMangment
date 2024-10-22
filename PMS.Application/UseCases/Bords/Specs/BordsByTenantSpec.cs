@@ -4,23 +4,31 @@ using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.Bords.Specs;
 
-public class BordsByTenantSpec : PaginateSpecification<Board>
+public class BordsByTenantSpec : PaginatedSpecification<Board>
 {
-    public BordsByTenantSpec(Guid tenantId, BorderFilterDto dto) : base(dto.Skip,dto.Take)
-    {
+    public Guid TenantId { get; }
+    public BorderFilterDto Dto { get; }
 
-        AddIncludeCollection(x => x.Columns).ThenIncludeCollection(x => x.Tasks);
-        
-        AddCriteria(x => x.TenantId == tenantId);
-        
-        if (dto.Search != null && !string.IsNullOrWhiteSpace(dto.Search))
+    public BordsByTenantSpec(Guid tenantId, BorderFilterDto dto) : base(dto.Skip, dto.Take)
+    {
+        TenantId = tenantId;
+        Dto = dto;
+    }
+
+    public override void Handle(ISpecificationContext<Board> context)
+    {
+        context.AddInclude(x => x.Columns).ThenInclude(x => x.Tasks);
+
+        context.AddCriteria(x => x.TenantId == TenantId);
+
+        if (Dto.Search != null && !string.IsNullOrWhiteSpace(Dto.Search))
         {
-            AddCriteria(c => c.Name.Contains(dto.Search));
+            context.AddCriteria(c => c.Name.Contains(Dto.Search));
         }
-        
-        if (dto.SprintId != null &&dto.SprintId != Guid.Empty)
+
+        if (Dto.SprintId != null && Dto.SprintId != Guid.Empty)
         {
-            AddCriteria(c => c.SprintId == dto.SprintId);
+            context.AddCriteria(c => c.SprintId == Dto.SprintId);
         }
     }
 }

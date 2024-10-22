@@ -54,7 +54,7 @@ public class ProjectDetailDto : ProjectDto
 public class ProjectMemberDto
 {
     public Guid Id { get; set; }
-    public TenantMemberDto Member { get; set; }
+    public TenantMemberDto TenantMember { get; set; }
     public string Role { get; set; }
 }
 

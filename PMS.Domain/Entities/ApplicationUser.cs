@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
+using SharedKernel.DomainDrivenDesign.Domain;
 
 namespace PMS.Domain.Entities
 {
-    public class ApplicationUser : IdentityUser<Guid>
+    public class ApplicationUser : IdentityUser<Guid>,IEntity
     {
         public string FullName { get; private set; }
         public bool Deletable { get; private set; } = true;

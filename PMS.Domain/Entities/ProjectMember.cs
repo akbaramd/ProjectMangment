@@ -13,14 +13,14 @@ namespace PMS.Domain.Entities
         protected ProjectMember(){}
 
 
-        public ProjectMember(Tenant tenant, TenantMember member, Project project, string access) : base(tenant)
+        public ProjectMember(Tenant tenant, TenantMember tenantMember, Project project, string access) : base(tenant)
         {
-            Member = member;
+            TenantMember = tenantMember;
             Project = project;
             Access = Enumeration.FromName<ProjectMemberAccess>(access);;
         }
 
-        public TenantMember Member { get; set; }
+        public TenantMember TenantMember { get; set; }
         public Guid TenantMemberId { get; set; }
         
         public Project Project { get; set; }

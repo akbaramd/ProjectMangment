@@ -1,16 +1,25 @@
 using PMS.Domain.Entities;
+using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.Projects.Specs;
 
 public class ProjectDetailsByIdForTenantSpec : Specification<Project>
 {
-    public ProjectDetailsByIdForTenantSpec(Guid id,Guid tenantId)
+    public ProjectDetailsByIdForTenantSpec(Guid tenantId, Guid id)
     {
-        AddCriteria(x => x.TenantId == tenantId && x.Id == id);
-        AddIncludeCollection(x => x.Members).ThenInclude(x => x.Member).ThenInclude(x => x.User);
-        AddIncludeCollection(c => c.Sprints).ThenIncludeCollection(c=>c.Boards)
-            .ThenIncludeCollection(c=>c.Columns)
-            .ThenIncludeCollection(c=>c.Tasks);
-        
+        TenantId = tenantId;
+        Id = id;
+    }
+
+    public Guid TenantId { get; set; }
+    public Guid Id { get; set; }
+
+    public override void Handle(ISpecificationContext<Project> context)
+    {
+        context.AddCriteria(x => x.TenantId == TenantId && x.Id == Id);
+        context.AddInclude(x => x.Members).ThenInclude(x => x.TenantMember).ThenInclude(x => x.User);
+        context.AddInclude(c => c.Sprints).ThenInclude(c=>c.Boards)
+            .ThenInclude(c=>c.Columns)
+            .ThenInclude(c=>c.Tasks);
     }
 }

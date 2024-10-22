@@ -15,10 +15,10 @@ namespace PMS.Domain.Entities
         public DateTime? EndDate { get; private set; }
 
         private readonly List<ProjectMember> _members = new List<ProjectMember>();
-        public IReadOnlyCollection<ProjectMember> Members => _members.AsReadOnly();
+        public ICollection<ProjectMember> Members => _members.AsReadOnly();
 
         private readonly List<Sprint> _sprints = new List<Sprint>();
-        public IReadOnlyCollection<Sprint> Sprints => _sprints.AsReadOnly();
+        public ICollection<Sprint> Sprints => _sprints.AsReadOnly();
 
         protected Project()
         {

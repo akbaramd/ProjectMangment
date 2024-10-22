@@ -10,7 +10,7 @@ public class BoardColumn : TenantEntity
     public Board Board { get; private set; }
     public Guid BoardId { get; private set; }
     private readonly List<SprintTask> _tasks = new List<SprintTask>();
-    public IReadOnlyCollection<SprintTask> Tasks => _tasks.AsReadOnly();
+    public ICollection<SprintTask> Tasks => _tasks.AsReadOnly();
 
     protected BoardColumn() { }
 

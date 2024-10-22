@@ -6,7 +6,7 @@ public class Board : TenantEntity
 {
     public string Name { get; private set; }
     private readonly List<BoardColumn> _columns = new List<BoardColumn>();
-    public IReadOnlyCollection<BoardColumn> Columns => _columns.AsReadOnly();
+    public ICollection<BoardColumn> Columns => _columns.AsReadOnly();
 
     protected Board() { }
     public Guid SprintId { get; private set; }

@@ -58,10 +58,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         builder.Entity<ProjectMember>(entity =>
         {
             entity.ToTable("ProjectMembers");
-
+            entity.HasOne(x => x.Project).WithMany(x=>x.Members).HasForeignKey(x => x.ProjectId);
             entity.Property(x => x.Access)
                 .HasConversion(c => c.Name.ToString(),
                     v => Enumeration.FromName<ProjectMemberAccess>(v)); // Renaming AspNetUserTokens to UserTokensl
+        });
+        
+        
+        builder.Entity<Project>(entity =>
+        {
+            entity.HasMany(x => x.Members).WithOne(x=>x.Project).HasForeignKey(x => x.ProjectId);
+        
         });
     }
 

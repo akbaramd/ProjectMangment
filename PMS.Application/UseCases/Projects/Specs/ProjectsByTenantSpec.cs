@@ -1,18 +1,30 @@
+using Microsoft.EntityFrameworkCore;
 using PMS.Application.DTOs;
 using PMS.Domain.Entities;
 using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.Projects.Specs;
 
-public class ProjectsByTenantSpec : PaginateSpecification<Project>
+public class ProjectsByTenantSpec : PaginatedSpecification<Project>
 {
+    public Guid TenantId { get; }
+    public ProjectFilterDto Dto { get; }
+
     public ProjectsByTenantSpec(Guid tenantId, ProjectFilterDto dto) : base(dto.Skip,dto.Take)
     {
-        AddIncludeCollection(x => x.Members).ThenInclude(x => x.Member).ThenInclude(x => x.User);
-        AddCriteria(x => x.TenantId == tenantId);
-        if (dto.Search != null && !string.IsNullOrWhiteSpace(dto.Search))
+        TenantId = tenantId;
+        Dto = dto;
+    }
+
+
+    public override void Handle(ISpecificationContext<Project> context)
+    {
+        context.Query.Include(x => x.Members);
+        context.AddInclude(x => x.Members).ThenInclude(x => x.TenantMember).ThenInclude(x => x.User);
+        context.AddCriteria(x => x.TenantId == TenantId);
+        if (Dto.Search != null && !string.IsNullOrWhiteSpace(Dto.Search))
         {
-            AddCriteria(c => c.Name.Contains(dto.Search));
+            context.AddCriteria(c => c.Name.Contains(Dto.Search));
         }
     }
 }

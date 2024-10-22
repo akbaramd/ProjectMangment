@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using PMS.Application.UseCases.Projects.Specs;
 using SharedKernel.Model;
+using UnauthorizedAccessException = PMS.Application.Exceptions.UnauthorizedAccessException;
 
 namespace PMS.Application.Services
 {
@@ -78,11 +79,20 @@ namespace PMS.Application.Services
             // Ensure the tenant is validated and the user has permission to create a project
             await ValidateTenantAccessAsync("project:create");
 
+            // Check if the current user has permission to remove members
+            var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(CurrentUser.Id, CurrentTenant.Id);
+            if (tenantMember == null )
+            {
+                throw new UnauthorizedAccessException("not found.");
+            }
+            
             // Create a new project entity
             var project = new Project(createProjectDto.Name, createProjectDto.Description, createProjectDto.StartDate,
                 CurrentTenant);
+            project.AddMember(new ProjectMember(CurrentTenant,tenantMember,project,ProjectMemberAccess.ProductOwner.Name));
             await _projectRepository.AddAsync(project);
-
+            
+            
             // Create a default sprint for the project
             var defaultSprint = new Sprint("Default Sprint", createProjectDto.StartDate,
                 createProjectDto.StartDate.AddMonths(1), CurrentTenant);

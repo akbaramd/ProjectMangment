@@ -8,8 +8,6 @@ public class TenantMemberConfiguration : IEntityTypeConfiguration<TenantMember>
 {
     public void Configure(EntityTypeBuilder<TenantMember> builder)
     {
-        builder.HasKey(ut => new { ut.UserId, ut.TenantId });
-
         builder.Property(ut => ut.MemberStatus)
             .HasConversion<string>()
             .IsRequired();
@@ -30,7 +28,9 @@ public class TenantMemberConfiguration : IEntityTypeConfiguration<TenantMember>
         builder.HasMany(t => t.Roles)
             .WithMany(ut => ut.Members)
             .UsingEntity("TenantMemberRoles");
-        
+        builder.HasMany(t => t.ProjectMembers)
+            .WithOne(ut => ut.TenantMember)
+            .HasForeignKey(x => x.TenantMemberId);
         builder.ToTable("TenantMembers");
     }
 }

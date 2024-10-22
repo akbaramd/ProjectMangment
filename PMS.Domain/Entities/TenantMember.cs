@@ -13,7 +13,11 @@ namespace PMS.Domain.Entities
         public Guid SprintTaskId { get; private set; } // اضافه کردن این ویژگی
 
         private readonly List<TenantRole> _roles = new List<TenantRole>();
-        public IReadOnlyCollection<TenantRole> Roles => _roles.AsReadOnly(); // Expose as read-only collection
+        public ICollection<TenantRole> Roles => _roles.AsReadOnly(); // Expose as read-only collection
+        
+        
+        private readonly List<ProjectMember> _projectMembers = new List<ProjectMember>();
+        public ICollection<ProjectMember> ProjectMembers => _projectMembers.AsReadOnly(); // Expose as read-only collection
      public ICollection<SprintTask> Tasks { get; private set; } = new List<SprintTask>();
         protected TenantMember() { }
 

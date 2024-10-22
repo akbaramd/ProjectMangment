@@ -12,10 +12,10 @@ public class Sprint : TenantEntity
     public Guid ProjectId { get; private set; }
     
     private readonly List<SprintTask> _tasks = new List<SprintTask>();
-    public IReadOnlyCollection<SprintTask> Tasks => _tasks.AsReadOnly();
+    public ICollection<SprintTask> Tasks => _tasks.AsReadOnly();
     
     private readonly List<Board> _boards = new List<Board>();
-    public IReadOnlyCollection<Board> Boards => _boards.AsReadOnly();
+    public ICollection<Board> Boards => _boards.AsReadOnly();
 
     protected Sprint() { }
 

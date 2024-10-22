@@ -4,20 +4,29 @@ using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.Sprints.Specs;
 
-public class SprintsByTenantSpec : PaginateSpecification<Sprint>
+public class SprintsByTenantSpec : PaginatedSpecification<Sprint>
 {
+    public Guid TenantId { get; }
+    public SprintFilterDto Dto { get; }
+
     public SprintsByTenantSpec(Guid tenantId, SprintFilterDto dto) : base(dto.Skip,dto.Take)
     {
-        
-        AddCriteria(x => x.TenantId == tenantId);
-        if (dto.Search != null && !string.IsNullOrWhiteSpace(dto.Search))
+        TenantId = tenantId;
+        Dto = dto;
+    }
+
+
+    public override void Handle(ISpecificationContext<Sprint> context)
+    {
+        context.AddCriteria(x => x.TenantId == TenantId);
+        if (Dto.Search != null && !string.IsNullOrWhiteSpace(Dto.Search))
         {
-            AddCriteria(c => c.Name.Contains(dto.Search));
+            context.AddCriteria(c => c.Name.Contains(Dto.Search));
         }
         
-        if (dto.ProjectId != null &&dto.ProjectId != Guid.Empty)
+        if (Dto.ProjectId != null &&Dto.ProjectId != Guid.Empty)
         {
-            AddCriteria(c => c.ProjectId == dto.ProjectId);
+            context.AddCriteria(c => c.ProjectId == Dto.ProjectId);
         }
     }
 }
