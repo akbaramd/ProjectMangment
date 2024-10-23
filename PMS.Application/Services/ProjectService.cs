@@ -107,7 +107,7 @@ namespace PMS.Application.Services
         }
 
         // Update an existing project
-        public async Task<ProjectDetailDto?> UpdateProjectAsync(Guid projectId, UpdateProjectDto updateProjectDto)
+        public async Task<ProjectDetailDto?> UpdateProjectAsync(Guid projectId, UpdateProjectDto updateProjectDto)  
         {
             // Ensure the tenant is validated and the user has permission to update the project
             await ValidateTenantAccessAsync("project:update");
@@ -203,10 +203,10 @@ namespace PMS.Application.Services
             {
                 throw new ProjectNotFoundException();
             }
-
-
+            
             var paginatedResult =
                 await _projectMemberRepository.PaginatedAsync(new ProjectMembersByProjectSpec(project.Id, filter));
+            
             return _mapper.Map<PaginatedResult<ProjectMemberDto>>(paginatedResult);
         }
 

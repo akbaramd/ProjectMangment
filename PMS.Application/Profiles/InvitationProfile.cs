@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PMS.Application.DTOs;
 using PMS.Domain.Entities;
+using SharedKernel.Model;
 
 namespace PMS.Application.Profiles
 {
@@ -16,6 +17,8 @@ namespace PMS.Application.Profiles
             // Map between DTO and domain entity
             CreateMap<InvitationDto, Invitation>()
                 .ForMember(dest => dest.TenantId, opt => opt.Ignore()); // Assuming that TenantId is set elsewhere
+            
+            CreateMap<PaginatedResult<Invitation>, PaginatedResult<InvitationDto>>().ReverseMap();
         }
     }
 }

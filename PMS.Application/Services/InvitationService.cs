@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PMS.Application.UseCases.TenantMembers.Specs;
+using SharedKernel.Model;
 using UnauthorizedAccessException = PMS.Application.Exceptions.UnauthorizedAccessException;
 
 namespace PMS.Application.Services
@@ -39,7 +41,7 @@ namespace PMS.Application.Services
         }
 
         // Get all invitations with pagination and search
-        public async Task<PaginatedList<InvitationDto>> GetAllInvitationsAsync(PaginationParams paginationParams, string tenantId)
+        public async Task<PaginatedResult<InvitationDto>> GetAllInvitationsAsync(InvitationFilterDto paginationParams, string tenantId)
         {
             var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
             if (tenant == null)
@@ -47,25 +49,13 @@ namespace PMS.Application.Services
                 throw new TenantNotFoundException();
             }
 
-            var query = _invitationRepository.Query()
-                .Include(i => i.Tenant)
-                .Where(i => i.TenantId == tenant.Id);
+            var dto = await _invitationRepository.PaginatedAsync(new InvitationByTenantSpec(tenant.Id, paginationParams));
+               
 
-            if (!string.IsNullOrEmpty(paginationParams.Search))
-            {
-                query = query.Where(i => i.PhoneNumber.Contains(paginationParams.Search));
-            }
+           
 
-            var totalCount = await query.CountAsync();
-
-            var invitations = await query
-                .OrderByDescending(i => i.CreatedAt)
-                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
-                .Take(paginationParams.PageSize)
-                .ToListAsync();
-
-            var invitationDtos = _mapper.Map<List<InvitationDto>>(invitations);
-            return new PaginatedList<InvitationDto>(invitationDtos, totalCount, paginationParams.PageNumber, paginationParams.PageSize);
+            var invitationDtos = _mapper.Map<PaginatedResult<InvitationDto>>(dto);
+            return invitationDtos;
         }
 
         // Get invitation details

@@ -19,7 +19,6 @@ public class ProjectsByTenantSpec : PaginatedSpecification<Project>
 
     public override void Handle(ISpecificationContext<Project> context)
     {
-        context.Query.Include(x => x.Members);
         context.AddInclude(x => x.Members).ThenInclude(x => x.TenantMember).ThenInclude(x => x.User);
         context.AddCriteria(x => x.TenantId == TenantId);
         if (Dto.Search != null && !string.IsNullOrWhiteSpace(Dto.Search))

@@ -4,12 +4,12 @@ using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.TenantMembers.Specs;
 
-public class TenanMemberByTenantSpec : PaginatedSpecification<TenantMember>
+public class TenanMemberByTenantSpec : PaginatedAndSortableSpecification<TenantMember>
 {
     public Guid TenantId { get; }
     public TenantMembersFilterDto Dto { get; }
 
-    public TenanMemberByTenantSpec(Guid tenantId, TenantMembersFilterDto dto) : base(dto.Skip,dto.Take)
+    public TenanMemberByTenantSpec(Guid tenantId, TenantMembersFilterDto dto) : base(dto.Skip,dto.Take,dto.SortBy,dto.SortDirection)
     {
         TenantId = tenantId;
         Dto = dto;
