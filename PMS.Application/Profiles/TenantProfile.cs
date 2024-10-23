@@ -1,6 +1,7 @@
 using AutoMapper;
 using PMS.Application.DTOs;
 using PMS.Domain.Entities;
+using SharedKernel.Model;
 
 namespace PMS.Application.Profiles
 {
@@ -15,6 +16,10 @@ namespace PMS.Application.Profiles
             // Map TenantMember to TenantMemberDto and include UserDto
             CreateMap<TenantMember, TenantMemberDto>()
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User)); // Include User
+
+
+            CreateMap<PaginatedResult<TenantMember>, PaginatedResult<TenantMemberDto>>();
+
         }
     }
 }

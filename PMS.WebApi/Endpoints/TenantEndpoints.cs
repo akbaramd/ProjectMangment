@@ -79,6 +79,9 @@ namespace PMS.WebApi.Endpoints
 
             // Get members of a tenant (only for authorized roles like Owner, Manager, Administrator)
             tenantGroup.MapGet("/members", [Authorize] async (
+                    [FromQuery] int take,
+                    [FromQuery] int skip,
+                    [FromQuery] string? search,
                 [FromServices] ITenantService tenantService,
                 [FromServices] ITenantAccessor tenantAccessor,
                 ClaimsPrincipal user) =>
@@ -91,13 +94,9 @@ namespace PMS.WebApi.Endpoints
                 // Extract user ID from claims
                 var userId = Guid.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty);
 
-                var tenantInfo = await tenantService.GetTenantInfoAsync(tenantAccessor.Tenant, userId);
-                if (tenantInfo.Members == null)
-                {
-                    return Results.Forbid(); // Restrict access if user doesn't have permission to view members
-                }
+                var tenantInfo = await tenantService.GetMembers(tenantAccessor.Tenant, userId,new TenantMembersFilterDto(take,skip,search));
 
-                return Results.Ok(tenantInfo.Members);
+                return Results.Ok(tenantInfo);
             })
             .RequiredTenant();
 

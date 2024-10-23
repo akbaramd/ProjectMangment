@@ -1,5 +1,6 @@
 ﻿using PMS.Application.DTOs;
 using PMS.Domain.Entities;
+using SharedKernel.Model;
 
 namespace PMS.Application.Interfaces
 {
@@ -13,5 +14,11 @@ namespace PMS.Application.Interfaces
 
         // Update a member's role in the tenant (only Owner, Manager, Administrator can perform this action)
         Task UpdateMemberRoleAsync(string tenantId, Guid userId, Guid memberToUpdateId, Guid newRole);
+        
+        // add method to get tenant members with paginateion
+
+        Task<PaginatedResult<TenantMemberDto>>
+            GetMembers(string tenantName, Guid userId, TenantMembersFilterDto filter);
+
     }
 }

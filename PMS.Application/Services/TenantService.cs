@@ -8,6 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PMS.Application.UseCases.Sprints.Specs;
+using PMS.Application.UseCases.TenantMembers.Specs;
+using SharedKernel.Model;
 using UnauthorizedAccessException = PMS.Application.Exceptions.UnauthorizedAccessException;
 
 namespace PMS.Application.Services
@@ -139,6 +142,29 @@ namespace PMS.Application.Services
             memberToUpdate.AddRole(newRole);
 
             await _tenantMemberRepository.UpdateAsync(memberToUpdate);
+        }
+
+        public async Task<PaginatedResult<TenantMemberDto>> GetMembers(string tenantName, Guid userId,TenantMembersFilterDto filter)
+        {
+            // Retrieve tenant by subdomain
+            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantName);
+            if (tenant == null)
+            {
+                throw new TenantNotFoundException("Tenant not found.");
+            }
+
+            // Check if the user has the permission to view members
+            var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
+            if (tenantMember == null || 
+                !tenantMember.HasPermission("tenant:read"))
+            {
+                throw new UnauthorizedAccessException("You do not have permission to view these members.");
+            }
+
+            var data = await _tenantMemberRepository.PaginatedAsync(new TenanMemberByTenantSpec(tenant.Id, filter));
+
+
+            return _mapper.Map<PaginatedResult<TenantMemberDto>>(data);
         }
 
         // Add a new member to the tenant
