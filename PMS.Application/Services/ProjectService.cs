@@ -64,7 +64,7 @@ namespace PMS.Application.Services
             // Fetch project by ID for the current tenant
             var project =
                 await _projectRepository.FindOneAsync(
-                    new ProjectDetailsByIdForTenantSpec(projectId, CurrentTenant.Id));
+                    new ProjectDetailsByIdForTenantSpec( CurrentTenant.Id,projectId));
             if (project == null)
             {
                 throw new ProjectNotFoundException();
