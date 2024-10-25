@@ -87,5 +87,5 @@ app.MapTenantRolesEndpoints();
 app.MapProjectEndpoints();
 app.MapSprintEndpoints();
 app.MapBoardEndpoints();
-
+app.MapTaskEndpoints();
 app.Run();

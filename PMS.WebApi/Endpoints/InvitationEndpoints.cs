@@ -1,8 +1,9 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PMS.Application.DTOs;
 using PMS.Application.Interfaces;
+using PMS.Application.UseCases.Invitations;
+using PMS.Application.UseCases.Invitations.Models;
 using SharedKernel.Extensions;
 using SharedKernel.Tenants.Abstractions;
 
@@ -46,7 +47,7 @@ namespace PMS.WebApi.Endpoints
             });
 
             // Send invitation (tenantEntity required)
-            invitationsGroup.MapPost("/", [Authorize] async ([FromBody] SendInvitationDto sendInvitationDto,ClaimsPrincipal user, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
+            invitationsGroup.MapPost("/", [Authorize] async ([FromBody] InvitationSendDto sendInvitationDto,ClaimsPrincipal user, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
             {
                 if (tenantAccessor.Tenant == null)
                 {
@@ -119,7 +120,7 @@ namespace PMS.WebApi.Endpoints
             .RequiredTenant();
 
             // Update invitation (tenantEntity required)
-            invitationsGroup.MapPut("/{invitationId:guid}", [Authorize] async (Guid invitationId, [FromBody] UpdateInvitationDto updateInvitationDto, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
+            invitationsGroup.MapPut("/{invitationId:guid}", [Authorize] async (Guid invitationId, [FromBody] InvitationUpdateDto updateInvitationDto, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
             {
                 if (tenantAccessor.Tenant == null)
                 {

@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PMS.Application.DTOs;
 using PMS.Application.Interfaces;
 using SharedKernel.Extensions;
 using SharedKernel.Tenants.Abstractions;
 using System.Security.Claims;
+using PMS.Application.UseCases.Tenant;
+using PMS.Application.UseCases.Tenant.Models;
 
 namespace PMS.WebApi.Endpoints
 {
@@ -19,7 +20,7 @@ namespace PMS.WebApi.Endpoints
                    
         // Add a new role (tenantEntity required)
         tenantGroup.MapPost("/", 
-            [Authorize] async (CreateRoleDto createRoleDto, ITenantRoleService authService, ITenantAccessor tenantAccessor) =>
+            [Authorize] async (TenantRoleCreateDto createRoleDto, ITenantRoleService authService, ITenantAccessor tenantAccessor) =>
         {
             if (tenantAccessor.Tenant == null)
             {
@@ -32,7 +33,7 @@ namespace PMS.WebApi.Endpoints
 
         // Update an existing role (tenantEntity required)
         tenantGroup.MapPut("/{roleId:guid}", 
-            [Authorize] async (Guid roleId, UpdateRoleDto updateRoleDto, ITenantRoleService authService, ITenantAccessor tenantAccessor) =>
+            [Authorize] async (Guid roleId, TenantRoleUpdateDto updateRoleDto, ITenantRoleService authService, ITenantAccessor tenantAccessor) =>
         {
             if (tenantAccessor.Tenant == null)
             {

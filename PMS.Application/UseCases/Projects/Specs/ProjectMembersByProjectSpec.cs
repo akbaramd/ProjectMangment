@@ -1,4 +1,4 @@
-using PMS.Application.DTOs;
+using PMS.Application.UseCases.Projects.Models;
 using PMS.Domain.BoundedContexts.ProjectManagement;
 using SharedKernel.Specification;
 

@@ -1,4 +1,4 @@
-using PMS.Application.DTOs;
+using PMS.Application.UseCases.Invitations.Models;
 using PMS.Domain.BoundedContexts.TenantManagment;
 using SharedKernel.Specification;
 

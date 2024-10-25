@@ -1,3 +1,4 @@
+using PMS.Domain.BoundedContexts.TaskManagment;
 using PMS.Domain.BoundedContexts.TenantManagment;
 using PMS.Domain.Core;
 using SharedKernel.DomainDrivenDesign.Domain;
@@ -102,6 +103,11 @@ namespace PMS.Domain.BoundedContexts.ProjectManagement
 
         public ProjectMemberAccess Access { get; private set; }
 
+        public  virtual ICollection<TaskCommentEntity> TaskComments { get; set; }
+
+        private readonly List<TaskEntity> _tasks = new List<TaskEntity>();
+        public virtual ICollection<TaskEntity> Tasks => _tasks.AsReadOnly();
+        
         internal void UpdateDetails(ProjectMemberAccess access)
         {
             Access = access;

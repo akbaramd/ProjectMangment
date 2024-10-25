@@ -1,6 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using PMS.Application.Interfaces;
-using PMS.Application.Services;
+using PMS.Application.UseCases.Auth;
+using PMS.Application.UseCases.Boards;
+using PMS.Application.UseCases.Invitations;
+using PMS.Application.UseCases.Projects;
+using PMS.Application.UseCases.Sprints;
+using PMS.Application.UseCases.Tasks;
+using PMS.Application.UseCases.Tenant;
 using PMS.Domain;
 using SharedKernel.Modularity;
 using SharedKernel.Modularity.Abstractions;
@@ -19,7 +25,7 @@ public class ApplicationModule : Module
         context.Services.AddScoped<ITenantRoleService, TenantRoleService>();
         context.Services.AddScoped<ITenantService, TenantService>();
         context.Services.AddScoped<IInvitationService, InvitationService>();
-          
+        context.Services.AddScoped<ITaskService, TaskService>();
         context.Services.AddScoped<IProjectService, ProjectService>();
        
         // Register application services

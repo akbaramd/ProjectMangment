@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PMS.Application.DTOs;
 using PMS.Application.Interfaces;
 using SharedKernel.Extensions;
 using SharedKernel.Tenants.Abstractions;
 using System.Security.Claims;
+using PMS.Application.UseCases.Tenant;
+using PMS.Application.UseCases.Tenant.Models;
 
 namespace PMS.WebApi.Endpoints
 {

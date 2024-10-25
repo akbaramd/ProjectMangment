@@ -1,19 +1,24 @@
+using PMS.Domain.BoundedContexts.ProjectManagement;
 using SharedKernel.DomainDrivenDesign.Domain;
 
 namespace PMS.Domain.BoundedContexts.TaskManagment
 {
     public class TaskCommentEntity : Entity<Guid>
     {
-        public Guid UserId { get; private set; }
+        public virtual ProjectMemberEntity ProjectMember { get; private set; }
+        public Guid  ProjectMemberId { get; private set; }
         public string Content { get; private set; }
         public DateTime CreatedAt { get; private set; }
-        public Guid SprintTaskId { get; private set; }
+        public Guid TaskId { get; private set; }
+        public virtual TaskEntity Task { get; private set; }
 
         protected TaskCommentEntity() { }
 
-        public TaskCommentEntity(Guid userId, string content)
+        public TaskCommentEntity(TaskEntity task,ProjectMemberEntity member, string content)
         {
-            UserId = userId;
+            Task = task;
+            ProjectMember = member;
+            ProjectMemberId = member.Id;
             Content = content;
             CreatedAt = DateTime.UtcNow;
         }

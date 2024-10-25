@@ -1,6 +1,6 @@
-using PMS.Application.DTOs;
+using PMS.Application.UseCases.Projects.Models;
 
-namespace PMS.Application.UseCases.Sprints.Model;
+namespace PMS.Application.UseCases.Sprints.Models;
 
 public class SprintDetailsDto : SprintDto
 {

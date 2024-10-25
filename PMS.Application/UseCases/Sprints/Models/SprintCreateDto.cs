@@ -1,4 +1,4 @@
-namespace PMS.Application.UseCases.Sprints.Model;
+namespace PMS.Application.UseCases.Sprints.Models;
 
 public class SprintCreateDto
 {

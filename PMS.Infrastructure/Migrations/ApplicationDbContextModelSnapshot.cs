@@ -147,6 +147,78 @@ namespace PMS.Infrastructure.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.AttachmentManagement.AttachmentCategoryEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("AttachmentCategories");
+                });
+
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.AttachmentManagement.AttachmentEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("TenantMemberId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TenantMemberId");
+
+                    b.ToTable("Attachments");
+                });
+
             modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.ProjectBoardColumnEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -316,24 +388,24 @@ namespace PMS.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasMaxLength(255)
+                    b.Property<Guid>("AttachmentId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasMaxLength(1000)
+                    b.Property<Guid>("ProjectMemberId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("SprintTaskId")
+                    b.Property<Guid>("TaskId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SprintTaskId");
+                    b.HasIndex("AttachmentId");
 
-                    b.ToTable("TaskAttachments", (string)null);
+                    b.HasIndex("ProjectMemberId");
+
+                    b.HasIndex("TaskId");
+
+                    b.ToTable("TasksAttachments");
                 });
 
             modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagment.TaskCommentEntity", b =>
@@ -350,19 +422,19 @@ namespace PMS.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("SprintTaskId")
+                    b.Property<Guid>("ProjectMemberId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("TaskId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SprintTaskId");
+                    b.HasIndex("ProjectMemberId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("TaskId");
 
-                    b.ToTable("TaskComments", (string)null);
+                    b.ToTable("TaskComments");
                 });
 
             modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagment.TaskEntity", b =>
@@ -396,6 +468,9 @@ namespace PMS.Infrastructure.Migrations
                     b.Property<Guid>("TenantId")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("TenantMemberEntityId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -409,6 +484,8 @@ namespace PMS.Infrastructure.Migrations
                     b.HasIndex("BoardColumnId");
 
                     b.HasIndex("TenantId");
+
+                    b.HasIndex("TenantMemberEntityId");
 
                     b.ToTable("SprintTasks", (string)null);
                 });
@@ -715,7 +792,7 @@ namespace PMS.Infrastructure.Migrations
                     b.ToTable("RolePermissions");
                 });
 
-            modelBuilder.Entity("SprintTaskAssignee", b =>
+            modelBuilder.Entity("TasksAssignee", b =>
                 {
                     b.Property<Guid>("AssigneeMembersId")
                         .HasColumnType("TEXT");
@@ -727,7 +804,7 @@ namespace PMS.Infrastructure.Migrations
 
                     b.HasIndex("TasksId");
 
-                    b.ToTable("SprintTaskAssignee");
+                    b.ToTable("TasksAssignee");
                 });
 
             modelBuilder.Entity("TenantMemberRoles", b =>
@@ -794,6 +871,42 @@ namespace PMS.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.AttachmentManagement.AttachmentCategoryEntity", b =>
+                {
+                    b.HasOne("PMS.Domain.BoundedContexts.TenantManagment.TenantEntity", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.AttachmentManagement.AttachmentEntity", b =>
+                {
+                    b.HasOne("PMS.Domain.BoundedContexts.AttachmentManagement.AttachmentCategoryEntity", "Category")
+                        .WithMany("Attachments")
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("PMS.Domain.BoundedContexts.TenantManagment.TenantEntity", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PMS.Domain.BoundedContexts.TenantManagment.TenantMemberEntity", "TenantMember")
+                        .WithMany()
+                        .HasForeignKey("TenantMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TenantMember");
                 });
 
             modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.ProjectBoardColumnEntity", b =>
@@ -885,26 +998,48 @@ namespace PMS.Infrastructure.Migrations
 
             modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagment.TaskAttachmentEntity", b =>
                 {
-                    b.HasOne("PMS.Domain.BoundedContexts.TaskManagment.TaskEntity", null)
-                        .WithMany("Attachments")
-                        .HasForeignKey("SprintTaskId")
+                    b.HasOne("PMS.Domain.BoundedContexts.AttachmentManagement.AttachmentEntity", "Attachment")
+                        .WithMany()
+                        .HasForeignKey("AttachmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("PMS.Domain.BoundedContexts.ProjectManagement.ProjectMemberEntity", "ProjectMember")
+                        .WithMany()
+                        .HasForeignKey("ProjectMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PMS.Domain.BoundedContexts.TaskManagment.TaskEntity", "Task")
+                        .WithMany("Attachments")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Attachment");
+
+                    b.Navigation("ProjectMember");
+
+                    b.Navigation("Task");
                 });
 
             modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagment.TaskCommentEntity", b =>
                 {
-                    b.HasOne("PMS.Domain.BoundedContexts.TaskManagment.TaskEntity", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("SprintTaskId")
+                    b.HasOne("PMS.Domain.BoundedContexts.ProjectManagement.ProjectMemberEntity", "ProjectMember")
+                        .WithMany("TaskComments")
+                        .HasForeignKey("ProjectMemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PMS.Domain.BoundedContexts.UserManagment.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                    b.HasOne("PMS.Domain.BoundedContexts.TaskManagment.TaskEntity", "Task")
+                        .WithMany("Comments")
+                        .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ProjectMember");
+
+                    b.Navigation("Task");
                 });
 
             modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagment.TaskEntity", b =>
@@ -920,6 +1055,10 @@ namespace PMS.Infrastructure.Migrations
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("PMS.Domain.BoundedContexts.TenantManagment.TenantMemberEntity", null)
+                        .WithMany("Tasks")
+                        .HasForeignKey("TenantMemberEntityId");
 
                     b.Navigation("BoardColumn");
 
@@ -1001,9 +1140,9 @@ namespace PMS.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SprintTaskAssignee", b =>
+            modelBuilder.Entity("TasksAssignee", b =>
                 {
-                    b.HasOne("PMS.Domain.BoundedContexts.TenantManagment.TenantMemberEntity", null)
+                    b.HasOne("PMS.Domain.BoundedContexts.ProjectManagement.ProjectMemberEntity", null)
                         .WithMany()
                         .HasForeignKey("AssigneeMembersId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1031,6 +1170,11 @@ namespace PMS.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.AttachmentManagement.AttachmentCategoryEntity", b =>
+                {
+                    b.Navigation("Attachments");
+                });
+
             modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.ProjectBoardColumnEntity", b =>
                 {
                     b.Navigation("Tasks");
@@ -1044,6 +1188,11 @@ namespace PMS.Infrastructure.Migrations
             modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.ProjectEntity", b =>
                 {
                     b.Navigation("Members");
+                });
+
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.ProjectMemberEntity", b =>
+                {
+                    b.Navigation("TaskComments");
                 });
 
             modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagment.TaskEntity", b =>
@@ -1065,6 +1214,8 @@ namespace PMS.Infrastructure.Migrations
             modelBuilder.Entity("PMS.Domain.BoundedContexts.TenantManagment.TenantMemberEntity", b =>
                 {
                     b.Navigation("ProjectMembers");
+
+                    b.Navigation("Tasks");
                 });
 
             modelBuilder.Entity("PMS.Domain.BoundedContexts.TenantManagment.TenantPermissionGroupEntity", b =>

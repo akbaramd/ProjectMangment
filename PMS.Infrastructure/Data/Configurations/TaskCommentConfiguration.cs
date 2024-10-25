@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PMS.Domain.BoundedContexts.ProjectManagement;
 using PMS.Domain.BoundedContexts.TaskManagment;
 using PMS.Domain.BoundedContexts.UserManagment;
 
@@ -12,7 +13,6 @@ public class TaskCommentConfiguration : IEntityTypeConfiguration<TaskCommentEnti
         builder.HasKey(tc => tc.Id);
         builder.Property(tc => tc.Content).IsRequired().HasMaxLength(1000);
         builder.Property(tc => tc.CreatedAt).IsRequired();
-        builder.HasOne<ApplicationUser>().WithMany().HasForeignKey(tc => tc.UserId);
-        builder.ToTable("TaskComments");
+        builder.HasOne(x=>x.ProjectMember).WithMany(x=>x.TaskComments).HasForeignKey(tc => tc.ProjectMemberId);
     }
 }

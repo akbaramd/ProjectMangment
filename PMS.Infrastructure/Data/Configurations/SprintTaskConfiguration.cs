@@ -35,17 +35,17 @@ public class SprintTaskConfiguration : IEntityTypeConfiguration<TaskEntity>
             .HasForeignKey(l => l.SprintTaskId);
 
         builder.HasMany(st => st.Comments)
-            .WithOne()
-            .HasForeignKey(c => c.SprintTaskId);
+            .WithOne(x=>x.Task)
+            .HasForeignKey(c => c.TaskId);
 
         builder.HasMany(st => st.Attachments)
-            .WithOne()
-            .HasForeignKey(a => a.SprintTaskId);
+            .WithOne(c=>c.Task)
+            .HasForeignKey(a => a.TaskId);
 
         builder.HasMany(st => st.AssigneeMembers)
-            .WithMany(am => am.Tasks)
+            .WithMany(x=>x.Tasks)
             .UsingEntity(
-                "SprintTaskAssignee"
+                "TasksAssignee"
             );
 
         builder.ToTable("SprintTasks");

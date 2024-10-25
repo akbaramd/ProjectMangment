@@ -1,3 +1,4 @@
+using PMS.Domain.BoundedContexts.AttachmentManagement;
 using PMS.Domain.BoundedContexts.ProjectManagement;
 using PMS.Domain.BoundedContexts.TenantManagment;
 using PMS.Domain.Core;
@@ -17,14 +18,15 @@ namespace PMS.Domain.BoundedContexts.TaskManagment
         public DateTime? UpdatedAt { get; private set; }
 
         // Relations
+        
         public Guid BoardColumnId { get; private set; }
         public virtual ProjectBoardColumnEntity BoardColumn { get; private set; }
 
         private readonly List<TaskLabelEntity> _labels = new List<TaskLabelEntity>();
         public virtual ICollection<TaskLabelEntity> Labels => _labels.AsReadOnly();
 
-        private readonly List<TenantMemberEntity> _assigneeMembers = new List<TenantMemberEntity>();
-        public virtual ICollection<TenantMemberEntity> AssigneeMembers => _assigneeMembers.AsReadOnly();
+        private readonly List<ProjectMemberEntity> _assigneeMembers = new List<ProjectMemberEntity>();
+        public virtual ICollection<ProjectMemberEntity> AssigneeMembers => _assigneeMembers.AsReadOnly();
 
         private readonly List<TaskCommentEntity> _comments = new List<TaskCommentEntity>();
         public virtual ICollection<TaskCommentEntity> Comments => _comments.AsReadOnly();
@@ -123,7 +125,7 @@ namespace PMS.Domain.BoundedContexts.TaskManagment
 
         #region Assignee Management Methods
 
-        public void AssignUser(TenantMemberEntity user)
+        public void AssignUser(ProjectMemberEntity user)
         {
             if (user == null || _assigneeMembers.Contains(user))
                 return;
@@ -132,7 +134,7 @@ namespace PMS.Domain.BoundedContexts.TaskManagment
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public void UnassignUser(TenantMemberEntity user)
+        public void UnassignUser(ProjectMemberEntity user)
         {
             if (user == null || !_assigneeMembers.Contains(user))
                 return;
@@ -145,12 +147,12 @@ namespace PMS.Domain.BoundedContexts.TaskManagment
 
         #region Comment Management Methods
 
-        public void AddComment(Guid userId, string commentContent)
+        public void AddComment(ProjectMemberEntity member, string commentContent)
         {
             if (string.IsNullOrWhiteSpace(commentContent))
                 throw new ArgumentException("Comment content cannot be empty.");
 
-            var comment = new TaskCommentEntity(userId, commentContent);
+            var comment = new TaskCommentEntity(this,member, commentContent);
             _comments.Add(comment);
             UpdatedAt = DateTime.UtcNow;
         }
@@ -179,13 +181,10 @@ namespace PMS.Domain.BoundedContexts.TaskManagment
 
         #region Attachment Management Methods
 
-        public void AddAttachment(string fileName, string filePath)
+        public void AddAttachment(ProjectMemberEntity member,AttachmentEntity attachment)
         {
-            if (string.IsNullOrWhiteSpace(fileName) || string.IsNullOrWhiteSpace(filePath))
-                throw new ArgumentException("File name and path cannot be empty.");
-
-            var attachment = new TaskAttachmentEntity(fileName, filePath);
-            _attachments.Add(attachment);
+            var taskAttachmentEntity = new TaskAttachmentEntity(this,member,attachment);
+            _attachments.Add(taskAttachmentEntity);
             UpdatedAt = DateTime.UtcNow;
         }
 

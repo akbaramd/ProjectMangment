@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using PMS.Application.DTOs;
 using PMS.Application.Interfaces;
+using PMS.Application.UseCases.Auth;
+using PMS.Application.UseCases.Auth.Models;
 using SharedKernel.Extensions;
 using SharedKernel.Tenants.Abstractions; // Assuming your RequiredTenant is here
 
@@ -20,14 +21,14 @@ public static class AuthenticationEndpoints
             .WithTags("Authentication");
         
         // Register endpoint (public, no tenantEntity required)
-        authGroup.MapPost("/register", [AllowAnonymous] async (RegisterDto registerDto, IAuthService authService) =>
+        authGroup.MapPost("/register", [AllowAnonymous] async (AuthRegisterDto registerDto, IAuthService authService) =>
         {
             await authService.RegisterAsync(registerDto);
             return Results.Ok("Registration successful.");
         });
 
         // Login endpoint (tenantEntity required)
-        authGroup.MapPost("/login", [AllowAnonymous] async (LoginDto loginDto, IAuthService authService, ITenantAccessor tenantAccessor) =>
+        authGroup.MapPost("/login", [AllowAnonymous] async (AuthLoginDto loginDto, IAuthService authService, ITenantAccessor tenantAccessor) =>
         {
             if (tenantAccessor.Tenant == null)
             {

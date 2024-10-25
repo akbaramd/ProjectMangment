@@ -1,11 +1,11 @@
 using AutoMapper;
-using PMS.Application.DTOs;
-using PMS.Application.UseCases.Sprints.Model;
+using PMS.Application.UseCases.Boards.Models;
+using PMS.Application.UseCases.Projects.Models;
 using PMS.Domain.BoundedContexts.ProjectManagement;
 using PMS.Domain.BoundedContexts.TaskManagment;
 using SharedKernel.Model;
 
-namespace PMS.Application.Profiles
+namespace PMS.Application.UseCases.Projects
 {
     public class ProjectAndSprintProfile : Profile
     {
@@ -18,7 +18,7 @@ namespace PMS.Application.Profiles
            
             CreateMap<ProjectBoardEntity, BoardDto>().ReverseMap();
             CreateMap<ProjectBoardColumnEntity, BoardColumnDto>().ReverseMap();
-            CreateMap<TaskEntity, TaskDto>().ReverseMap();
+            
 
             // Paginated Result Mappings
             CreateMap<PaginatedResult<ProjectEntity>, PaginatedResult<ProjectDto>>().ReverseMap();

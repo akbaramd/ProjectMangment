@@ -1,6 +1,7 @@
+using PMS.Application.UseCases.Tenant.Models;
 using PMS.Domain.BoundedContexts.ProjectManagement;
 
-namespace PMS.Application.DTOs;
+namespace PMS.Application.UseCases.Projects.Models;
 
 public class ProjectMemberDto
 {

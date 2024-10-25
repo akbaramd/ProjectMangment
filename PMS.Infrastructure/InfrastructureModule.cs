@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using PMS.Application.Interfaces;
-using PMS.Application.Services;
 using PMS.Domain;
 using PMS.Domain.BoundedContexts.ProjectManagement.Repositories;
 using PMS.Domain.BoundedContexts.TaskManagment.Repositories;
@@ -51,6 +50,7 @@ public class InfrastructureModule : Module
             context.Services.AddScoped<IUserTenantSeeder, UserTenantSeeder>();
             context.Services.AddScoped<DatabaseSeeder>();
 
+            context.Services.AddSingleton<IAttachmentFileService, AttachmentFileService>();
             context.Services.AddSingleton<ISmsService, FakeSmsService>();
             context.Services.AddScoped<IJwtService, JwtService>();
             // Configure database context

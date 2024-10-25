@@ -9,8 +9,5 @@ public class TaskAttachmentConfiguration : IEntityTypeConfiguration<TaskAttachme
     public void Configure(EntityTypeBuilder<TaskAttachmentEntity> builder)
     {
         builder.HasKey(ta => ta.Id);
-        builder.Property(ta => ta.FileName).IsRequired().HasMaxLength(255);
-        builder.Property(ta => ta.FilePath).IsRequired().HasMaxLength(1000);
-        builder.ToTable("TaskAttachments");
     }
 }

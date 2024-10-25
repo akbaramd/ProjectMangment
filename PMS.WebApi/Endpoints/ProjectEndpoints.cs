@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PMS.Application.DTOs;
 using PMS.Application.Interfaces;
+using PMS.Application.UseCases.Projects;
+using PMS.Application.UseCases.Projects.Models;
 using SharedKernel.Extensions;
 using SharedKernel.Model;
 using SharedKernel.Tenants.Abstractions;

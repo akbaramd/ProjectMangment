@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PMS.Application.DTOs;
 using PMS.Application.Interfaces;
 using SharedKernel.Extensions;
 using SharedKernel.Tenants.Abstractions;
 using System.Security.Claims;
+using PMS.Application.UseCases.Boards;
+using PMS.Application.UseCases.Boards.Models;
 using SharedKernel.Model;
 
 namespace PMS.WebApi.Endpoints
@@ -61,7 +62,7 @@ namespace PMS.WebApi.Endpoints
 
             // Create a new board (tenantEntity required)
             boardGroup.MapPost("/", [Authorize] async (
-                [FromBody] CreateBoardDto createBoardDto,
+                [FromBody] BoardCreateDto createBoardDto,
                 [FromServices] IBoardService boardService) =>
             {
                 var createdBoard = await boardService.CreateBoardAsync(createBoardDto);
@@ -74,7 +75,7 @@ namespace PMS.WebApi.Endpoints
             // Update an existing board (tenantEntity required)
             boardGroup.MapPut("/{boardId:guid}", [Authorize] async (
                 Guid boardId,
-                [FromBody] UpdateBoardDto updateBoardDto,
+                [FromBody] BoardUpdateDto updateBoardDto,
                 [FromServices] IBoardService boardService) =>
             {
                 var updatedBoard = await boardService.UpdateBoardAsync(boardId, updateBoardDto);

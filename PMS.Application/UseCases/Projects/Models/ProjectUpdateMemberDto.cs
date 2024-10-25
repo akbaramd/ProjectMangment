@@ -1,4 +1,4 @@
-namespace PMS.Application.DTOs;
+namespace PMS.Application.UseCases.Projects.Models;
 
 public class ProjectUpdateMemberDto
 {

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using PMS.Domain.BoundedContexts.AttachmentManagement;
 using PMS.Domain.BoundedContexts.ProjectManagement;
 using PMS.Domain.BoundedContexts.TaskManagment;
 using PMS.Domain.BoundedContexts.TenantManagment;
@@ -11,6 +12,8 @@ namespace PMS.Infrastructure.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
+    public DbSet<AttachmentEntity> Attachments { get; set; }
+    public DbSet<AttachmentCategoryEntity> AttachmentCategories { get; set; }
     public DbSet<TenantRoleEntity> TenantRole { get; set; }
     public DbSet<TenantMemberEntity> TenantMember { get; set; }
     public DbSet<ProjectInvitationEntity> TenantInvitations { get; set; }
@@ -20,12 +23,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<ProjectBoardColumnEntity> ProjectBoardColumns { get; set; }
     public DbSet<ProjectBoardEntity> ProjectBoards { get; set; }
     public DbSet<TaskEntity> Tasks { get; set; }
+    public DbSet<TaskAttachmentEntity> TasksAttachments { get; set; }
     public DbSet<TenantPermissionEntity> Permissions { get; set; }
     public DbSet<TenantPermissionGroupEntity> PermissionGroups { get; set; }
     public DbSet<TenantEntity> Tenants { get; set; }
     public DbSet<TaskCommentEntity> TaskComments { get; set; }
     public DbSet<TaskLabelEntity> TaskLabels { get; set; }
-    public DbSet<TaskAttachmentEntity> TaskAttachments { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -49,6 +52,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
                 .HasConversion(c => c.Name.ToString(),
                     v => Enumeration.FromName<ProjectMemberAccess>(v)); // Renaming AspNetUserTokens to UserTokensl
         });
+     
+    
         
         builder.Entity<ProjectEntity>(entity =>
         {

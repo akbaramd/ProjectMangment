@@ -1,7 +1,6 @@
 using PMS.Application.Interfaces;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using PMS.Application.Services;
 
 namespace PMS.Infrastructure.Services
 {

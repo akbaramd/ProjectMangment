@@ -2,7 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using PMS.Application.Interfaces;
-using PMS.Application.Services;
 using PMS.Infrastructure.Data;
 using PMS.Infrastructure.Data.Repositories;
 using PMS.Infrastructure.Data.Seeders;
