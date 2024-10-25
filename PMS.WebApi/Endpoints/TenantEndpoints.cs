@@ -16,7 +16,7 @@ namespace PMS.WebApi.Endpoints
             var tenantGroup = app.MapGroup("/api/tenants")
                 .WithTags("Tenants"); // Add Swagger tag
 
-            // Get tenantEntity info (tenantEntity required)
+            // Get tenant info (tenant required)
             tenantGroup.MapGet("/", [Authorize] async (
                 [FromServices] ITenantService tenantService,
                 [FromServices] ITenantAccessor tenantAccessor,
@@ -35,7 +35,7 @@ namespace PMS.WebApi.Endpoints
             })
             .RequiredTenant();
 
-            // Remove a member from tenantEntity (tenantEntity required)
+            // Remove a member from tenant (tenant required)
             tenantGroup.MapDelete("/members/{memberId:guid}", [Authorize] async (
                 Guid memberId,
                 [FromServices] ITenantService tenantService,
@@ -55,7 +55,7 @@ namespace PMS.WebApi.Endpoints
             })
             .RequiredTenant();
 
-            // Update member role in tenantEntity (tenantEntity required)
+            // Update member role in tenant (tenant required)
             tenantGroup.MapPut("/members/{memberId:guid}/role", [Authorize] async (
                 Guid memberId,
                 [FromBody] TenantMemberUpdate dto,
@@ -76,7 +76,7 @@ namespace PMS.WebApi.Endpoints
             })
             .RequiredTenant();
 
-            // Get members of a tenantEntity (only for authorized roles like Owner, Manager, Administrator)
+            // Get members of a tenant (only for authorized roles like Owner, Manager, Administrator)
             tenantGroup.MapGet("/members", [Authorize] async (
                     [FromQuery] int take,
                     [FromQuery] int skip,

@@ -16,7 +16,7 @@ namespace PMS.WebApi.Endpoints
             var projectGroup = app.MapGroup("/api/projects")
                 .WithTags("Projects");
 
-            // Create a new project (tenantEntity required)
+            // Create a new project (tenant required)
             projectGroup.MapPost("/", [Authorize] async (
                 [FromBody] ProjectCreateDto createProjectDto,
                 [FromServices] IProjectService projectService) =>
@@ -27,7 +27,7 @@ namespace PMS.WebApi.Endpoints
             .Produces<ProjectDto>()
             .RequiredTenant();
 
-            // Get list of projects for the tenantEntity (tenantEntity required)
+            // Get list of projects for the tenant (tenant required)
             projectGroup.MapGet("/", [Authorize] async (
                 [FromQuery] int take,
                 [FromQuery] int skip,
@@ -40,7 +40,7 @@ namespace PMS.WebApi.Endpoints
             .Produces<PaginatedResult<ProjectDto>>()
             .RequiredTenant();
 
-            // Get project details by ID (tenantEntity required)
+            // Get project details by ID (tenant required)
             projectGroup.MapGet("/{projectId:guid}", [Authorize] async (
                 Guid projectId,
                 [FromServices] IProjectService projectService) =>
@@ -51,7 +51,7 @@ namespace PMS.WebApi.Endpoints
             .Produces<ProjectDetailDto>()
             .RequiredTenant();
 
-            // Update a project (tenantEntity required)
+            // Update a project (tenant required)
             projectGroup.MapPut("/{projectId:guid}", [Authorize] async (
                 Guid projectId,
                 [FromBody] ProjectUpdateDto updateProjectDto,
@@ -68,7 +68,7 @@ namespace PMS.WebApi.Endpoints
             .Produces<ProjectDto>()
             .RequiredTenant();
 
-            // Delete a project (tenantEntity required)
+            // Delete a project (tenant required)
             projectGroup.MapDelete("/{projectId:guid}", [Authorize] async (
                 Guid projectId,
                 [FromServices] IProjectService projectService) =>
