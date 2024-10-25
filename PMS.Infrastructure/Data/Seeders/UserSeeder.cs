@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.UserManagment;
 using PMS.Infrastructure.Data.Seeders.Absractions;
 
 namespace PMS.Infrastructure.Data.Seeders

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PMS.Application.DTOs;
 using PMS.Application.Interfaces;
-using PMS.Domain.Entities;
 using SharedKernel.Extensions;
 using SharedKernel.Tenants.Abstractions;
 using System.Security.Claims;
@@ -14,11 +13,11 @@ namespace PMS.WebApi.Endpoints
         public static WebApplication MapTenantRolesEndpoints(this WebApplication app)
         {
             // Create a group for /api/tenants
-            var tenantGroup = app.MapGroup("/api/tenant-roles")
+            var tenantGroup = app.MapGroup("/api/tenantEntity-roles")
                 .WithTags("TenantRoles"); // Add Swagger tag
 
                    
-        // Add a new role (tenant required)
+        // Add a new role (tenantEntity required)
         tenantGroup.MapPost("/", 
             [Authorize] async (CreateRoleDto createRoleDto, ITenantRoleService authService, ITenantAccessor tenantAccessor) =>
         {
@@ -31,7 +30,7 @@ namespace PMS.WebApi.Endpoints
             return Results.Ok("Role added successfully.");
         }).RequiredTenant();  
 
-        // Update an existing role (tenant required)
+        // Update an existing role (tenantEntity required)
         tenantGroup.MapPut("/{roleId:guid}", 
             [Authorize] async (Guid roleId, UpdateRoleDto updateRoleDto, ITenantRoleService authService, ITenantAccessor tenantAccessor) =>
         {
@@ -44,7 +43,7 @@ namespace PMS.WebApi.Endpoints
             return Results.Ok("Role updated successfully.");
         }).RequiredTenant();  
 
-        // Delete a role (tenant required)
+        // Delete a role (tenantEntity required)
         tenantGroup.MapDelete("/{roleId:guid}", 
             [Authorize] async (Guid roleId, ITenantRoleService authService, ITenantAccessor tenantAccessor) =>
         {
@@ -57,7 +56,7 @@ namespace PMS.WebApi.Endpoints
             return Results.Ok("Role deleted successfully.");
         }).RequiredTenant();  
 
-        // Get all roles for a tenant (tenant required)
+        // Get all roles for a tenantEntity (tenantEntity required)
         tenantGroup.MapGet("/", 
             [Authorize] async (ITenantRoleService authService, ITenantAccessor tenantAccessor) =>
         {
@@ -70,7 +69,7 @@ namespace PMS.WebApi.Endpoints
             return Results.Ok(roles);
         }).RequiredTenant();  
 
-        // Get permission groups (no tenant required, global configuration)
+        // Get permission groups (no tenantEntity required, global configuration)
         tenantGroup.MapGet("/permissions", 
             [Authorize] async (ITenantRoleService authService) =>
         {

@@ -1,10 +1,10 @@
 using PMS.Application.DTOs;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TenantManagment;
 using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.TenantMembers.Specs;
 
-public class TenanMemberByTenantSpec : PaginatedAndSortableSpecification<TenantMember>
+public class TenanMemberByTenantSpec : PaginatedAndSortableSpecification<TenantMemberEntity>
 {
     public Guid TenantId { get; }
     public TenantMembersFilterDto Dto { get; }
@@ -16,7 +16,7 @@ public class TenanMemberByTenantSpec : PaginatedAndSortableSpecification<TenantM
     }
 
 
-    public override void Handle(ISpecificationContext<TenantMember> context)
+    public override void Handle(ISpecificationContext<TenantMemberEntity> context)
     {
         context.AddInclude(x => x.User).AddInclude(x=>x.Roles).ThenInclude(x=>x.Permissions);
         context.AddCriteria(x => x.TenantId == TenantId);

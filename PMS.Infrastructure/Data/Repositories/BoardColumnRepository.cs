@@ -1,33 +1,33 @@
 using Microsoft.EntityFrameworkCore;
-using PMS.Domain.Entities;
-using PMS.Domain.Repositories;
+using PMS.Domain.BoundedContexts.ProjectManagement;
+using PMS.Domain.BoundedContexts.ProjectManagement.Repositories;
 using SharedKernel.EntityFrameworkCore;
 
 namespace PMS.Infrastructure.Data.Repositories;
 
-public class BoardColumnRepository : EfGenericRepository<ApplicationDbContext, BoardColumn>, IBoardColumnRepository
+public class BoardColumnRepository : EfGenericRepository<ApplicationDbContext, ProjectBoardColumnEntity>, IBoardColumnRepository
 {
     public BoardColumnRepository(ApplicationDbContext context) : base(context)
     {
     }
 
-    public List<BoardColumn> GetAllWithRelations()
+    public List<ProjectBoardColumnEntity> GetAllWithRelations()
     {
-        return _context.BoardColumns
+        return _context.ProjectBoardColumns
             .Include(bc => bc.Tasks)
             .ToList();
     }
 
-    public Task<BoardColumn?> GetByIdWithRelationsAsync(Guid columnId)
+    public Task<ProjectBoardColumnEntity?> GetByIdWithRelationsAsync(Guid columnId)
     {
-        return _context.BoardColumns
+        return _context.ProjectBoardColumns
             .Include(bc => bc.Tasks)
             .FirstOrDefaultAsync(bc => bc.Id == columnId);
     }
 
-    public List<BoardColumn> GetByBoardId(Guid boardId)
+    public List<ProjectBoardColumnEntity> GetByBoardId(Guid boardId)
     {
-        return _context.BoardColumns
+        return _context.ProjectBoardColumns
             .Where(bc => bc.BoardId == boardId)
             .Include(bc => bc.Tasks)
             .ToList();

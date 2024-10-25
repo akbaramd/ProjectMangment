@@ -1,10 +1,10 @@
 using PMS.Application.DTOs;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.ProjectManagement;
 using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.Projects.Specs;
 
-public class ProjectMembersByProjectSpec : PaginatedSpecification<ProjectMember>
+public class ProjectMembersByProjectSpec : PaginatedSpecification<ProjectMemberEntity>
 {
     public  Guid ProjectId { get; set; }
     public  ProjectMemberFilterDto Filter{ get; set; }
@@ -15,7 +15,7 @@ public class ProjectMembersByProjectSpec : PaginatedSpecification<ProjectMember>
         Filter = dto;
     }
 
-    public override void Handle(ISpecificationContext<ProjectMember> context)
+    public override void Handle(ISpecificationContext<ProjectMemberEntity> context)
     {
         context. AddCriteria(x => x.ProjectId == ProjectId);
 

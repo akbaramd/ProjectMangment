@@ -1,10 +1,10 @@
 using PMS.Application.DTOs;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TenantManagment;
 using SharedKernel.Specification;
 
-namespace PMS.Application.UseCases.TenantMembers.Specs;
+namespace PMS.Application.UseCases.Invitations.Specs;
 
-public class InvitationByTenantSpec : PaginatedAndSortableSpecification<Invitation>
+public class InvitationByTenantSpec : PaginatedAndSortableSpecification<ProjectInvitationEntity>
 {
     public Guid TenantId { get; }
     public InvitationFilterDto Dto { get; }
@@ -16,7 +16,7 @@ public class InvitationByTenantSpec : PaginatedAndSortableSpecification<Invitati
     }
 
 
-    public override void Handle(ISpecificationContext<Invitation> context)
+    public override void Handle(ISpecificationContext<ProjectInvitationEntity> context)
     {
         context.AddInclude(x => x.Tenant);
         context.AddCriteria(x => x.TenantId == TenantId);

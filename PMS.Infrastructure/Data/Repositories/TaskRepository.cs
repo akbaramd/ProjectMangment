@@ -1,20 +1,20 @@
 using Microsoft.EntityFrameworkCore;
-using PMS.Domain.Entities;
-using PMS.Domain.Repositories;
+using PMS.Domain.BoundedContexts.TaskManagment;
+using PMS.Domain.BoundedContexts.TaskManagment.Repositories;
 using SharedKernel.EntityFrameworkCore;
 
 
 namespace PMS.Infrastructure.Data.Repositories;
 
-public class TaskRepository : EfGenericRepository<ApplicationDbContext, SprintTask>, ITaskRepository
+public class TaskRepository : EfGenericRepository<ApplicationDbContext, TaskEntity>, ITaskRepository
 {
     public TaskRepository(ApplicationDbContext context) : base(context)
     {
     }
 
-    public List<SprintTask> GetAllWithRelations()
+    public List<TaskEntity> GetAllWithRelations()
     {
-        return _context.SprintTasks
+        return _context.Tasks
             .Include(t => t.BoardColumn)
             .ThenInclude(t => t.Board)
             .ThenInclude(t => t.Sprint)
@@ -22,9 +22,9 @@ public class TaskRepository : EfGenericRepository<ApplicationDbContext, SprintTa
             .ToList();
     }
 
-    public Task<SprintTask?> GetByIdWithRelationsAsync(Guid taskId)
+    public Task<TaskEntity?> GetByIdWithRelationsAsync(Guid taskId)
     {
-        return _context.SprintTasks
+        return _context.Tasks
             .Include(t => t.BoardColumn)
             .ThenInclude(t => t.Board)
             .ThenInclude(t => t.Sprint)
@@ -32,9 +32,9 @@ public class TaskRepository : EfGenericRepository<ApplicationDbContext, SprintTa
             .FirstOrDefaultAsync(t => t.Id == taskId);
     }
 
-    public List<SprintTask> GetBySprintId(Guid sprintId)
+    public List<TaskEntity> GetBySprintId(Guid sprintId)
     {
-        return _context.SprintTasks
+        return _context.Tasks
             .Include(t => t.BoardColumn)
             .ThenInclude(t => t.Board)
             .ThenInclude(t => t.Sprint)
@@ -42,9 +42,9 @@ public class TaskRepository : EfGenericRepository<ApplicationDbContext, SprintTa
             .ToList();
     }
 
-    public Task<List<SprintTask>> GetTasksByBoardIdAsync(Guid boardId)
+    public Task<List<TaskEntity>> GetTasksByBoardIdAsync(Guid boardId)
     {
-        return _context.SprintTasks
+        return _context.Tasks
             .Where(t => t.BoardColumnId == boardId)
             .Include(t => t.BoardColumn)
             .ThenInclude(t => t.Board)

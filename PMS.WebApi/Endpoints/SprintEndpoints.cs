@@ -4,6 +4,7 @@ using PMS.Application.DTOs;
 using PMS.Application.Interfaces;
 using SharedKernel.Tenants.Abstractions;
 using System.Security.Claims;
+using PMS.Application.UseCases.Sprints.Model;
 using SharedKernel.Extensions;
 using SharedKernel.Model;
 
@@ -16,7 +17,7 @@ namespace PMS.WebApi.Endpoints
             var sprintGroup = app.MapGroup("/api/sprints")
                 .WithTags("Sprints");
 
-            // Get sprints by project ID with pagination and filtering (tenant required)
+            // Get sprints by project ID with pagination and filtering (tenantEntity required)
             sprintGroup.MapGet("/", [Authorize] async (
                     [FromQuery] int take,    // Pagination: page number
                     [FromQuery] int skip,      // Pagination: page size
@@ -43,7 +44,7 @@ namespace PMS.WebApi.Endpoints
                 .RequiredTenant();
 
 
-            // Get sprint details by sprint ID (tenant required)
+            // Get sprint details by sprint ID (tenantEntity required)
             sprintGroup.MapGet("/{sprintId:guid}", [Authorize] async (
                 Guid sprintId,
                 [FromServices] ISprintService sprintService) =>
@@ -60,9 +61,9 @@ namespace PMS.WebApi.Endpoints
             .Produces(StatusCodes.Status404NotFound)
             .RequiredTenant();
 
-            // Create a new sprint (tenant required)
+            // Create a new sprint (tenantEntity required)
             sprintGroup.MapPost("/", [Authorize] async (
-                [FromBody] CreateSprintDto createSprintDto,
+                [FromBody] SprintCreateDto createSprintDto,
                 [FromServices] ISprintService sprintService) =>
             {
                 var sprint = await sprintService.CreateSprintAsync(createSprintDto);
@@ -72,10 +73,10 @@ namespace PMS.WebApi.Endpoints
             .Produces(StatusCodes.Status400BadRequest)
             .RequiredTenant();
 
-            // Update an existing sprint (tenant required)
+            // Update an existing sprint (tenantEntity required)
             sprintGroup.MapPut("/{sprintId:guid}", [Authorize] async (
                 Guid sprintId,
-                [FromBody] UpdateSprintDto updateSprintDto,
+                [FromBody] SprintUpdateDto updateSprintDto,
                 [FromServices] ISprintService sprintService) =>
             {
                 var updatedSprint = await sprintService.UpdateSprintAsync(sprintId, updateSprintDto);
@@ -90,7 +91,7 @@ namespace PMS.WebApi.Endpoints
             .Produces(StatusCodes.Status404NotFound)
             .RequiredTenant();
 
-            // Delete a sprint (tenant required)
+            // Delete a sprint (tenantEntity required)
             sprintGroup.MapDelete("/{sprintId:guid}", [Authorize] async (
                 Guid sprintId,
                 [FromServices] ISprintService sprintService) =>

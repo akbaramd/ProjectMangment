@@ -1,35 +1,32 @@
 using Microsoft.EntityFrameworkCore;
-using PMS.Domain.Entities;
-using PMS.Domain.Repositories;
+using PMS.Domain.BoundedContexts.ProjectManagement;
+using PMS.Domain.BoundedContexts.ProjectManagement.Repositories;
 using SharedKernel.EntityFrameworkCore;
 
 namespace PMS.Infrastructure.Data.Repositories;
 
-public class SprintRepository : EfGenericRepository<ApplicationDbContext, Sprint>, ISprintRepository
+public class SprintRepository : EfGenericRepository<ApplicationDbContext, ProjectSprintEntity>, ISprintRepository
 {
     public SprintRepository(ApplicationDbContext context) : base(context)
     {
     }
 
-    public List<Sprint> GetAllWithRelations()
+    public List<ProjectSprintEntity> GetAllWithRelations()
     {
-        return _context.Sprints
-            .Include(s => s.Tasks)
+        return _context.ProjectSprints
             .ToList();
     }
 
-    public Task<Sprint?> GetByIdWithRelationsAsync(Guid sprintId)
+    public Task<ProjectSprintEntity?> GetByIdWithRelationsAsync(Guid sprintId)
     {
-        return _context.Sprints
-            .Include(s => s.Tasks)
+        return _context.ProjectSprints
             .FirstOrDefaultAsync(s => s.Id == sprintId);
     }
 
-    public List<Sprint> GetByProjectId(Guid projectId)
+    public List<ProjectSprintEntity> GetByProjectId(Guid projectId)
     {
-        return _context.Sprints
+        return _context.ProjectSprints
             .Where(s => s.ProjectId == projectId)
-            .Include(s => s.Tasks)
             .ToList();
     }
 }

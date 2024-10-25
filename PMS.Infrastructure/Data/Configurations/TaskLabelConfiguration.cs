@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TaskManagment;
 
 namespace PMS.Infrastructure.Data.Configurations;
 
-public class TaskLabelConfiguration : IEntityTypeConfiguration<TaskLabel>
+public class TaskLabelConfiguration : IEntityTypeConfiguration<TaskLabelEntity>
 {
-    public void Configure(EntityTypeBuilder<TaskLabel> builder)
+    public void Configure(EntityTypeBuilder<TaskLabelEntity> builder)
     {
         builder.HasKey(tl => tl.Id);
         builder.Property(tl => tl.Name).IsRequired().HasMaxLength(200);

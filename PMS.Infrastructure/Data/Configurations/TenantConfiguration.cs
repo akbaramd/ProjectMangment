@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TenantManagment;
+using SharedKernel.DomainDrivenDesign.Domain;
 
 namespace PMS.Infrastructure.Data.Configurations;
 
-public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
+public class TenantConfiguration : IEntityTypeConfiguration<TenantEntity>
 {
-    public void Configure(EntityTypeBuilder<Tenant> builder)
+    public void Configure(EntityTypeBuilder<TenantEntity> builder)
     {
         builder.HasKey(t => t.Id);
 
@@ -34,6 +35,7 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
             .HasForeignKey(ut => ut.TenantId)
             .OnDelete(DeleteBehavior.Cascade); // Cascade delete when Tenant is deleted
 
-        builder.ToTable("Tenants");
+        builder.Property(x => x.Status)
+            .HasConversion(x => x.Name, c => Enumeration.ParseFromName<TenantrStatus>(c));
     }
 }

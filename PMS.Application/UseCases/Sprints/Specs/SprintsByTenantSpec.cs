@@ -1,10 +1,11 @@
 using PMS.Application.DTOs;
-using PMS.Domain.Entities;
+using PMS.Application.UseCases.Sprints.Model;
+using PMS.Domain.BoundedContexts.ProjectManagement;
 using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.Sprints.Specs;
 
-public class SprintsByTenantSpec : PaginatedSpecification<Sprint>
+public class SprintsByTenantSpec : PaginatedSpecification<ProjectSprintEntity>
 {
     public Guid TenantId { get; }
     public SprintFilterDto Dto { get; }
@@ -16,9 +17,12 @@ public class SprintsByTenantSpec : PaginatedSpecification<Sprint>
     }
 
 
-    public override void Handle(ISpecificationContext<Sprint> context)
+    public override void Handle(ISpecificationContext<ProjectSprintEntity> context)
     {
+        context.AddInclude(x => x.Project);
+        
         context.AddCriteria(x => x.TenantId == TenantId);
+        
         if (Dto.Search != null && !string.IsNullOrWhiteSpace(Dto.Search))
         {
             context.AddCriteria(c => c.Name.Contains(Dto.Search));

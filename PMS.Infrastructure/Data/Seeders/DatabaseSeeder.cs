@@ -1,4 +1,3 @@
-using PMS.Domain.Entities;
 using PMS.Infrastructure.Data.Seeders.Absractions;
 using PMS.Infrastructure.Extensions;
 
@@ -32,10 +31,10 @@ namespace PMS.Infrastructure.Data.Seeders
             // Seed a default user
             var user = await _userSeeder.SeedUserAsync("akbarsafari00@gmail.com", "Akbar Ahmadi Saray", "09371770774", "Password123!");
 
-            // Seed a default tenant
+            // Seed a default tenantEntity
             var tenant = await _tenantSeeder.SeedTenantAsync("Akbar AMD", "akbaramd",pd);
 
-            // Assign the user as the owner of the tenant
+            // Assign the user as the owner of the tenantEntity
             await _userTenantSeeder.SeedUserTenantAsync(user, tenant, "Owner");
         }
 

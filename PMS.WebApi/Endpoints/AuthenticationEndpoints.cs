@@ -15,15 +15,19 @@ public static class AuthenticationEndpoints
 {
     public static WebApplication MapAuthenticationEndpoints(this WebApplication app)
     {
-        // Register endpoint (public, no tenant required)
-        app.MapPost("/api/auth/register", [AllowAnonymous] async (RegisterDto registerDto, IAuthService authService) =>
+        
+        var authGroup = app.MapGroup("/api/auth")
+            .WithTags("Authentication");
+        
+        // Register endpoint (public, no tenantEntity required)
+        authGroup.MapPost("/register", [AllowAnonymous] async (RegisterDto registerDto, IAuthService authService) =>
         {
             await authService.RegisterAsync(registerDto);
             return Results.Ok("Registration successful.");
         });
 
-        // Login endpoint (tenant required)
-        app.MapPost("/api/auth/login", [AllowAnonymous] async (LoginDto loginDto, IAuthService authService, ITenantAccessor tenantAccessor) =>
+        // Login endpoint (tenantEntity required)
+        authGroup.MapPost("/login", [AllowAnonymous] async (LoginDto loginDto, IAuthService authService, ITenantAccessor tenantAccessor) =>
         {
             if (tenantAccessor.Tenant == null)
             {
@@ -34,8 +38,8 @@ public static class AuthenticationEndpoints
             return Results.Ok(response);
         }).RequiredTenant();  
 
-        // Profile endpoint (tenant required)
-        app.MapGet("/api/auth/profile",
+        // Profile endpoint (tenantEntity required)
+        authGroup.MapGet("/profile",
             [Authorize] async (ClaimsPrincipal user, IAuthService authService, ITenantAccessor tenantAccessor) =>
             {
                 if (tenantAccessor.Tenant == null)
@@ -62,8 +66,8 @@ public static class AuthenticationEndpoints
 
         // Roles and Permissions Endpoints
 
-        // Refresh token endpoint (public, no tenant required)
-        app.MapPost("/api/auth/refresh-token", [AllowAnonymous] async (LoginWithRefreshTokenDto refreshTokenDto, IAuthService authService) =>
+        // Refresh token endpoint (public, no tenantEntity required)
+        authGroup.MapPost("/refresh-token", [AllowAnonymous] async (LoginWithRefreshTokenDto refreshTokenDto, IAuthService authService) =>
         {
             var response = await authService.RefreshTokenAsync(refreshTokenDto);
             return Results.Ok(response);

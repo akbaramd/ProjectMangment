@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using PMS.Application.DTOs;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TenantManagment;
 using SharedKernel.Model;
 
 namespace PMS.Application.Profiles
@@ -10,15 +10,15 @@ namespace PMS.Application.Profiles
         public InvitationProfile()
         {
             // Map between domain entity and DTO
-            CreateMap<Invitation, InvitationDto>()
+            CreateMap<ProjectInvitationEntity, InvitationDto>()
                 .ForMember(dest => dest.Tenant, opt => opt.MapFrom(src => src.Tenant))
                 .ForMember(dest => dest.TenantId, opt => opt.MapFrom(src => src.TenantId.ToString()));
 
             // Map between DTO and domain entity
-            CreateMap<InvitationDto, Invitation>()
+            CreateMap<InvitationDto, ProjectInvitationEntity>()
                 .ForMember(dest => dest.TenantId, opt => opt.Ignore()); // Assuming that TenantId is set elsewhere
             
-            CreateMap<PaginatedResult<Invitation>, PaginatedResult<InvitationDto>>().ReverseMap();
+            CreateMap<PaginatedResult<ProjectInvitationEntity>, PaginatedResult<InvitationDto>>().ReverseMap();
         }
     }
 }

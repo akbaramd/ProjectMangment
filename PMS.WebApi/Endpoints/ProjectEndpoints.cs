@@ -16,9 +16,9 @@ namespace PMS.WebApi.Endpoints
             var projectGroup = app.MapGroup("/api/projects")
                 .WithTags("Projects");
 
-            // Create a new project (tenant required)
+            // Create a new project (tenantEntity required)
             projectGroup.MapPost("/", [Authorize] async (
-                [FromBody] CreateProjectDto createProjectDto,
+                [FromBody] ProjectCreateDto createProjectDto,
                 [FromServices] IProjectService projectService) =>
             {
                 var project = await projectService.CreateProjectAsync(createProjectDto);
@@ -27,7 +27,7 @@ namespace PMS.WebApi.Endpoints
             .Produces<ProjectDto>()
             .RequiredTenant();
 
-            // Get list of projects for the tenant (tenant required)
+            // Get list of projects for the tenantEntity (tenantEntity required)
             projectGroup.MapGet("/", [Authorize] async (
                 [FromQuery] int take,
                 [FromQuery] int skip,
@@ -40,7 +40,7 @@ namespace PMS.WebApi.Endpoints
             .Produces<PaginatedResult<ProjectDto>>()
             .RequiredTenant();
 
-            // Get project details by ID (tenant required)
+            // Get project details by ID (tenantEntity required)
             projectGroup.MapGet("/{projectId:guid}", [Authorize] async (
                 Guid projectId,
                 [FromServices] IProjectService projectService) =>
@@ -51,10 +51,10 @@ namespace PMS.WebApi.Endpoints
             .Produces<ProjectDetailDto>()
             .RequiredTenant();
 
-            // Update a project (tenant required)
+            // Update a project (tenantEntity required)
             projectGroup.MapPut("/{projectId:guid}", [Authorize] async (
                 Guid projectId,
-                [FromBody] UpdateProjectDto updateProjectDto,
+                [FromBody] ProjectUpdateDto updateProjectDto,
                 [FromServices] IProjectService projectService) =>
             {
                 var updatedProject = await projectService.UpdateProjectAsync(projectId, updateProjectDto);
@@ -68,7 +68,7 @@ namespace PMS.WebApi.Endpoints
             .Produces<ProjectDto>()
             .RequiredTenant();
 
-            // Delete a project (tenant required)
+            // Delete a project (tenantEntity required)
             projectGroup.MapDelete("/{projectId:guid}", [Authorize] async (
                 Guid projectId,
                 [FromServices] IProjectService projectService) =>
@@ -89,7 +89,7 @@ namespace PMS.WebApi.Endpoints
             // Add a member to a project
             projectGroup.MapPost("/{projectId:guid}/members", [Authorize] async (
                 Guid projectId,
-                [FromBody] AddProjectMemberDto addMemberDto,
+                [FromBody] ProjectAddMemberDto addMemberDto,
                 [FromServices] IProjectService projectService) =>
             {
                 var member = await projectService.AddMemberAsync(projectId, addMemberDto);
@@ -134,7 +134,7 @@ namespace PMS.WebApi.Endpoints
             projectGroup.MapPut("/{projectId:guid}/members/{memberId:guid}", [Authorize] async (
                 Guid projectId,
                 Guid memberId,
-                [FromBody] UpdateProjectMemberDto updateMemberDto,
+                [FromBody] ProjectUpdateMemberDto updateMemberDto,
                 [FromServices] IProjectService projectService) =>
             {
                 var updatedMember = await projectService.UpdateMemberAsync(projectId, memberId, updateMemberDto);

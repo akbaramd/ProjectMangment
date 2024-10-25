@@ -1,82 +1,93 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.ProjectManagement;
+using PMS.Domain.BoundedContexts.TaskManagment;
+using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.UserManagment;
 using SharedKernel.DomainDrivenDesign.Domain;
 
 namespace PMS.Infrastructure.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
-    public DbSet<TenantRole> TenantRole { get; set; }
-    public DbSet<Project> Projects { get; set; }
-    public DbSet<ProjectMember> ProjectsMembers { get; set; }
-    public DbSet<Sprint> Sprints { get; set; }
-    public DbSet<BoardColumn> BoardColumns { get; set; }
-    public DbSet<SprintTask> SprintTasks { get; set; }
-    public DbSet<Board> Boards { get; set; }
-    public DbSet<ApplicationPermission> Permissions { get; set; }
-    public DbSet<ApplicationPermissionGroup> PermissionGroups { get; set; }
-    public DbSet<Tenant> Tenants { get; set; }
-    public DbSet<TenantMember> TenantMember { get; set; }
-    public DbSet<Invitation> Invitations { get; set; }
-    public DbSet<TaskComment> TaskComments { get; set; }
-    public DbSet<TaskLabel> TaskLabels { get; set; }
-    public DbSet<TaskAttachment> TaskAttachments { get; set; }
+    public DbSet<TenantRoleEntity> TenantRole { get; set; }
+    public DbSet<TenantMemberEntity> TenantMember { get; set; }
+    public DbSet<ProjectInvitationEntity> TenantInvitations { get; set; }
+    public DbSet<ProjectEntity> Projects { get; set; }
+    public DbSet<ProjectMemberEntity> ProjectsMembers { get; set; }
+    public DbSet<ProjectSprintEntity> ProjectSprints { get; set; }
+    public DbSet<ProjectBoardColumnEntity> ProjectBoardColumns { get; set; }
+    public DbSet<ProjectBoardEntity> ProjectBoards { get; set; }
+    public DbSet<TaskEntity> Tasks { get; set; }
+    public DbSet<TenantPermissionEntity> Permissions { get; set; }
+    public DbSet<TenantPermissionGroupEntity> PermissionGroups { get; set; }
+    public DbSet<TenantEntity> Tenants { get; set; }
+    public DbSet<TaskCommentEntity> TaskComments { get; set; }
+    public DbSet<TaskLabelEntity> TaskLabels { get; set; }
+    public DbSet<TaskAttachmentEntity> TaskAttachments { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
-    private void ConfigureIdentityTables(ModelBuilder builder)
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        builder.Entity<IdentityUserRole<Guid>>(entity =>
-        {
-            entity.ToTable("UserRoles"); // Renaming AspNetUserRoles to UserRoles
-        });
-
-        builder.Entity<IdentityUserClaim<Guid>>(entity =>
-        {
-            entity.ToTable("UserClaims"); // Renaming AspNetUserClaims to UserClaims
-        });
-
-        builder.Entity<IdentityUserLogin<Guid>>(entity =>
-        {
-            entity.ToTable("UserLogins"); // Renaming AspNetUserLogins to UserLogins
-        });
-
-        builder.Entity<IdentityRoleClaim<Guid>>(entity =>
-        {
-            entity.ToTable("RoleClaims"); // Renaming AspNetRoleClaims to RoleClaims
-        });
-
-        builder.Entity<IdentityUserToken<Guid>>(entity =>
-        {
-            entity.ToTable("UserTokens"); // Renaming AspNetUserTokens to UserTokens
-        });
-        
-        builder.Entity<ProjectMember>(entity =>
-        {
-            entity.ToTable("ProjectMembers");
-            entity.HasOne(x => x.Project).WithMany(x=>x.Members).HasForeignKey(x => x.ProjectId);
-            entity.Property(x => x.Access)
-                .HasConversion(c => c.Name.ToString(),
-                    v => Enumeration.FromName<ProjectMemberAccess>(v)); // Renaming AspNetUserTokens to UserTokensl
-        });
-        
-        
-        builder.Entity<Project>(entity =>
-        {
-            entity.HasMany(x => x.Members).WithOne(x=>x.Project).HasForeignKey(x => x.ProjectId);
-        
-        });
+        optionsBuilder.UseLazyLoadingProxies();
+        base.OnConfiguring(optionsBuilder);
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
         ConfigureIdentityTables(builder);
-        // سایر تنظیمات
+        
+        builder.Entity<ProjectMemberEntity>(entity =>
+        {
+            entity.HasOne(x => x.Project).WithMany(x=>x.Members).HasForeignKey(x => x.ProjectId);
+            entity.Property(x => x.Access)
+                .HasConversion(c => c.Name.ToString(),
+                    v => Enumeration.FromName<ProjectMemberAccess>(v)); // Renaming AspNetUserTokens to UserTokensl
+        });
+        
+        builder.Entity<ProjectEntity>(entity =>
+        {
+            entity.HasMany(x => x.Members).WithOne(x=>x.Project).HasForeignKey(x => x.ProjectId);
+            
+        });
+        
         builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-    }
+    } 
+    private void ConfigureIdentityTables(ModelBuilder builder)
+         {
+             builder.Entity<IdentityRole<Guid>>(entity =>
+             {
+                 entity.ToTable("Roles"); // Renaming AspNetUserRoles to UserRoles
+             });
+             builder.Entity<IdentityUserRole<Guid>>(entity =>
+             {
+                 entity.ToTable("UserRoles"); // Renaming AspNetUserRoles to UserRoles
+             });
+             builder.Entity<IdentityUserClaim<Guid>>(entity =>
+             {
+                 entity.ToTable("UserClaims"); // Renaming AspNetUserClaims to UserClaims
+             });
+     
+             builder.Entity<IdentityUserLogin<Guid>>(entity =>
+             {
+                 entity.ToTable("UserLogins"); // Renaming AspNetUserLogins to UserLogins
+             });
+     
+             builder.Entity<IdentityRoleClaim<Guid>>(entity =>
+             {
+                 entity.ToTable("RoleClaims"); // Renaming AspNetRoleClaims to RoleClaims
+             });
+     
+             builder.Entity<IdentityUserToken<Guid>>(entity =>
+             {
+                 entity.ToTable("UserTokens"); // Renaming AspNetUserTokens to UserTokens
+             });
+             
+             
+         }
 }

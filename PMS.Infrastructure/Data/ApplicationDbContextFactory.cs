@@ -9,7 +9,7 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
     {
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
-        optionsBuilder.UseSqlite("Data Source=pms.db");
+        optionsBuilder.UseSqlite("Data Source=../PMS.WebApi/pms.db");
 
         return new ApplicationDbContext(optionsBuilder.Options);
     }
