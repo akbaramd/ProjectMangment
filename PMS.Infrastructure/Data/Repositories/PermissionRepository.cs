@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PMS.Domain.Entities;
-using PMS.Domain.Repositories;
+using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
 
 namespace PMS.Infrastructure.Data.Repositories
 {
@@ -14,14 +14,14 @@ namespace PMS.Infrastructure.Data.Repositories
         }
 
         // Retrieve a permission by its key
-        public async Task<ApplicationPermission?> GetPermissionByKeyAsync(string permissionKey)
+        public async Task<TenantPermissionEntity?> GetPermissionByKeyAsync(string permissionKey)
         {
             return await _context.Permissions
                 .FirstOrDefaultAsync(p => p.Key == permissionKey);
         }
 
         // Retrieve all permission groups along with their permissions
-        public async Task<List<ApplicationPermissionGroup>> GetPermissionGroupsAsync()
+        public async Task<List<TenantPermissionGroupEntity>> GetPermissionGroupsAsync()
         {
             return await _context.PermissionGroups
                 .Include(pg => pg.Permissions)  // Include the related permissions
@@ -29,7 +29,7 @@ namespace PMS.Infrastructure.Data.Repositories
         }
 
         // Retrieve a permission group by its key
-        public async Task<ApplicationPermissionGroup?> GetPermissionGroupByKeyAsync(string groupKey)
+        public async Task<TenantPermissionGroupEntity?> GetPermissionGroupByKeyAsync(string groupKey)
         {
             return await _context.PermissionGroups
                 .Include(pg => pg.Permissions)  // Include the related permissions
@@ -38,7 +38,7 @@ namespace PMS.Infrastructure.Data.Repositories
 
         
 
-        public async Task<List<ApplicationPermission>> GetPermissionsByKeysAsync(IEnumerable<string> keys)
+        public async Task<List<TenantPermissionEntity>> GetPermissionsByKeysAsync(IEnumerable<string> keys)
         {
             return await _context.Permissions
                 .Where(p => keys.Contains(p.Key))
@@ -46,30 +46,30 @@ namespace PMS.Infrastructure.Data.Repositories
         }
 
         // Add or update a permission group (if needed)
-        public async Task UpdatePermissionGroupAsync(ApplicationPermissionGroup permissionGroup)
+        public async Task UpdatePermissionGroupAsync(TenantPermissionGroupEntity permissionGroupEntity)
         {
             // Check if the permission group already exists in the context
-            var existingGroup = await GetPermissionGroupByKeyAsync(permissionGroup.Key);
+            var existingGroup = await GetPermissionGroupByKeyAsync(permissionGroupEntity.Key);
             if (existingGroup != null)
             {
                 // Update existing group
-                existingGroup.Name = permissionGroup.Name;
+                existingGroup.Name = permissionGroupEntity.Name;
                 _context.PermissionGroups.Update(existingGroup);
             }
             else
             {
                 // Add new group
-                await _context.PermissionGroups.AddAsync(permissionGroup);
+                await _context.PermissionGroups.AddAsync(permissionGroupEntity);
             }
 
             await _context.SaveChangesAsync();
         }
 
         // Delete a permission from the system
-        public async Task DeletePermissionAsync(ApplicationPermission permission)
+        public async Task DeletePermissionAsync(TenantPermissionEntity permissionEntity)
         {
             // Ensure the permission exists before attempting to delete
-            var existingPermission = await GetPermissionByKeyAsync(permission.Key);
+            var existingPermission = await GetPermissionByKeyAsync(permissionEntity.Key);
             if (existingPermission != null)
             {
                 _context.Permissions.Remove(existingPermission);

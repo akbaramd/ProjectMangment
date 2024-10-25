@@ -1,9 +1,9 @@
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TenantManagment;
 
 namespace PMS.Infrastructure.Data.Seeders.Absractions
 {
     public interface ITenantSeeder
     {
-        Task<Tenant> SeedTenantAsync(string name, string subdomain,PermissionsData data);
+        Task<TenantEntity> SeedTenantAsync(string name, string subdomain,PermissionsData data);
     }
 }

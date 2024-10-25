@@ -1,11 +1,11 @@
 using System.Security.Claims;
-using PMS.Domain.Entities;
 using PMS.Infrastructure.Data.Seeders.Absractions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using PMS.Domain.Repositories;
+using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
 
 namespace PMS.Infrastructure.Data.Seeders
 {
@@ -23,38 +23,38 @@ namespace PMS.Infrastructure.Data.Seeders
         }
 
         // The SeedTenantAsync method accepts PermissionsData and syncs roles and permissions accordingly
-        public async Task<Tenant> SeedTenantAsync(string name, string subdomain, PermissionsData permissionsData)
+        public async Task<TenantEntity> SeedTenantAsync(string name, string subdomain, PermissionsData permissionsData)
         {
             var tenant = await _dbContext.Tenants.FirstOrDefaultAsync(t => t.Name == name);
             
             if (tenant != null)
             {
-                // Update roles and permissions for the existing tenant
+                // Update roles and permissions for the existing tenantEntity
                 await SyncRolesForTenantAsync(tenant, permissionsData);
             }
             else
             {
-                // Create a new tenant and seed the roles
-                tenant = new Tenant(name, subdomain);
+                // Create a new tenantEntity and seed the roles
+                tenant = new TenantEntity(name, subdomain);
                 _dbContext.Tenants.Add(tenant);
                 await _dbContext.SaveChangesAsync();
 
-                // Create roles for the new tenant with the provided permissions data
+                // Create roles for the new tenantEntity with the provided permissions data
                 await SeedRolesForTenantAsync(tenant, permissionsData);
             }
 
             return tenant;
         }
 
-        // Synchronize the roles for an existing tenant
-        private async Task SyncRolesForTenantAsync(Tenant tenant, PermissionsData permissionsData)
+        // Synchronize the roles for an existing tenantEntity
+        private async Task SyncRolesForTenantAsync(TenantEntity tenantEntity, PermissionsData permissionsData)
         {
-            var existingRoles =  _roleManager.GetByTenantId(tenant.Id);
+            var existingRoles =  _roleManager.GetByTenantId(tenantEntity.Id);
 
             // For each role in PermissionsData, either update or create the role
             foreach (var roleData in permissionsData.Roles)
             {
-                var existingRole = existingRoles.FirstOrDefault(r => r.TenantId == tenant.Id && r.Key == roleData.RoleName.ToLower().Replace(" ","-"));
+                var existingRole = existingRoles.FirstOrDefault(r => r.TenantId == tenantEntity.Id && r.Key == roleData.RoleName.ToLower().Replace(" ","-"));
                 
                 if (existingRole != null)
                 {
@@ -64,7 +64,7 @@ namespace PMS.Infrastructure.Data.Seeders
                 else
                 {
                     // Role does not exist in the database, create it and sync permissions
-                    var newRole = new TenantRole(roleData.RoleName, tenantId: tenant.Id, deletable: false, isSystemRole: false);
+                    var newRole = new TenantRoleEntity(roleData.RoleName, tenantEntity, deletable: false, isSystemRole: false);
                     await _roleManager.AddAsync(newRole);
                     await ReassignPermissionsForRole(newRole, roleData.Permissions);
                 }
@@ -73,13 +73,13 @@ namespace PMS.Infrastructure.Data.Seeders
             // Roles that exist in the database but not in PermissionsData should be left untouched
         }
 
-        // Seed roles for a newly created tenant
-        private async Task SeedRolesForTenantAsync(Tenant tenant, PermissionsData permissionsData)
+        // Seed roles for a newly created tenantEntity
+        private async Task SeedRolesForTenantAsync(TenantEntity tenantEntity, PermissionsData permissionsData)
         {
             foreach (var roleData in permissionsData.Roles)
             {
                 // Create the role
-                var role = new TenantRole(roleData.RoleName, tenantId: tenant.Id, deletable: false, isSystemRole: false);
+                var role = new TenantRoleEntity(roleData.RoleName,tenantEntity, deletable: false, isSystemRole: false);
                 await _roleManager.AddAsync(role);
 
                 // Assign permissions from PermissionsData
@@ -88,17 +88,17 @@ namespace PMS.Infrastructure.Data.Seeders
         }
 
         // This method removes all permissions from the role and reassigns the updated list
-        private async Task ReassignPermissionsForRole(TenantRole role, List<string> newPermissions)
+        private async Task ReassignPermissionsForRole(TenantRoleEntity roleEntity, List<string> newPermissions)
         {
             // Remove all current permissions
-            var existingPermissions = role.Permissions.Select(p => p.Key).ToList();
+            var existingPermissions = roleEntity.Permissions.Select(p => p.Key).ToList();
             
             foreach (var permissionKey in existingPermissions)
             {
-                var permissionToRemove = role.Permissions.FirstOrDefault(p => p.Key == permissionKey);
+                var permissionToRemove = roleEntity.Permissions.FirstOrDefault(p => p.Key == permissionKey);
                 if (permissionToRemove != null)
                 {
-                    role.Permissions.Remove(permissionToRemove);
+                    roleEntity.Permissions.Remove(permissionToRemove);
                 }
             }
 
@@ -108,12 +108,12 @@ namespace PMS.Infrastructure.Data.Seeders
                 var permission = await _permissionRepository.GetPermissionByKeyAsync(permissionKey);
                 if (permission != null)
                 {
-                    role.Permissions.Add(permission);
+                    roleEntity.Permissions.Add(permission);
                 }
             }
 
             // Save role updates
-            await _roleManager.UpdateAsync(role);
+            await _roleManager.UpdateAsync(roleEntity);
         }
     }
 

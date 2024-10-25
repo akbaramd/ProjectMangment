@@ -1,14 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TenantManagment;
+using SharedKernel.DomainDrivenDesign.Domain;
 
 namespace PMS.Infrastructure.Data.Configurations;
 
-public class TenantMemberConfiguration : IEntityTypeConfiguration<TenantMember>
+public class TenantMemberConfiguration : IEntityTypeConfiguration<TenantMemberEntity>
 {
-    public void Configure(EntityTypeBuilder<TenantMember> builder)
+    public void Configure(EntityTypeBuilder<TenantMemberEntity> builder)
     {
-        builder.Property(ut => ut.MemberStatus)
+        builder.Property(ut => ut.Status)
             .HasConversion<string>()
             .IsRequired();
 
@@ -31,6 +32,8 @@ public class TenantMemberConfiguration : IEntityTypeConfiguration<TenantMember>
         builder.HasMany(t => t.ProjectMembers)
             .WithOne(ut => ut.TenantMember)
             .HasForeignKey(x => x.TenantMemberId);
-        builder.ToTable("TenantMembers");
+
+        builder.Property(x => x.Status)
+            .HasConversion(x => x.Name, c => Enumeration.ParseFromName<TenantMemberStatus>(c));
     }
 }

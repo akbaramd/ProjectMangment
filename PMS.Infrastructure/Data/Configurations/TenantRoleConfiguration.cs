@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TenantManagment;
 
 namespace PMS.Infrastructure.Data.Configurations
 {
-    public class TenantRoleConfiguration : IEntityTypeConfiguration<TenantRole>
+    public class TenantRoleConfiguration : IEntityTypeConfiguration<TenantRoleEntity>
     {
-        public void Configure(EntityTypeBuilder<TenantRole> builder)
+        public void Configure(EntityTypeBuilder<TenantRoleEntity> builder)
         {
             builder.Property(x => x.Key).HasColumnName("Key");
             builder.HasOne(x => x.Tenant)

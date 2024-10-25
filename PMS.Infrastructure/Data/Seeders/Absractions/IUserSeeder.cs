@@ -1,4 +1,4 @@
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.UserManagment;
 
 namespace PMS.Infrastructure.Data.Seeders.Absractions
 {

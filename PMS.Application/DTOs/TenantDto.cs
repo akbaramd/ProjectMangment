@@ -1,4 +1,4 @@
-﻿using PMS.Domain.Entities;
+﻿using PMS.Domain.BoundedContexts.TenantManagment;
 
 namespace PMS.Application.DTOs
 {
@@ -7,7 +7,7 @@ namespace PMS.Application.DTOs
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Subdomain { get; set; }
-        public TenantStatus Status { get; set; }
+        public TenantrStatus Status { get; set; }
         public List<TenantMemberDto>? Members { get; set; }
     }
 
@@ -16,7 +16,7 @@ namespace PMS.Application.DTOs
         public Guid UserId { get; set; }
         public UserProfileDto User { get; set; }
         public List<RoleWithPermissionsDto> Roles { get; set; }
-        public TenantMemberStatus MemberStatus { get; set; }
+        public TenantMemberStatus Status { get; set; }
     }
 
     public class TenantMemberUpdate

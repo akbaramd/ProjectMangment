@@ -1,6 +1,6 @@
 using AutoMapper;
 using PMS.Application.DTOs;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TenantManagment;
 using SharedKernel.Model;
 
 namespace PMS.Application.Profiles
@@ -10,15 +10,15 @@ namespace PMS.Application.Profiles
         public TenantProfile()
         {
             // Map Tenant to TenantDto
-            CreateMap<Tenant, TenantDto>()
+            CreateMap<TenantEntity, TenantDto>()
                 .ForMember(dest => dest.Members, opt => opt.Ignore()); // We'll manually handle members
 
             // Map TenantMember to TenantMemberDto and include UserDto
-            CreateMap<TenantMember, TenantMemberDto>()
+            CreateMap<TenantMemberEntity, TenantMemberDto>()
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User)); // Include User
 
 
-            CreateMap<PaginatedResult<TenantMember>, PaginatedResult<TenantMemberDto>>();
+            CreateMap<PaginatedResult<TenantMemberEntity>, PaginatedResult<TenantMemberDto>>();
 
         }
     }

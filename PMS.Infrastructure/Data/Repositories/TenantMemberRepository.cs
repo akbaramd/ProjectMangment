@@ -1,17 +1,17 @@
 using Microsoft.EntityFrameworkCore;
-using PMS.Domain.Entities;
-using PMS.Domain.Repositories;
+using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
 using SharedKernel.EntityFrameworkCore;
 
 namespace PMS.Infrastructure.Data.Repositories;
 
-public class TenantMemberRepository : EfGenericRepository<ApplicationDbContext, TenantMember>, ITenantMemberRepository
+public class TenantMemberRepository : EfGenericRepository<ApplicationDbContext, TenantMemberEntity>, ITenantMemberRepository
 {
     public TenantMemberRepository(ApplicationDbContext context) : base(context)
     {
     }
 
-    public Task<TenantMember?> GetUserTenantByUserIdAndTenantIdAsync(Guid userId, Guid tenantId)
+    public Task<TenantMemberEntity?> GetUserTenantByUserIdAndTenantIdAsync(Guid userId, Guid tenantId)
     {
         return _context.TenantMember
             .Include(x=>x.Tenant)
@@ -21,7 +21,7 @@ public class TenantMemberRepository : EfGenericRepository<ApplicationDbContext, 
             .Include(x=>x.User).FirstOrDefaultAsync(ut => ut.UserId == userId && ut.TenantId == tenantId);
     }
 
-    public Task<List<TenantMember>> GetUsersByTenantIdAsync(Guid tenantId)
+    public Task<List<TenantMemberEntity>> GetUsersByTenantIdAsync(Guid tenantId)
     {
         return _context.TenantMember.Include(x=>x.Tenant)
             .Include(x=>x.Roles)
@@ -30,7 +30,7 @@ public class TenantMemberRepository : EfGenericRepository<ApplicationDbContext, 
             .Include(x=>x.User).Where(ut => ut.TenantId == tenantId).ToListAsync();
     }
 
-    public Task<List<TenantMember>> GetTenantsByUserIdAsync(Guid userId)
+    public Task<List<TenantMemberEntity>> GetTenantsByUserIdAsync(Guid userId)
     {
         return _context.TenantMember.Include(x=>x.Tenant)
             .Include(x=>x.Roles)
@@ -48,7 +48,7 @@ public class TenantMemberRepository : EfGenericRepository<ApplicationDbContext, 
             .Include(x=>x.User).AnyAsync(ut => ut.UserId == id && ut.TenantId == tenantId);
     }
 
-    public Task<List<TenantMember>> GetMembersByTenantIdAsync(Guid tenantId)
+    public Task<List<TenantMemberEntity>> GetMembersByTenantIdAsync(Guid tenantId)
     {
         return _context.TenantMember.Include(x=>x.Tenant)
             .Include(x=>x.Roles)
@@ -57,7 +57,7 @@ public class TenantMemberRepository : EfGenericRepository<ApplicationDbContext, 
             .Include(x=>x.User).Where(x => x.TenantId == tenantId).ToListAsync();
     }
 
-    public Task<TenantMember?> GetTenantMemberByPhoneNumberAsync(string phoneNumber, Guid tenantId)
+    public Task<TenantMemberEntity?> GetTenantMemberByPhoneNumberAsync(string phoneNumber, Guid tenantId)
     {
         return _context.TenantMember
             .Include(x=>x.Tenant)

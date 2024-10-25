@@ -11,14 +11,14 @@ namespace PMS.Application.Interfaces
         // Project CRUD operations
         Task<PaginatedResult<ProjectDto>> GetProjectsAsync(ProjectFilterDto filter);
         Task<ProjectDto> GetProjectDetailsAsync(Guid projectId);
-        Task<ProjectDto> CreateProjectAsync(CreateProjectDto createProjectDto);
+        Task<ProjectDto> CreateProjectAsync(ProjectCreateDto projectCreateDto);
         Task<bool> DeleteProjectAsync(Guid projectId);
-        Task<ProjectDetailDto?> UpdateProjectAsync(Guid projectId, UpdateProjectDto updateProjectDto);
+        Task<ProjectDto?> UpdateProjectAsync(Guid projectId, ProjectUpdateDto projectUpdateDto);
 
         // Project member-related operations
-        Task<ProjectMemberDto> AddMemberAsync(Guid projectId, AddProjectMemberDto addMemberDto);
+        Task<ProjectMemberDto> AddMemberAsync(Guid projectId, ProjectAddMemberDto projectAddMemberDto);
         Task<bool> RemoveMemberAsync(Guid projectId, Guid memberId);
         Task<PaginatedResult<ProjectMemberDto>> GetMembersAsync(Guid projectId, ProjectMemberFilterDto filter);
-        Task<ProjectMemberDto> UpdateMemberAsync(Guid projectId, Guid memberId, UpdateProjectMemberDto updateMemberDto);
+        Task<ProjectMemberDto> UpdateMemberAsync(Guid projectId, Guid memberId, ProjectUpdateMemberDto projectUpdateMemberDto);
     }
 }

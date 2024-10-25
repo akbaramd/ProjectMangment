@@ -1,41 +1,41 @@
 using Microsoft.EntityFrameworkCore;
-using PMS.Domain.Entities;
-using PMS.Domain.Repositories;
+using PMS.Domain.BoundedContexts.ProjectManagement;
+using PMS.Domain.BoundedContexts.ProjectManagement.Repositories;
 using SharedKernel.EntityFrameworkCore;
 
 namespace PMS.Infrastructure.Data.Repositories;
 
-public class ProjectRepository : EfGenericRepository<ApplicationDbContext, Project>, IProjectRepository
+public class ProjectRepository : EfGenericRepository<ApplicationDbContext, ProjectEntity>, IProjectRepository
 {
     public ProjectRepository(ApplicationDbContext context) : base(context)
     {
     }
 
-    public List<Project> GetAllWithRelations()
+    public List<ProjectEntity> GetAllWithRelations()
     {
         return _context.Projects
-            .Include(p => p.Sprints)
-            .ThenInclude(p => p.Boards)
-            .ThenInclude(p => p.Columns)
+            .Include(x=>x.Members)
+            .ThenInclude(p => p.TenantMember)
+            .ThenInclude(p => p.User)
             .ToList();
     }
 
-    public Task<Project?> GetByIdWithRelationsAsync(Guid projectId)
+    public Task<ProjectEntity?> GetByIdWithRelationsAsync(Guid projectId)
     {
         return _context.Projects
-            .Include(p => p.Sprints)
-            .ThenInclude(p => p.Boards)
-            .ThenInclude(p => p.Columns)
+            .Include(x=>x.Members)
+            .ThenInclude(p => p.TenantMember)
+            .ThenInclude(p => p.User)
             .FirstOrDefaultAsync(p => p.Id == projectId);
     }
 
-    public List<Project> GetByTenantId(Guid tenantId)
+    public List<ProjectEntity> GetByTenantId(Guid tenantId)
     {
         return _context.Projects
             .Where(p => p.TenantId == tenantId)
-            .Include(p => p.Sprints)
-            .ThenInclude(p => p.Boards)
-            .ThenInclude(p => p.Columns)
+            .Include(x=>x.Members)
+            .ThenInclude(p => p.TenantMember)
+            .ThenInclude(p => p.User)
             .ToList();
     }
 }

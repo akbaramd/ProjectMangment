@@ -2,11 +2,11 @@ using System.IO;
 using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
-using PMS.Domain.Entities;
 using PMS.Infrastructure.Data.Seeders.Absractions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using PMS.Domain.Repositories;
+using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
 
 namespace PMS.Infrastructure.Data.Seeders
 {
@@ -62,7 +62,7 @@ namespace PMS.Infrastructure.Data.Seeders
             // If the permission does not exist, create a new one
             if (existingPermission == null)
             {
-                var permission = new ApplicationPermission
+                var permission = new TenantPermissionEntity
                 {
                     Key = key,
                     GroupKey = groupKey,
@@ -83,7 +83,7 @@ namespace PMS.Infrastructure.Data.Seeders
 
             if (existingGroup == null)
             {
-                var permissionGroup = new ApplicationPermissionGroup
+                var permissionGroup = new TenantPermissionGroupEntity
                 {
                     Key = key,
                     Name = title

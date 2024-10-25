@@ -1,11 +1,13 @@
 using PMS.Application.Exceptions;
-using PMS.Domain.Repositories;
 using SharedKernel.Tenants.Abstractions;
 using System;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
+using PMS.Domain.BoundedContexts.UserManagment;
+using PMS.Domain.BoundedContexts.UserManagment.Repositories;
 using UnauthorizedAccessException = System.UnauthorizedAccessException;
 
 namespace PMS.Application.Services
@@ -15,7 +17,7 @@ namespace PMS.Application.Services
         private readonly IServiceProvider _serviceProvider;
 
         protected ApplicationUser CurrentUser { get; private set; }
-        protected Tenant CurrentTenant { get; private set; }
+        protected TenantEntity CurrentTenant { get; private set; }
 
         // Constructor that takes IServiceProvider to resolve dependencies
         protected BaseTenantService(IServiceProvider serviceProvider)
@@ -40,17 +42,17 @@ namespace PMS.Application.Services
                 CurrentUser = await userRepository.GetByIdAsync(currentUserId);
             }
 
-            // Resolve ITenantAccessor to get the current tenant (subdomain or tenant identifier)
+            // Resolve ITenantAccessor to get the current tenantEntity (subdomain or tenantEntity identifier)
             var tenantAccessor = _serviceProvider.GetService<ITenantAccessor>();
             if (tenantAccessor != null && !string.IsNullOrEmpty(tenantAccessor.Tenant))
             {
-                // Fetch the tenant entity from the repository using ITenantRepository
+                // Fetch the tenantEntity entity from the repository using ITenantRepository
                 var tenantRepository = _serviceProvider.GetRequiredService<ITenantRepository>();
                 CurrentTenant = await tenantRepository.GetTenantBySubdomainAsync(tenantAccessor.Tenant);
             }
         }
 
-        // Method to validate that both tenant exists and user is involved in this tenant
+        // Method to validate that both tenantEntity exists and user is involved in this tenantEntity
         protected async Task ValidateTenantAccessAsync(string requiredPermission)
         {
 
@@ -58,13 +60,13 @@ namespace PMS.Application.Services
 
              ValidateTenant();
              
-            // Check if the user is involved in the tenant and has the required permission
+            // Check if the user is involved in the tenantEntity and has the required permission
             var tenantMemberRepository = _serviceProvider.GetRequiredService<ITenantMemberRepository>();
             var tenantMember = await tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(CurrentUser.Id, CurrentTenant.Id);
 
             if (tenantMember == null)
             {
-                throw new UnauthorizedAccessException("User is not a member of the current tenant.");
+                throw new UnauthorizedAccessException("User is not a member of the current tenantEntity.");
             }
 
             if (!tenantMember.HasPermission(requiredPermission))
@@ -82,7 +84,7 @@ namespace PMS.Application.Services
             }
         }
 
-        // Method to validate that the tenant exists
+        // Method to validate that the tenantEntity exists
         protected void ValidateTenant()
         {
             if (CurrentTenant == null)
@@ -91,7 +93,7 @@ namespace PMS.Application.Services
             }
         }
 
-        // Property to check if the tenant is available without throwing
+        // Property to check if the tenantEntity is available without throwing
         protected bool IsTenantAvailable => CurrentTenant != null;
 
         // Property to check if the user is available without throwing

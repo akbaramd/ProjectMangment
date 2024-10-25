@@ -3,13 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using PMS.Application.DTOs;
 using PMS.Application.Exceptions;
 using PMS.Application.Interfaces;
-using PMS.Domain.Entities;
-using PMS.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PMS.Application.UseCases.Invitations.Specs;
 using PMS.Application.UseCases.TenantMembers.Specs;
+using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
+using PMS.Domain.BoundedContexts.UserManagment.Repositories;
 using SharedKernel.Model;
 using UnauthorizedAccessException = PMS.Application.Exceptions.UnauthorizedAccessException;
 
@@ -65,7 +67,7 @@ namespace PMS.Application.Services
                 .Include(i => i.Tenant)
                 .FirstOrDefaultAsync(i => i.Id == invitationId);
 
-            if (invitation == null || invitation.IsExpired() || invitation.Status == InvitationStatus.Cancel)
+            if (invitation == null || invitation.IsExpired() || invitation.Status == InvitationStatus.Canceled)
             {
                 throw new InvalidInvitationTokenException("Invitation is expired or canceled.");
             }
@@ -89,7 +91,7 @@ namespace PMS.Application.Services
                 throw new TenantNotFoundException();
             }
 
-            // Retrieve the current user as a tenant member and check their permission
+            // Retrieve the current user as a tenantEntity member and check their permission
             var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
             if (tenantMember == null || !tenantMember.HasPermission("invitation:send"))
             {
@@ -100,12 +102,12 @@ namespace PMS.Application.Services
             var existingMember = await _tenantMemberRepository.GetTenantMemberByPhoneNumberAsync(sendInvitationDto.PhoneNumber, tenant.Id);
             if (existingMember != null)
             {
-                throw new InvalidOperationException("This phone number is already a member of the tenant.");
+                throw new InvalidOperationException("This phone number is already a member of the tenantEntity.");
             }
 
             // Check for existing pending invitations
             var existingInvitation = await _invitationRepository.GetInvitationByPhoneNumberAndTenantAsync(sendInvitationDto.PhoneNumber, tenant.Id);
-            if (existingInvitation is { Status: InvitationStatus.Pending or InvitationStatus.Accepted } && !existingInvitation.IsExpired())
+            if (existingInvitation !=null && (existingInvitation.Status == InvitationStatus.Pending || existingInvitation.Status == InvitationStatus.Accepted) && !existingInvitation.IsExpired())
             {
                 throw new InvalidOperationException("There is already a pending invitation for this phone number.");
             }
@@ -123,7 +125,7 @@ namespace PMS.Application.Services
             else
             {
                 // Create a new invitation
-                existingInvitation = new Invitation(sendInvitationDto.PhoneNumber, tenant, expirationDuration);
+                existingInvitation = new ProjectInvitationEntity(sendInvitationDto.PhoneNumber, tenant, expirationDuration);
                 await _invitationRepository.AddAsync(existingInvitation);
             }
 
@@ -141,7 +143,7 @@ namespace PMS.Application.Services
                 throw new TenantNotFoundException();
             }
 
-            // Retrieve the current user as a tenant member and check their permission
+            // Retrieve the current user as a tenantEntity member and check their permission
             var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
             if (tenantMember == null || !tenantMember.HasPermission("invitation:cancel"))
             {
@@ -149,7 +151,7 @@ namespace PMS.Application.Services
             }
 
             var invitation = await _invitationRepository.GetByIdAsync(invitationId);
-            if (invitation == null || invitation.TenantId != tenant.Id || invitation.Status == InvitationStatus.Cancel)
+            if (invitation == null || invitation.TenantId != tenant.Id || invitation.Status == InvitationStatus.Canceled)
             {
                 throw new InvalidInvitationTokenException("Invalid or already canceled invitation.");
             }
@@ -168,7 +170,7 @@ namespace PMS.Application.Services
             }
 
             var invitation = await _invitationRepository.GetByIdAsync(invitationId);
-            if (invitation == null || invitation.IsExpired() || invitation.Status == InvitationStatus.Cancel)
+            if (invitation == null || invitation.IsExpired() || invitation.Status == InvitationStatus.Canceled)
             {
                 throw new InvalidInvitationTokenException("Cannot resend an expired or canceled invitation.");
             }
@@ -182,7 +184,7 @@ namespace PMS.Application.Services
         public async Task AcceptInvitationAsync(Guid invitationId)
         {
             var invitation = await _invitationRepository.GetByIdAsync(invitationId);
-            if (invitation == null || invitation.IsExpired() || invitation.Status == InvitationStatus.Cancel)
+            if (invitation == null || invitation.IsExpired() || invitation.Status == InvitationStatus.Canceled)
             {
                 throw new InvalidInvitationTokenException("Invitation is expired or canceled.");
             }
@@ -199,8 +201,8 @@ namespace PMS.Application.Services
                 throw new TenantNotFoundException("Tenant not found.");
             }
 
-            // Add the user to the tenant
-            await _tenantMemberRepository.AddAsync(new TenantMember(user, tenant));
+            // Add the user to the tenantEntity
+            await _tenantMemberRepository.AddAsync(new TenantMemberEntity(user, tenant));
 
             invitation.Accept();
             await _invitationRepository.UpdateAsync(invitation);
@@ -210,7 +212,7 @@ namespace PMS.Application.Services
         public async Task RejectInvitationAsync(Guid invitationId)
         {
             var invitation = await _invitationRepository.GetByIdAsync(invitationId);
-            if (invitation == null || invitation.IsExpired() || invitation.Status == InvitationStatus.Cancel)
+            if (invitation == null || invitation.IsExpired() || invitation.Status == InvitationStatus.Canceled)
             {
                 throw new InvalidInvitationTokenException("Invitation is expired or canceled.");
             }
@@ -229,7 +231,7 @@ namespace PMS.Application.Services
             }
 
             var invitation = await _invitationRepository.GetByIdAsync(invitationId);
-            if (invitation == null || invitation.TenantId != tenant.Id || invitation.Status == InvitationStatus.Accepted || invitation.Status == InvitationStatus.Cancel || invitation.IsExpired())
+            if (invitation == null || invitation.TenantId != tenant.Id || invitation.Status == InvitationStatus.Accepted || invitation.Status == InvitationStatus.Canceled || invitation.IsExpired())
             {
                 throw new InvalidInvitationTokenException("Cannot update an accepted, canceled, or expired invitation.");
             }

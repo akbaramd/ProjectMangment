@@ -3,9 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using PMS.Application.DTOs;
 using PMS.Application.Interfaces;
 using PMS.Application.Exceptions;  // Custom exceptions
-using PMS.Domain.Entities;
-using PMS.Domain.Repositories;
 using System;
+using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
+using PMS.Domain.BoundedContexts.UserManagment;
+using PMS.Domain.BoundedContexts.UserManagment.Repositories;
 using UnauthorizedAccessException = System.UnauthorizedAccessException;
 
 namespace PMS.Application.Services
@@ -97,7 +98,7 @@ namespace PMS.Application.Services
             var isUserInTenant = await _tenantMemberRepository.IsUserInTenantAsync(user.Id, tenant.Id);
             if (!isUserInTenant)
             {
-                throw new UnauthorizedAccessException("User is not part of the tenant.");
+                throw new UnauthorizedAccessException("User is not part of the tenantEntity.");
             }
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -148,24 +149,24 @@ namespace PMS.Application.Services
                 throw new UserNotFoundException("User not found.");
             }
 
-            // Get the tenant
+            // Get the tenantEntity
             var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
             if (tenant == null)
             {
                 throw new TenantNotFoundException("Tenant not found.");
             }
 
-            // Check if the user is part of the tenant
+            // Check if the user is part of the tenantEntity
             var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(user.Id, tenant.Id);
             if (tenantMember == null)
             {
-                throw new UnauthorizedAccessException("User is not part of this tenant.");
+                throw new UnauthorizedAccessException("User is not part of this tenantEntity.");
             }
 
-            // Retrieve the user's roles for this tenant
+            // Retrieve the user's roles for this tenantEntity
             var roles = await _userManager.GetRolesAsync(user);
     
-            // Get the permissions for the roles in this tenant
+            // Get the permissions for the roles in this tenantEntity
             var rolePermissions = new List<string>();
             foreach (var roleName in roles)
             {
@@ -186,8 +187,6 @@ namespace PMS.Application.Services
                 FullName = user.FullName,
                 PhoneNumber = user.PhoneNumber,
                 Email = user.Email,
-                Roles = roles.ToList(),  // List of roles assigned to the user in this tenant
-                Permissions = rolePermissions.Distinct().ToList()  // List of permissions assigned to the user
             };
 
             return userProfile;

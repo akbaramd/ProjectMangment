@@ -1,12 +1,12 @@
 using PMS.Application.DTOs;
 using PMS.Application.Interfaces;
 using PMS.Application.Exceptions;
-using PMS.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
 
 namespace PMS.Application.Services
 {
@@ -26,7 +26,7 @@ namespace PMS.Application.Services
             _permissionRepository = permissionRepository;
         }
 
-        // Fetch roles for a given tenant
+        // Fetch roles for a given tenantEntity
         public async Task<List<RoleWithPermissionsDto>> GetRolesForTenantAsync(string tenantId)
         {
             var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
@@ -54,13 +54,13 @@ namespace PMS.Application.Services
             return roleDtos;
         }
 
-        // Add a new role to a tenant with permissions
+        // Add a new role to a tenantEntity with permissions
         public async Task AddRoleAsync(string tenantId, CreateRoleDto createRoleDto)
         {
             var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
             if (tenant == null) throw new TenantNotFoundException();
 
-            var role = new TenantRole(createRoleDto.RoleName, tenantId: tenant.Id, deletable: true, isSystemRole: false);
+            var role = new TenantRoleEntity(createRoleDto.RoleName,  tenant, deletable: true, isSystemRole: false);
             await _roleRepository.AddAsync(role);
 
             foreach (var permissionKey in createRoleDto.PermissionKeys)
@@ -77,7 +77,7 @@ namespace PMS.Application.Services
             await _roleRepository.UpdateAsync(role);
         }
 
-        // Update role permissions and name for a tenant
+        // Update role permissions and name for a tenantEntity
         public async Task UpdateRoleAsync(string tenantId, Guid roleId, UpdateRoleDto updateRoleDto)
         {
             var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);

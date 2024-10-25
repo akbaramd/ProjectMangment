@@ -2,13 +2,14 @@ using AutoMapper;
 using PMS.Application.DTOs;
 using PMS.Application.Exceptions;
 using PMS.Application.Interfaces;
-using PMS.Domain.Entities;
-using PMS.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using PMS.Application.UseCases.Sprints.Model;
 using PMS.Application.UseCases.Sprints.Specs;
+using PMS.Domain.BoundedContexts.ProjectManagement;
+using PMS.Domain.BoundedContexts.ProjectManagement.Repositories;
 using SharedKernel.Model;
 
 namespace PMS.Application.Services
@@ -16,22 +17,24 @@ namespace PMS.Application.Services
     public class SprintService : BaseTenantService, ISprintService
     {
         private readonly ISprintRepository _sprintRepository;
+        private readonly IProjectRepository _projectRepository;
         private readonly IMapper _mapper;
 
         public SprintService(
             ISprintRepository sprintRepository,
             IMapper mapper,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider, IProjectRepository projectRepository)
             : base(serviceProvider)
         {
             _sprintRepository = sprintRepository;
             _mapper = mapper;
+            _projectRepository = projectRepository;
         }
 
         // Get all sprints for a specific project
         public async Task<PaginatedResult<SprintDto>> GetSprintsAsync(SprintFilterDto dto)
         {
-            // Validate that tenant exists and user has permission to view project sprints
+            // Validate that tenantEntity exists and user has permission to view project sprints
             await ValidateTenantAccessAsync("sprint:read");
 
             // Fetch sprints for the project
@@ -42,7 +45,7 @@ namespace PMS.Application.Services
         // Get details of a specific sprint by ID
         public async Task<SprintDetailsDto> GetSprintDetailsAsync(Guid sprintId)
         {
-            // Validate tenant and user permissions
+            // Validate tenantEntity and user permissions
             await ValidateTenantAccessAsync("sprint:read");
 
             var sprint = await _sprintRepository.GetByIdAsync(sprintId);
@@ -55,13 +58,20 @@ namespace PMS.Application.Services
         }
 
         // Create a new sprint for a project
-        public async Task<SprintDto> CreateSprintAsync(CreateSprintDto createSprintDto)
+        public async Task<SprintDto> CreateSprintAsync(SprintCreateDto sprintCreateDto)
         {
-            // Validate tenant and user permission to create sprints
+            // Validate tenantEntity and user permission to create sprints
             await ValidateTenantAccessAsync("sprint:create");
 
+            var project = await _projectRepository.FindOneAsync(x=>x.Id == sprintCreateDto.ProjectId);
+            
+            if (project == null )
+            {
+                throw new ProjectNotFoundException("not found.");
+            }
+            
             // Create a new sprint entity
-            var sprint = new Sprint(createSprintDto.Name, createSprintDto.StartDate, createSprintDto.EndDate,
+            var sprint = new ProjectSprintEntity(project,sprintCreateDto.Name, sprintCreateDto.StartDate, sprintCreateDto.EndDate,
                 CurrentTenant);
 
             // Add the sprint to the repository
@@ -71,9 +81,9 @@ namespace PMS.Application.Services
         }
 
         // Update an existing sprint
-        public async Task<SprintDto> UpdateSprintAsync(Guid sprintId, UpdateSprintDto updateSprintDto)
+        public async Task<SprintDto> UpdateSprintAsync(Guid sprintId, SprintUpdateDto sprintUpdateDto)
         {
-            // Validate tenant and user permission to update sprints
+            // Validate tenantEntity and user permission to update sprints
             await ValidateTenantAccessAsync("sprint:update");
 
             // Fetch the sprint from the repository
@@ -84,7 +94,7 @@ namespace PMS.Application.Services
             }
 
             // Update the sprint details
-            sprint.UpdateDetails(updateSprintDto.Name, updateSprintDto.StartDate, updateSprintDto.EndDate);
+            sprint.UpdateDetails(sprintUpdateDto.Name, sprintUpdateDto.StartDate, sprintUpdateDto.EndDate);
 
             await _sprintRepository.UpdateAsync(sprint);
 
@@ -94,8 +104,8 @@ namespace PMS.Application.Services
         // Delete a sprint
         public async Task<bool> DeleteSprintAsync(Guid sprintId)
         {
-            // Validate tenant and user permission to delete sprints
-            await ValidateTenantAccessAsync("sprint:delete");
+            // Validate tenantEntity and user permission to delete sprints
+            await ValidateTenantAccessAsync("sprint:remove");
 
             // Fetch the sprint
             var sprint = await _sprintRepository.GetByIdAsync(sprintId);

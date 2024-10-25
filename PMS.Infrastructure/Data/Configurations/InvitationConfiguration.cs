@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TenantManagment;
+using SharedKernel.DomainDrivenDesign.Domain;
 
 namespace PMS.Infrastructure.Data.Configurations;
 
-public class InvitationConfiguration : IEntityTypeConfiguration<Invitation>
+public class InvitationConfiguration : IEntityTypeConfiguration<ProjectInvitationEntity>
 {
-    public void Configure(EntityTypeBuilder<Invitation> builder)
+    public void Configure(EntityTypeBuilder<ProjectInvitationEntity> builder)
     {
         builder.HasKey(i => i.Id);
 
@@ -23,10 +24,11 @@ public class InvitationConfiguration : IEntityTypeConfiguration<Invitation>
 
         // Relationship with Tenant
         builder.HasOne(i => i.Tenant)
-            .WithMany(t => t.Invitations)
+            .WithMany()
             .HasForeignKey(i => i.TenantId)
-            .OnDelete(DeleteBehavior.Cascade); // Delete invitations if the tenant is deleted
+            .OnDelete(DeleteBehavior.Cascade); // Delete invitations if the tenantEntity is deleted
 
-        builder.ToTable("Invitations");
+        builder.Property(x => x.Status)
+            .HasConversion(x => x.Name, c => Enumeration.ParseFromName<InvitationStatus>(c));
     }
 }

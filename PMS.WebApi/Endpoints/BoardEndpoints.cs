@@ -16,7 +16,7 @@ namespace PMS.WebApi.Endpoints
             var boardGroup = app.MapGroup("/api/boards")
                 .WithTags("Boards");
 
-            // Get paginated boards by filter (tenant required)
+            // Get paginated boards by filter (tenantEntity required)
             boardGroup.MapGet("/", [Authorize] async (
                 [FromQuery] int take,
                 [FromQuery] int skip,
@@ -40,7 +40,7 @@ namespace PMS.WebApi.Endpoints
             .Produces(StatusCodes.Status404NotFound)
             .RequiredTenant();
 
-            // Get board details by board ID (tenant required)
+            // Get board details by board ID (tenantEntity required)
             boardGroup.MapGet("/{boardId:guid}", [Authorize] async (
                 Guid boardId,
                 [FromServices] IBoardService boardService) =>
@@ -59,7 +59,7 @@ namespace PMS.WebApi.Endpoints
             .Produces(StatusCodes.Status404NotFound) // Board not found
             .RequiredTenant();
 
-            // Create a new board (tenant required)
+            // Create a new board (tenantEntity required)
             boardGroup.MapPost("/", [Authorize] async (
                 [FromBody] CreateBoardDto createBoardDto,
                 [FromServices] IBoardService boardService) =>
@@ -68,10 +68,10 @@ namespace PMS.WebApi.Endpoints
                 return Results.Ok(createdBoard);
             })
             .Produces<BoardDto>(StatusCodes.Status200OK) // Response model for success
-            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenant
+            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenantEntity
             .RequiredTenant();
 
-            // Update an existing board (tenant required)
+            // Update an existing board (tenantEntity required)
             boardGroup.MapPut("/{boardId:guid}", [Authorize] async (
                 Guid boardId,
                 [FromBody] UpdateBoardDto updateBoardDto,
@@ -87,11 +87,11 @@ namespace PMS.WebApi.Endpoints
                 return Results.Ok(updatedBoard);
             })
             .Produces<BoardDto>(StatusCodes.Status200OK) // Response model for success
-            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenant
+            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenantEntity
             .Produces(StatusCodes.Status404NotFound) // Board not found
             .RequiredTenant();
 
-            // Delete a board (tenant required)
+            // Delete a board (tenantEntity required)
             boardGroup.MapDelete("/{boardId:guid}", [Authorize] async (
                 Guid boardId,
                 [FromServices] IBoardService boardService) =>
@@ -106,7 +106,7 @@ namespace PMS.WebApi.Endpoints
                 return Results.Ok("Board deleted successfully.");
             })
             .Produces(StatusCodes.Status200OK) // Response model for success
-            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenant
+            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenantEntity
             .Produces(StatusCodes.Status404NotFound) // Board not found
             .RequiredTenant();
 

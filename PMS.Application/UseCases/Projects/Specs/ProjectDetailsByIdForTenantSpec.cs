@@ -1,9 +1,9 @@
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.ProjectManagement;
 using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.Projects.Specs;
 
-public class ProjectDetailsByIdForTenantSpec : Specification<Project>
+public class ProjectDetailsByIdForTenantSpec : Specification<ProjectEntity>
 {
     public ProjectDetailsByIdForTenantSpec(Guid tenantId, Guid id)
     {
@@ -14,12 +14,9 @@ public class ProjectDetailsByIdForTenantSpec : Specification<Project>
     public Guid TenantId { get; set; }
     public Guid Id { get; set; }
 
-    public override void Handle(ISpecificationContext<Project> context)
+    public override void Handle(ISpecificationContext<ProjectEntity> context)
     {
         context.AddCriteria(x => x.TenantId == TenantId && x.Id == Id);
         context.AddInclude(x => x.Members).ThenInclude(x => x.TenantMember).ThenInclude(x => x.User);
-        context.AddInclude(c => c.Sprints).ThenInclude(c=>c.Boards)
-            .ThenInclude(c=>c.Columns)
-            .ThenInclude(c=>c.Tasks);
     }
 }

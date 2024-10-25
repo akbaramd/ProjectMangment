@@ -1,6 +1,7 @@
 using AutoMapper;
 using PMS.Application.DTOs;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.UserManagment;
 
 namespace PMS.Application.Profiles
 {
@@ -10,9 +11,9 @@ namespace PMS.Application.Profiles
         {
             // Map User to UserDto
             CreateMap<ApplicationUser, UserProfileDto>();
-            CreateMap<RoleWithPermissionsDto, TenantRole>().ReverseMap();
-            CreateMap<PermissionDto, ApplicationPermission>().ReverseMap();
-            CreateMap<PermissionGroupDto, ApplicationPermissionGroup>().ReverseMap();
+            CreateMap<RoleWithPermissionsDto, TenantRoleEntity>().ReverseMap();
+            CreateMap<PermissionDto, TenantPermissionEntity>().ReverseMap();
+            CreateMap<PermissionGroupDto, TenantPermissionGroupEntity>().ReverseMap();
         }
     }
 }

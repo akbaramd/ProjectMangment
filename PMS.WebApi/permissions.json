@@ -41,6 +41,16 @@
       ]
     },
     {
+      "key": "project:member",
+      "name": "Project Operations",
+      "permissions": [
+        { "key": "project:member:create", "name": "Create Project Member" },
+        { "key": "project:member:read", "name": "Read Project Member" },
+        { "key": "project:member:update", "name": "Update Project Member" },
+        { "key": "project:member:remove", "name": "Remove Project Member" }
+      ]
+    },
+    {
       "key": "sprint",
       "name": "Sprint Operations",
       "permissions": [
@@ -98,6 +108,7 @@
         "tenant:create", "tenant:read", "tenant:update", "tenant:remove",
         "member:add", "member:read", "member:update", "member:remove",
         "project:create", "project:read", "project:update", "project:remove",
+        "project:member:create", "project:member:read", "project:member:update", "project:member:remove",
         "sprint:create", "sprint:read", "sprint:update", "sprint:remove",
         "board:create", "board:read", "board:update", "board:remove",
         "document:upload", "document:read", "document:update", "document:remove",
@@ -111,6 +122,7 @@
         "tenant:create", "tenant:read", "tenant:update", "tenant:remove",
         "member:add", "member:read", "member:update", "member:remove",
         "project:create", "project:read", "project:update", "project:remove",
+        "project:member:create", "project:member:read", "project:member:update", "project:member:remove",
         "sprint:create", "sprint:read", "sprint:update", "sprint:remove",
         "board:create", "board:read", "board:update", "board:remove",
         "document:upload", "document:read", "document:update", "document:remove",
@@ -123,6 +135,7 @@
       "permissions": [
         "tenant:read",
         "project:read",
+        "project:member:read", 
         "sprint:create", "sprint:read", "sprint:update", "sprint:remove",
         "board:create", "board:read", "board:update", "board:remove",
         "document:upload", "document:read", "document:update", "document:remove",
@@ -134,6 +147,7 @@
       "permissions": [
         "tenant:read",
         "project:read",
+        "project:member:read",
         "board:read", 
         "sprint:read", 
         "document:read",

@@ -2,14 +2,14 @@
 using PMS.Application.DTOs;
 using PMS.Application.Exceptions;
 using PMS.Application.Interfaces;
-using PMS.Domain.Entities;
-using PMS.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PMS.Application.UseCases.Sprints.Specs;
 using PMS.Application.UseCases.TenantMembers.Specs;
+using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
+using PMS.Domain.BoundedContexts.UserManagment.Repositories;
 using SharedKernel.Model;
 using UnauthorizedAccessException = PMS.Application.Exceptions.UnauthorizedAccessException;
 
@@ -34,30 +34,30 @@ namespace PMS.Application.Services
             _mapper = mapper;
         }
 
-        // Get tenant info with members using subdomain
+        // Get tenantEntity info with members using subdomain
         public async Task<TenantDto> GetTenantInfoAsync(string tenantSubdomain, Guid userId)
         {
-            // Retrieve tenant by subdomain
+            // Retrieve tenantEntity by subdomain
             var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantSubdomain);
             if (tenant == null)
             {
                 throw new TenantNotFoundException("Tenant not found.");
             }
 
-            // Check if user is part of the tenant
+            // Check if user is part of the tenantEntity
             var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
             if (tenantMember == null)
             {
-                throw new UnauthorizedException("User is not a member of this tenant.");
+                throw new UnauthorizedException("User is not a member of this tenantEntity.");
             }
 
-            // Check if the tenant member has 'tenant:read' permission
+            // Check if the tenantEntity member has 'tenant:read' permission
             if (!tenantMember.HasPermission("tenant:read"))
             {
-                throw new UnauthorizedAccessException("User does not have permission to view tenant details.");
+                throw new UnauthorizedAccessException("User does not have permission to view tenantEntity details.");
             }
 
-            // Map tenant entity to TenantDto
+            // Map tenantEntity entity to TenantDto
             var tenantDto = _mapper.Map<TenantDto>(tenant);
 
             // Check if the member has 'member:read' permission to view members
@@ -70,10 +70,10 @@ namespace PMS.Application.Services
             return tenantDto;
         }
 
-        // Remove a member from tenant using subdomain
+        // Remove a member from tenantEntity using subdomain
         public async Task RemoveMemberAsync(string tenantSubdomain, Guid userId, Guid memberToRemoveId)
         {
-            // Retrieve tenant by subdomain
+            // Retrieve tenantEntity by subdomain
             var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantSubdomain);
             if (tenant == null)
             {
@@ -92,23 +92,23 @@ namespace PMS.Application.Services
             var memberToRemove = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(memberToRemoveId, tenant.Id);
             if (memberToRemove == null)
             {
-                throw new MemberNotFoundException("Member not found in tenant.");
+                throw new MemberNotFoundException("Member not found in tenantEntity.");
             }
 
-            // Check if the member being removed is not the tenant owner
+            // Check if the member being removed is not the tenantEntity owner
             if (memberToRemove.Roles.Any(role => role.Key == "Owner"))
             {
-                throw new InvalidOperationException("The tenant owner cannot be removed.");
+                throw new InvalidOperationException("The tenantEntity owner cannot be removed.");
             }
 
             // Proceed with member removal
             await _tenantMemberRepository.DeleteAsync(memberToRemove);
         }
 
-        // Update a member's role in the tenant using subdomain
+        // Update a member's role in the tenantEntity using subdomain
         public async Task UpdateMemberRoleAsync(string tenantSubdomain, Guid userId, Guid memberToUpdateId, Guid newRoleId)
         {
-            // Retrieve tenant by subdomain
+            // Retrieve tenantEntity by subdomain
             var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantSubdomain);
             if (tenant == null)
             {
@@ -127,7 +127,7 @@ namespace PMS.Application.Services
             var memberToUpdate = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(memberToUpdateId, tenant.Id);
             if (memberToUpdate == null)
             {
-                throw new MemberNotFoundException("Member not found in tenant.");
+                throw new MemberNotFoundException("Member not found in tenantEntity.");
             }
 
             // Fetch the new role to assign
@@ -146,7 +146,7 @@ namespace PMS.Application.Services
 
         public async Task<PaginatedResult<TenantMemberDto>> GetMembers(string tenantName, Guid userId,TenantMembersFilterDto filter)
         {
-            // Retrieve tenant by subdomain
+            // Retrieve tenantEntity by subdomain
             var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantName);
             if (tenant == null)
             {
@@ -167,13 +167,13 @@ namespace PMS.Application.Services
             return _mapper.Map<PaginatedResult<TenantMemberDto>>(data);
         }
 
-        // Add a new member to the tenant
+        // Add a new member to the tenantEntity
        
 
-        // Get members of the tenant based on role permission
+        // Get members of the tenantEntity based on role permission
         public async Task<List<TenantMemberDto>> GetMembersByRoleAsync(string tenantSubdomain, Guid userId, string permissionKey)
         {
-            // Retrieve tenant by subdomain
+            // Retrieve tenantEntity by subdomain
             var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantSubdomain);
             if (tenant == null)
             {

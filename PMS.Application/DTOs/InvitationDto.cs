@@ -1,4 +1,4 @@
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TenantManagment;
 
 namespace PMS.Application.DTOs;
 

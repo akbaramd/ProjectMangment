@@ -2,6 +2,7 @@ using PMS.Application.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PMS.Application.UseCases.Sprints.Model;
 using SharedKernel.Model;
 
 namespace PMS.Application.Interfaces
@@ -15,10 +16,10 @@ namespace PMS.Application.Interfaces
         Task<SprintDetailsDto> GetSprintDetailsAsync(Guid sprintId);
 
         // Create a new sprint
-        Task<SprintDto> CreateSprintAsync(CreateSprintDto createSprintDto);
+        Task<SprintDto> CreateSprintAsync(SprintCreateDto sprintCreateDto);
 
         // Update an existing sprint
-        Task<SprintDto> UpdateSprintAsync(Guid sprintId, UpdateSprintDto updateSprintDto);
+        Task<SprintDto> UpdateSprintAsync(Guid sprintId, SprintUpdateDto sprintUpdateDto);
 
         // Delete a sprint
         Task<bool> DeleteSprintAsync(Guid sprintId);

@@ -16,7 +16,7 @@ namespace PMS.WebApi.Endpoints
             var invitationsGroup = app.MapGroup("/api/invitations")
                 .WithTags("Invitations"); // Add Swagger tag
 
-            // Get all invitations (tenant required)
+            // Get all invitations (tenantEntity required)
             invitationsGroup.MapGet("/", [Authorize] async (
                     [FromQuery] int take,
                     [FromQuery] int skip,
@@ -38,14 +38,14 @@ namespace PMS.WebApi.Endpoints
             })
             .RequiredTenant();
 
-            // Get invitation detail (no tenant required)
+            // Get invitation detail (no tenantEntity required)
             invitationsGroup.MapGet("/{invitationId:guid}", [AllowAnonymous] async (Guid invitationId, [FromServices] IInvitationService invitationService) =>
             {
                 var invitationDetails = await invitationService.GetInvitationDetailsAsync(invitationId);
                 return Results.Ok(invitationDetails);
             });
 
-            // Send invitation (tenant required)
+            // Send invitation (tenantEntity required)
             invitationsGroup.MapPost("/", [Authorize] async ([FromBody] SendInvitationDto sendInvitationDto,ClaimsPrincipal user, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
             {
                 if (tenantAccessor.Tenant == null)
@@ -68,21 +68,21 @@ namespace PMS.WebApi.Endpoints
             })
             .RequiredTenant();
 
-            // Accept invitation (no tenant required)
+            // Accept invitation (no tenantEntity required)
             invitationsGroup.MapPost("/{invitationId:guid}/accept", [AllowAnonymous] async (Guid invitationId, [FromServices] IInvitationService invitationService) =>
             {
                 await invitationService.AcceptInvitationAsync(invitationId);
                 return Results.Ok("Invitation accepted.");
             });
 
-            // Reject invitation (no tenant required)
+            // Reject invitation (no tenantEntity required)
             invitationsGroup.MapPost("/{invitationId:guid}/reject", [AllowAnonymous] async (Guid invitationId, [FromServices] IInvitationService invitationService) =>
             {
                 await invitationService.RejectInvitationAsync(invitationId);
                 return Results.Ok("Invitation rejected.");
             });
 
-            // Cancel invitation (tenant required)
+            // Cancel invitation (tenantEntity required)
             invitationsGroup.MapPost("/{invitationId:guid}/cancel", [Authorize] async (Guid invitationId,ClaimsPrincipal user, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
             {
                 if (tenantAccessor.Tenant == null)
@@ -105,7 +105,7 @@ namespace PMS.WebApi.Endpoints
             })
             .RequiredTenant();
 
-            // Resend invitation (tenant required)
+            // Resend invitation (tenantEntity required)
             invitationsGroup.MapPost("/{invitationId:guid}/resend", [Authorize] async (Guid invitationId, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
             {
                 if (tenantAccessor.Tenant == null)
@@ -118,7 +118,7 @@ namespace PMS.WebApi.Endpoints
             })
             .RequiredTenant();
 
-            // Update invitation (tenant required)
+            // Update invitation (tenantEntity required)
             invitationsGroup.MapPut("/{invitationId:guid}", [Authorize] async (Guid invitationId, [FromBody] UpdateInvitationDto updateInvitationDto, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
             {
                 if (tenantAccessor.Tenant == null)

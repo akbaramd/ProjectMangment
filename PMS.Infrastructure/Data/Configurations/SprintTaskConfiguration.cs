@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TaskManagment;
 
 namespace PMS.Infrastructure.Data.Configurations;
 
-public class SprintTaskConfiguration : IEntityTypeConfiguration<SprintTask>
+public class SprintTaskConfiguration : IEntityTypeConfiguration<TaskEntity>
 {
-    public void Configure(EntityTypeBuilder<SprintTask> builder)
+    public void Configure(EntityTypeBuilder<TaskEntity> builder)
     {
         builder.HasKey(st => st.Id);
 
@@ -20,8 +20,7 @@ public class SprintTaskConfiguration : IEntityTypeConfiguration<SprintTask>
         builder.Property(st => st.Content)
             .HasMaxLength(2000);
 
-        builder.Property(st => st.Status)
-            .IsRequired();
+
 
         builder.Property(st => st.Order)
             .IsRequired();

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.UserManagment;
 
 namespace PMS.Infrastructure.Data.Configurations;
 

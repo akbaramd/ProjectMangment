@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PMS.Domain.Entities;
+using PMS.Domain.BoundedContexts.TenantManagment;
 
 namespace PMS.Infrastructure.Data.Configurations
 {
-    public class ApplicationPermissionGroupConfiguration : IEntityTypeConfiguration<ApplicationPermissionGroup>
+    public class ApplicationPermissionGroupConfiguration : IEntityTypeConfiguration<TenantPermissionGroupEntity>
     {
-        public void Configure(EntityTypeBuilder<ApplicationPermissionGroup> builder)
+        public void Configure(EntityTypeBuilder<TenantPermissionGroupEntity> builder)
         {
             builder.HasKey(x => x.Key);
             builder.ToTable("TenantPermissionGroup");
