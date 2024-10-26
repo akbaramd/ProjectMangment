@@ -62,6 +62,22 @@ namespace PMS.Domain.BoundedContexts.ProjectManagement
 
             _columns.Remove(columnEntity);
         }
+
+
+        public void UpdateColumn(Guid columnId, string newName, int newOrder)
+        {
+            var columnToUpdate = _columns.FirstOrDefault(c => c.Id == columnId);
+            if (columnToUpdate == null)
+                throw new InvalidOperationException("Column not found in the board.");
+
+            if (string.IsNullOrWhiteSpace(newName))
+                throw new ArgumentException("Column name cannot be empty.");
+
+            if (newOrder < 0)
+                throw new ArgumentException("Order must be a positive number.");
+
+            columnToUpdate.UpdateDetails(newName, newOrder);
+        }
     }
 
     // Entity representing a Project Board Column

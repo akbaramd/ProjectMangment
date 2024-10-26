@@ -3,9 +3,9 @@ using ApplicationException = SharedKernel.DomainDrivenDesign.Application.Excepti
 
 namespace PMS.Application.UseCases.Projects.Exceptions;
 
-public class CommentNotFoundException : ApplicationException
+public class TaskCommentNotFoundException : ApplicationException
 {
-    public CommentNotFoundException(string message = "The specified comment was not found.", string errorCode = nameof(CommentNotFoundException)) 
+    public TaskCommentNotFoundException(string message = "The specified comment was not found.", string errorCode = nameof(TaskCommentNotFoundException)) 
         : base(HttpStatusCode.NotFound, message, errorCode)
     {
     }

@@ -87,7 +87,10 @@
         { "key": "task:create", "name": "Create Task" },
         { "key": "task:read", "name": "Read Task" },
         { "key": "task:update", "name": "Update Task" },
-        { "key": "task:remove", "name": "Remove Task" }
+        { "key": "task:remove", "name": "Remove Task" },
+        { "key": "task:comment", "name": "Comment Task" },
+        { "key": "task:assign", "name": "Assign Task" },
+        { "key": "task:unassign", "name": "Unassign Task" }
       ]
     },
     {
@@ -112,7 +115,7 @@
         "sprint:create", "sprint:read", "sprint:update", "sprint:remove",
         "board:create", "board:read", "board:update", "board:remove",
         "document:upload", "document:read", "document:update", "document:remove",
-        "task:create", "task:read", "task:update", "task:remove",
+        "task:create", "task:read", "task:update", "task:remove","task:comment", "task:assign", "task:unassign",
         "invitation:send", "invitation:read", "invitation:cancel"
       ]
     },
@@ -126,7 +129,7 @@
         "sprint:create", "sprint:read", "sprint:update", "sprint:remove",
         "board:create", "board:read", "board:update", "board:remove",
         "document:upload", "document:read", "document:update", "document:remove",
-        "task:create", "task:read", "task:update", "task:remove",
+        "task:create", "task:read", "task:update", "task:remove","task:comment", "task:assign", "task:unassign",
         "invitation:send", "invitation:read", "invitation:cancel"
       ]
     },

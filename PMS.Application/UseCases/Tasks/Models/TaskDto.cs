@@ -1,4 +1,6 @@
-﻿using PMS.Application.UseCases.Boards.Models;
+﻿using System.Collections;
+using PMS.Application.UseCases.Boards.Models;
+using PMS.Application.UseCases.Projects.Models;
 
 namespace PMS.Application.UseCases.Tasks.Models;
 public class TaskDto
@@ -13,4 +15,5 @@ public class TaskDto
     public DateTime? UpdatedAt { get; set; }
     public BoardColumnDto BoardColumn { get; set; }
     public ICollection<TaskCommentDto> Comments { get; set; }
+    public ICollection<ProjectMemberDto> AssigneeMembers { get; set; }
 }

@@ -10,5 +10,8 @@ namespace PMS.Application.UseCases.Boards
         Task<BoardDto> CreateBoardAsync(BoardCreateDto boardCreateDto);
         Task<BoardDto> UpdateBoardAsync(Guid boardId, BoardUpdateDto boardUpdateDto);
         Task<bool> DeleteBoardAsync(Guid boardId);
+
+        Task<bool> UpdateColumnOrderAsync(Guid boardId,Guid columnId, BoardColumnUpdateDto dto);
+  
     }
 }

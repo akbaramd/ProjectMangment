@@ -16,7 +16,7 @@ namespace PMS.Application.UseCases.Tasks
         Task EditCommentAsync(Guid taskId, Guid commentId, TaskCommentUpdateDto createDto);
         Task DeleteCommentAsync(Guid taskId, Guid commentId);
         
-        Task AssignsMemberAsync(Guid taskId, Guid projectMemberId);
-        Task UnAssignsMemberAsync(Guid taskId, Guid projectMemberId);
+        Task AssignMemberAsync(Guid taskId, Guid projectMemberId);
+        Task UnassignMemberAsync(Guid taskId, Guid projectMemberId);
     }
 }

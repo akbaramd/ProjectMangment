@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PMS.Application.Interfaces;
 using PMS.Application.UseCases.Projects;
 using PMS.Application.UseCases.Projects.Models;
 using SharedKernel.Extensions;
@@ -25,7 +24,9 @@ namespace PMS.WebApi.Endpoints
                 var project = await projectService.CreateProjectAsync(createProjectDto);
                 return Results.Ok(project);
             })
-            .Produces<ProjectDto>()
+            .Produces<ProjectDto>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status401Unauthorized)
             .RequiredTenant();
 
             // Get list of projects for the tenant (tenant required)
@@ -38,7 +39,8 @@ namespace PMS.WebApi.Endpoints
                 var projects = await projectService.GetProjectsAsync(new ProjectFilterDto(take, skip, search));
                 return Results.Ok(projects);
             })
-            .Produces<PaginatedResult<ProjectDto>>()
+            .Produces<PaginatedResult<ProjectDto>>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
             .RequiredTenant();
 
             // Get project details by ID (tenant required)
@@ -49,7 +51,9 @@ namespace PMS.WebApi.Endpoints
                 var projectDetails = await projectService.GetProjectDetailsAsync(projectId);
                 return Results.Ok(projectDetails);
             })
-            .Produces<ProjectDetailDto>()
+            .Produces<ProjectDetailDto>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status401Unauthorized)
             .RequiredTenant();
 
             // Update a project (tenant required)
@@ -66,7 +70,10 @@ namespace PMS.WebApi.Endpoints
 
                 return Results.Ok(updatedProject);
             })
-            .Produces<ProjectDto>()
+            .Produces<ProjectDto>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status401Unauthorized)
             .RequiredTenant();
 
             // Delete a project (tenant required)
@@ -83,6 +90,8 @@ namespace PMS.WebApi.Endpoints
                 return Results.Ok("Project deleted successfully.");
             })
             .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status401Unauthorized)
             .RequiredTenant();
 
             // ----- Member Endpoints -----
@@ -96,7 +105,10 @@ namespace PMS.WebApi.Endpoints
                 var member = await projectService.AddMemberAsync(projectId, addMemberDto);
                 return Results.Ok(member);
             })
-            .Produces<ProjectMemberDto>()
+            .Produces<ProjectMemberDto>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status401Unauthorized)
             .RequiredTenant();
 
             // Remove a member from a project
@@ -114,6 +126,8 @@ namespace PMS.WebApi.Endpoints
                 return Results.Ok("Member removed successfully.");
             })
             .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status401Unauthorized)
             .RequiredTenant();
 
             // Get members of a project
@@ -128,7 +142,9 @@ namespace PMS.WebApi.Endpoints
                 var members = await projectService.GetMembersAsync(projectId, filter);
                 return Results.Ok(members);
             })
-            .Produces<PaginatedResult<ProjectMemberDto>>()
+            .Produces<PaginatedResult<ProjectMemberDto>>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status401Unauthorized)
             .RequiredTenant();
 
             // Update a project member
@@ -141,7 +157,10 @@ namespace PMS.WebApi.Endpoints
                 var updatedMember = await projectService.UpdateMemberAsync(projectId, memberId, updateMemberDto);
                 return Results.Ok(updatedMember);
             })
-            .Produces<ProjectMemberDto>()
+            .Produces<ProjectMemberDto>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status401Unauthorized)
             .RequiredTenant();
 
             return app;

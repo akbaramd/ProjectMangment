@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+
 using PMS.Application.UseCases.Projects.Models;
 using PMS.Domain.BoundedContexts.ProjectManagement;
 using SharedKernel.Specification;
@@ -15,7 +15,6 @@ public class ProjectsByTenantSpec : PaginatedSpecification<ProjectEntity>
         TenantId = tenantId;
         Dto = dto;
     }
-
 
     public override void Handle(ISpecificationContext<ProjectEntity> context)
     {

@@ -8,3 +8,10 @@ public class BoardDto
     public string Name { get; set; }
     public List<BoardColumnDto> Columns { get; set; }
 }
+
+public class BoardColumnUpdateDto
+{
+    
+    public string Name { get; set; }
+    public int Order { get; set; }
+}

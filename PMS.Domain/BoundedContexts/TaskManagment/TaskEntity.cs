@@ -198,6 +198,31 @@ namespace PMS.Domain.BoundedContexts.TaskManagment
             UpdatedAt = DateTime.UtcNow;
         }
 
+        public void UpdateTitle(string title)
+        {
+            Title = title;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void UpdateDescription(string description)
+        {
+            Description = description;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void UpdateDueDate(DateTime value)
+        {
+            DueDate = value;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void UpdateOrder(int value)
+        {
+            Order = value;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+
         #endregion
     }
 }

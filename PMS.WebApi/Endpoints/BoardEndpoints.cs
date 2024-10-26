@@ -111,6 +111,27 @@ namespace PMS.WebApi.Endpoints
             .Produces(StatusCodes.Status404NotFound) // Board not found
             .RequiredTenant();
 
+// Update an existing board (tenantEntity required)
+            boardGroup.MapPut("/{boardId:guid}/columns/{columnId:guid}", [Authorize] async (
+                Guid boardId,
+                Guid columnId,
+                [FromBody] BoardColumnUpdateDto updateBoardColumnDto,
+                [FromServices] IBoardService boardService) =>
+            {
+                var updatedBoard = await boardService.UpdateColumnOrderAsync(boardId, columnId,updateBoardColumnDto);
+
+                if (updatedBoard == null)
+                {
+                    return Results.NotFound("Board not found or not authorized to update.");
+                }
+
+                return Results.Ok(updatedBoard);
+            })
+            .Produces<BoardDto>(StatusCodes.Status200OK) // Response model for success
+            .Produces(StatusCodes.Status400BadRequest) // Invalid request or tenantEntity
+            .Produces(StatusCodes.Status404NotFound) // Board not found
+            .RequiredTenant();
+
             return app;
         }
     }

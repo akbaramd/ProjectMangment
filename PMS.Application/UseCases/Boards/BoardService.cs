@@ -113,5 +113,24 @@ namespace PMS.Application.UseCases.Boards
             await _boardRepository.DeleteAsync(board);
             return true;
         }
+
+        public async Task<bool> UpdateColumnOrderAsync(Guid boardId, Guid columnId, BoardColumnUpdateDto dto)
+        {
+             // Validate tenantEntity and permissions
+            await ValidateTenantAccessAsync("board:update");
+
+            // Fetch the board and ensure it belongs to the current tenantEntity
+            var board = await _boardRepository.GetByIdAsync(boardId);
+            if (board == null || board.TenantId != CurrentTenant.Id)
+            {
+                throw new BoardNotFoundException();
+            }
+
+            // Update board details
+            board.UpdateColumn(columnId,dto.Name,dto.Order);
+            await _boardRepository.UpdateAsync(board);
+
+            return true;
+        }
     }
 }
