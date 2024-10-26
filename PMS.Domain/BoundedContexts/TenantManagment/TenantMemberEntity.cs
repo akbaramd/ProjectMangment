@@ -1,5 +1,7 @@
 ﻿using PMS.Domain.BoundedContexts.ProjectManagement;
-using PMS.Domain.BoundedContexts.TaskManagment;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
+using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
+using PMS.Domain.BoundedContexts.TaskManagement;
 using PMS.Domain.BoundedContexts.UserManagment;
 using PMS.Domain.Core;
 using SharedKernel.DomainDrivenDesign.Domain;

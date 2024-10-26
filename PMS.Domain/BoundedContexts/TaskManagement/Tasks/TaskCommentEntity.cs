@@ -1,7 +1,7 @@
-using PMS.Domain.BoundedContexts.ProjectManagement;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using SharedKernel.DomainDrivenDesign.Domain;
 
-namespace PMS.Domain.BoundedContexts.TaskManagment
+namespace PMS.Domain.BoundedContexts.TaskManagement.Tasks
 {
     public class TaskCommentEntity : Entity<Guid>
     {

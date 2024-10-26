@@ -25,12 +25,11 @@ namespace PMS.WebApi.Endpoints
     .Produces(StatusCodes.Status401Unauthorized);
 
     // Get list of tasks
-    taskGroup.MapGet("/sprints/{sprintId:guid}", [Authorize] async (
-        Guid sprintId,
+    taskGroup.MapGet("/boards/{boardId:guid}", [Authorize] async (
+        Guid boardId,
         [FromQuery] int take,
         [FromQuery] int skip,
         [FromQuery] string? search,
-        [FromQuery] Guid? borderId,
         [FromQuery] Guid? columnId,
         [FromServices] ITaskService taskService) =>
     {
@@ -39,8 +38,7 @@ namespace PMS.WebApi.Endpoints
             Take = take,
             Search = search,
             Skip = skip,
-            SprintId = sprintId,
-            BoardId = borderId,
+            BoardId = boardId,
             ColumnId = columnId
         };
         var tasks = await taskService.GetTasksAsync(filter);

@@ -1,6 +1,6 @@
 using SharedKernel.DomainDrivenDesign.Domain;
 
-namespace PMS.Domain.BoundedContexts.TaskManagment
+namespace PMS.Domain.BoundedContexts.TaskManagement.Tasks
 {
     public class TaskLabelEntity : Entity<Guid>
     {

@@ -12,28 +12,28 @@ namespace PMS.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_ProjectBoardColumns_ProjectBoards_ProjectBoardId",
-                table: "ProjectBoardColumns");
+                name: "FK_KanbanBoardColumns_KanbanBoards_KanbanBoardId",
+                table: "KanbanBoardColumns");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_ProjectBoards_ProjectSprints_ProjectSprintId",
-                table: "ProjectBoards");
+                name: "FK_KanbanBoards_ProjectSprints_ProjectSprintId",
+                table: "KanbanBoards");
 
             migrationBuilder.DropIndex(
-                name: "IX_ProjectBoards_ProjectSprintId",
-                table: "ProjectBoards");
+                name: "IX_KanbanBoards_ProjectSprintId",
+                table: "KanbanBoards");
 
             migrationBuilder.DropIndex(
-                name: "IX_ProjectBoardColumns_ProjectBoardId",
-                table: "ProjectBoardColumns");
+                name: "IX_KanbanBoardColumns_KanbanBoardId",
+                table: "KanbanBoardColumns");
 
             migrationBuilder.DropColumn(
                 name: "ProjectSprintId",
-                table: "ProjectBoards");
+                table: "KanbanBoards");
 
             migrationBuilder.DropColumn(
-                name: "ProjectBoardId",
-                table: "ProjectBoardColumns");
+                name: "KanbanBoardId",
+                table: "KanbanBoardColumns");
 
             migrationBuilder.AlterColumn<Guid>(
                 name: "TenantId",
@@ -59,26 +59,26 @@ namespace PMS.Infrastructure.Migrations
                 nullable: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectBoards_SprintId",
-                table: "ProjectBoards",
+                name: "IX_KanbanBoards_SprintId",
+                table: "KanbanBoards",
                 column: "SprintId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectBoardColumns_BoardId",
-                table: "ProjectBoardColumns",
+                name: "IX_KanbanBoardColumns_BoardId",
+                table: "KanbanBoardColumns",
                 column: "BoardId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_ProjectBoardColumns_ProjectBoards_BoardId",
-                table: "ProjectBoardColumns",
+                name: "FK_KanbanBoardColumns_KanbanBoards_BoardId",
+                table: "KanbanBoardColumns",
                 column: "BoardId",
-                principalTable: "ProjectBoards",
+                principalTable: "KanbanBoards",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_ProjectBoards_ProjectSprints_SprintId",
-                table: "ProjectBoards",
+                name: "FK_KanbanBoards_ProjectSprints_SprintId",
+                table: "KanbanBoards",
                 column: "SprintId",
                 principalTable: "ProjectSprints",
                 principalColumn: "Id",
@@ -89,20 +89,20 @@ namespace PMS.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_ProjectBoardColumns_ProjectBoards_BoardId",
-                table: "ProjectBoardColumns");
+                name: "FK_KanbanBoardColumns_KanbanBoards_BoardId",
+                table: "KanbanBoardColumns");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_ProjectBoards_ProjectSprints_SprintId",
-                table: "ProjectBoards");
+                name: "FK_KanbanBoards_ProjectSprints_SprintId",
+                table: "KanbanBoards");
 
             migrationBuilder.DropIndex(
-                name: "IX_ProjectBoards_SprintId",
-                table: "ProjectBoards");
+                name: "IX_KanbanBoards_SprintId",
+                table: "KanbanBoards");
 
             migrationBuilder.DropIndex(
-                name: "IX_ProjectBoardColumns_BoardId",
-                table: "ProjectBoardColumns");
+                name: "IX_KanbanBoardColumns_BoardId",
+                table: "KanbanBoardColumns");
 
             migrationBuilder.DropColumn(
                 name: "CreatedAt",
@@ -122,39 +122,39 @@ namespace PMS.Infrastructure.Migrations
 
             migrationBuilder.AddColumn<Guid>(
                 name: "ProjectSprintId",
-                table: "ProjectBoards",
+                table: "KanbanBoards",
                 type: "TEXT",
                 nullable: false,
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
 
             migrationBuilder.AddColumn<Guid>(
-                name: "ProjectBoardId",
-                table: "ProjectBoardColumns",
+                name: "KanbanBoardId",
+                table: "KanbanBoardColumns",
                 type: "TEXT",
                 nullable: false,
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectBoards_ProjectSprintId",
-                table: "ProjectBoards",
+                name: "IX_KanbanBoards_ProjectSprintId",
+                table: "KanbanBoards",
                 column: "ProjectSprintId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectBoardColumns_ProjectBoardId",
-                table: "ProjectBoardColumns",
-                column: "ProjectBoardId");
+                name: "IX_KanbanBoardColumns_KanbanBoardId",
+                table: "KanbanBoardColumns",
+                column: "KanbanBoardId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_ProjectBoardColumns_ProjectBoards_ProjectBoardId",
-                table: "ProjectBoardColumns",
-                column: "ProjectBoardId",
-                principalTable: "ProjectBoards",
+                name: "FK_KanbanBoardColumns_KanbanBoards_KanbanBoardId",
+                table: "KanbanBoardColumns",
+                column: "KanbanBoardId",
+                principalTable: "KanbanBoards",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_ProjectBoards_ProjectSprints_ProjectSprintId",
-                table: "ProjectBoards",
+                name: "FK_KanbanBoards_ProjectSprints_ProjectSprintId",
+                table: "KanbanBoards",
                 column: "ProjectSprintId",
                 principalTable: "ProjectSprints",
                 principalColumn: "Id",

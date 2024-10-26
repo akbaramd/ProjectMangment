@@ -1,6 +1,7 @@
 using AutoMapper;
 using PMS.Application.UseCases.Sprints.Models;
 using PMS.Domain.BoundedContexts.ProjectManagement;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Sprints;

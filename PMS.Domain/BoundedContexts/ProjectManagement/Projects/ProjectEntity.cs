@@ -1,9 +1,8 @@
-using PMS.Domain.BoundedContexts.TaskManagment;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Enums;
 using PMS.Domain.BoundedContexts.TenantManagment;
 using PMS.Domain.Core;
-using SharedKernel.DomainDrivenDesign.Domain;
 
-namespace PMS.Domain.BoundedContexts.ProjectManagement
+namespace PMS.Domain.BoundedContexts.ProjectManagement.Projects
 {
     // Entity representing a Project
     public class ProjectEntity : TenantAggregateRootBase
@@ -74,54 +73,13 @@ namespace PMS.Domain.BoundedContexts.ProjectManagement
 
 
         // Update project member access
-        public void UpdateMemberAccess(Guid memberId, ProjectMemberAccess newAccess)
+        public void UpdateMemberAccess(Guid memberId, ProjectMemberAccessEnum newAccessEnum)
         {
             var member = _members.FirstOrDefault(m => m.Id == memberId);
             if (member == null)
                 throw new InvalidOperationException("Member not found in the project.");
 
-            member.UpdateDetails(newAccess);
-        }
-    }
-    
-    public class ProjectMemberEntity : Entity<Guid>
-    {
-        protected ProjectMemberEntity() {}
-
-        public ProjectMemberEntity( TenantMemberEntity tenantMember, ProjectEntity project, ProjectMemberAccess access) 
-        {
-            TenantMember = tenantMember;
-            Project = project;
-            Access = access;
-        }
-
-        public virtual TenantMemberEntity TenantMember { get; private set; }
-        public Guid TenantMemberId { get; private set; }
-        
-        public virtual ProjectEntity Project { get; private set; }
-        public Guid ProjectId { get; private set; }
-
-        public ProjectMemberAccess Access { get; private set; }
-
-        public  virtual ICollection<TaskCommentEntity> TaskComments { get; set; }
-
-        private readonly List<TaskEntity> _tasks = new List<TaskEntity>();
-        public virtual ICollection<TaskEntity> Tasks => _tasks.AsReadOnly();
-        
-        internal void UpdateDetails(ProjectMemberAccess access)
-        {
-            Access = access;
-        }
-    }
-
-    public class ProjectMemberAccess : Enumeration
-    {
-        public static ProjectMemberAccess ProductOwner = new ProjectMemberAccess(0, nameof(ProductOwner)); 
-        public static ProjectMemberAccess ScrumMaster = new ProjectMemberAccess(1, nameof(ScrumMaster)); 
-        public static ProjectMemberAccess Maintainer = new ProjectMemberAccess(2, nameof(Maintainer)); 
-        public static ProjectMemberAccess Quest = new ProjectMemberAccess(3, nameof(Quest)); 
-        public ProjectMemberAccess(int id, string name) : base(id, name)
-        {
+            member.UpdateDetails(newAccessEnum);
         }
     }
 }

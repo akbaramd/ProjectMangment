@@ -1,8 +1,7 @@
-using PMS.Domain.BoundedContexts.TaskManagment;
 using PMS.Domain.BoundedContexts.TenantManagment;
 using PMS.Domain.Core;
 
-namespace PMS.Domain.BoundedContexts.ProjectManagement;
+namespace PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 
 public class ProjectSprintEntity : TenantAggregateRootBase
     {

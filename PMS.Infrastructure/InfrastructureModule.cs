@@ -6,8 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using PMS.Application.Interfaces;
 using PMS.Domain;
-using PMS.Domain.BoundedContexts.ProjectManagement.Repositories;
-using PMS.Domain.BoundedContexts.TaskManagment.Repositories;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
+using PMS.Domain.BoundedContexts.TaskManagement.Kanban.Repositories;
+using PMS.Domain.BoundedContexts.TaskManagement.Tasks.Repositories;
 using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
 using PMS.Domain.BoundedContexts.UserManagment;
 using PMS.Domain.BoundedContexts.UserManagment.Repositories;
@@ -31,7 +32,6 @@ public class InfrastructureModule : Module
             // Register repository services
             context.Services.AddScoped<ITaskRepository, TaskRepository>();
             context.Services.AddScoped<IBoardRepository, BoardRepository>();
-            context.Services.AddScoped<IBoardColumnRepository, BoardColumnRepository>();
             context.Services.AddScoped<ISprintRepository, SprintRepository>();
             context.Services.AddScoped<IProjectRepository, ProjectRepository>();
             context.Services.AddScoped<IInvitationRepository, InvitationRepository>();

@@ -5,7 +5,8 @@ using PMS.Application.UseCases.Sprints.Exceptions;
 using PMS.Application.UseCases.Sprints.Models;
 using PMS.Application.UseCases.Sprints.Specs;
 using PMS.Domain.BoundedContexts.ProjectManagement;
-using PMS.Domain.BoundedContexts.ProjectManagement.Repositories;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
 using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Sprints

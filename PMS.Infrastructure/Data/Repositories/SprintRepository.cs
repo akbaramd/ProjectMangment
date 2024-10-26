@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PMS.Domain.BoundedContexts.ProjectManagement;
-using PMS.Domain.BoundedContexts.ProjectManagement.Repositories;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
 using SharedKernel.EntityFrameworkCore;
 
 namespace PMS.Infrastructure.Data.Repositories;

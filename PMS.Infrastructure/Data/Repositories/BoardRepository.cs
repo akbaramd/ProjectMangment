@@ -1,49 +1,50 @@
 using Microsoft.EntityFrameworkCore;
 using PMS.Domain.BoundedContexts.ProjectManagement;
-using PMS.Domain.BoundedContexts.ProjectManagement.Repositories;
+using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
+using PMS.Domain.BoundedContexts.TaskManagement.Kanban.Repositories;
+using PMS.Domain.BoundedContexts.TaskManagement;
 using SharedKernel.EntityFrameworkCore;
 
 namespace PMS.Infrastructure.Data.Repositories;
 
-public class BoardRepository : EfGenericRepository<ApplicationDbContext, ProjectBoardEntity>, IBoardRepository
+public class BoardRepository : EfGenericRepository<ApplicationDbContext, KanbanBoardEntity>, IBoardRepository
 {
     public BoardRepository(ApplicationDbContext context) : base(context)
     {
     }
 
-    public new Task<ProjectBoardEntity?> GetByIdAsync(Guid id)
+    public new Task<KanbanBoardEntity?> GetByIdAsync(Guid id)
     {
-        return _context.ProjectBoards
+        return _context.KanbanBoards
             .Include(b => b.Columns)
-            .ThenInclude(b => b.Tasks)
             .FirstOrDefaultAsync(x=>x.Id == id);
     }
 
-    public List<ProjectBoardEntity> GetAllWithRelations()
+    public List<KanbanBoardEntity> GetAllWithRelations()
     {
-        return _context.ProjectBoards
+        return _context.KanbanBoards
             .Include(b => b.Columns)
             .ToList();
     }
 
-    public Task<ProjectBoardEntity?> GetByIdWithRelationsAsync(Guid boardId)
+    public Task<KanbanBoardEntity?> GetByIdWithRelationsAsync(Guid boardId)
     {
-        return _context.ProjectBoards
+        return _context.KanbanBoards
             .Include(b => b.Columns)
             .FirstOrDefaultAsync(b => b.Id == boardId);
     }
 
-    public List<ProjectBoardEntity> GetByTenantId(Guid tenantId)
+    public List<KanbanBoardEntity> GetByTenantId(Guid tenantId)
     {
-        return _context.ProjectBoards
+        return _context.KanbanBoards
             .Where(b => b.TenantId == tenantId)
             .Include(b => b.Columns)
             .ToList();
     }
 
-    public List<ProjectBoardEntity> GetBoardsBySprintIdAsync(Guid sprintId)
+    public List<KanbanBoardEntity> GetBoardsBySprintIdAsync(Guid sprintId)
     {
-        return _context.ProjectBoards
+        return _context.KanbanBoards
             .Where(b => b.SprintId == sprintId)
             .Include(b => b.Columns)
             .ToList();

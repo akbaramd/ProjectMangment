@@ -1,7 +1,7 @@
 using System.Net;
 using ApplicationException = SharedKernel.DomainDrivenDesign.Application.Exceptions.ApplicationException;
 
-namespace PMS.Application.UseCases.Projects.Exceptions;
+namespace PMS.Application.UseCases.Tasks.Exceptions;
 
 public class TaskCommentNotFoundException : ApplicationException
 {

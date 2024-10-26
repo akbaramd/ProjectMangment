@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PMS.Domain.BoundedContexts.TaskManagment;
+using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
+using PMS.Domain.BoundedContexts.TaskManagement;
 
 namespace PMS.Infrastructure.Data.Configurations;
 

@@ -1,6 +1,6 @@
 using SharedKernel.DomainDrivenDesign.Domain.Repository;
 
-namespace PMS.Domain.BoundedContexts.TaskManagment.Repositories
+namespace PMS.Domain.BoundedContexts.TaskManagement.Tasks.Repositories
 {
     public interface ITaskRepository : IGenericRepository<TaskEntity>
     {

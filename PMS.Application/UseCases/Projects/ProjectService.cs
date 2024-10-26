@@ -5,7 +5,12 @@ using PMS.Application.UseCases.Projects.Models;
 using PMS.Application.UseCases.Projects.Specs;
 using PMS.Application.UseCases.Tenant.Exceptions;
 using PMS.Domain.BoundedContexts.ProjectManagement;
-using PMS.Domain.BoundedContexts.ProjectManagement.Repositories;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Enums;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
+using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
+using PMS.Domain.BoundedContexts.TaskManagement.Kanban.Repositories;
+using PMS.Domain.BoundedContexts.TaskManagement;
 using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
 using SharedKernel.DomainDrivenDesign.Domain;
 using SharedKernel.Model;
@@ -18,7 +23,6 @@ namespace PMS.Application.UseCases.Projects
         private readonly IProjectRepository _projectRepository;
         private readonly ISprintRepository _sprintRepository;
         private readonly IBoardRepository _boardRepository;
-        private readonly IBoardColumnRepository _boardColumnRepository;
         private readonly ITenantMemberRepository _tenantMemberRepository;
         private readonly IProjectMemberRepository _projectMemberRepository;
         private readonly IMapper _mapper;
@@ -27,7 +31,6 @@ namespace PMS.Application.UseCases.Projects
             IProjectRepository projectRepository,
             ISprintRepository sprintRepository,
             IBoardRepository boardRepository,
-            IBoardColumnRepository boardColumnRepository,
             ITenantMemberRepository tenantMemberRepository,
             IProjectMemberRepository projectMemberRepository,
             IMapper mapper,
@@ -37,7 +40,6 @@ namespace PMS.Application.UseCases.Projects
             _projectRepository = projectRepository;
             _sprintRepository = sprintRepository;
             _boardRepository = boardRepository;
-            _boardColumnRepository = boardColumnRepository;
             _tenantMemberRepository = tenantMemberRepository;
             _projectMemberRepository = projectMemberRepository;
             _mapper = mapper;
@@ -88,7 +90,7 @@ namespace PMS.Application.UseCases.Projects
             // Create a new project entity
             var project = new ProjectEntity(projectCreateDto.Name, projectCreateDto.Description, projectCreateDto.StartDate,
                 CurrentTenant);
-            project.AddMember(new ProjectMemberEntity(tenantMember,project,ProjectMemberAccess.ProductOwner));
+            project.AddMember(new ProjectMemberEntity(tenantMember,project,ProjectMemberAccessEnum.ProductOwner));
             await _projectRepository.AddAsync(project);
             
             
@@ -98,7 +100,7 @@ namespace PMS.Application.UseCases.Projects
             await _sprintRepository.AddAsync(defaultSprint);
 
             // Create a default Kanban board with columns (ToDo, Doing, Done)
-            var board = new ProjectBoardEntity("Default Kanban Board", defaultSprint, CurrentTenant);
+            var board = new KanbanBoardEntity("Default Kanban Board", defaultSprint, CurrentTenant);
             await _boardRepository.AddAsync(board);
 
             return _mapper.Map<ProjectDto>(project);
@@ -160,7 +162,7 @@ namespace PMS.Application.UseCases.Projects
                 throw new TenantNotFoundException("Tenant Member not Found");
             }
             
-            var member = new ProjectMemberEntity( tenantMember, project, Enumeration.FromName<ProjectMemberAccess>(projectAddMemberDto.Role));
+            var member = new ProjectMemberEntity( tenantMember, project, Enumeration.FromName<ProjectMemberAccessEnum>(projectAddMemberDto.Role));
             project.AddMember(member);
             await _projectRepository.UpdateAsync(project);
 
@@ -226,7 +228,7 @@ namespace PMS.Application.UseCases.Projects
                 throw new MemberNotFoundException("cannot be found member");
             }
 
-            project.UpdateMemberAccess(memberId,Enumeration.ParseFromName<ProjectMemberAccess>(projectUpdateMemberDto.Role));
+            project.UpdateMemberAccess(memberId,Enumeration.ParseFromName<ProjectMemberAccessEnum>(projectUpdateMemberDto.Role));
             await _projectRepository.UpdateAsync(project);
 
             return _mapper.Map<ProjectMemberDto>(member);

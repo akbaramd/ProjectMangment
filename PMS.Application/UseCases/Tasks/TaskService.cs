@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
 using PMS.Application.Base;
 using PMS.Application.UseCases.Projects.Exceptions;
+using PMS.Application.UseCases.Sprints.Exceptions;
+using PMS.Application.UseCases.Tasks.Exceptions;
 using PMS.Application.UseCases.Tasks.Models;
 using PMS.Application.UseCases.Tasks.Specs;
 using PMS.Domain.BoundedContexts.ProjectManagement;
-using PMS.Domain.BoundedContexts.ProjectManagement.Repositories;
-using PMS.Domain.BoundedContexts.TaskManagment;
-using PMS.Domain.BoundedContexts.TaskManagment.Repositories;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
+using PMS.Domain.BoundedContexts.TaskManagement.Kanban.Repositories;
+using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
+using PMS.Domain.BoundedContexts.TaskManagement.Tasks.Repositories;
+using PMS.Domain.BoundedContexts.TaskManagement;
 using PMS.Domain.BoundedContexts.TenantManagment;
 using SharedKernel.DomainDrivenDesign.Domain.DomainEvent;
 using SharedKernel.Model;
@@ -16,25 +20,22 @@ namespace PMS.Application.UseCases.Tasks
     public class TaskService : BaseTenantService, ITaskService
     {
         private readonly ITaskRepository _taskRepository;
-        private readonly IBoardColumnRepository _boardColumnRepository;
+        private readonly IBoardRepository _boardRepository;
         private readonly IProjectRepository _projectRepository;
         private readonly IMapper _mapper;
         private readonly IDomainEventDispatcher _domainEventDispatcher;
 
         public TaskService(
             ITaskRepository taskRepository,
-            IProjectRepository projectRepository,
             IMapper mapper,
             IServiceProvider serviceProvider,
-            IBoardColumnRepository boardColumnRepository,
-            IDomainEventDispatcher domainEventDispatcher
-        ) : base(serviceProvider)
+            IDomainEventDispatcher domainEventDispatcher, IBoardRepository boardRepository, IProjectRepository projectRepository) : base(serviceProvider)
         {
             _taskRepository = taskRepository;
-            _projectRepository = projectRepository;
             _mapper = mapper;
-            _boardColumnRepository = boardColumnRepository;
             _domainEventDispatcher = domainEventDispatcher;
+            _boardRepository = boardRepository;
+            _projectRepository = projectRepository;
         }
 
         public async Task<PaginatedResult<TaskDto>> GetTasksAsync(TaskFilterDto filter)
@@ -57,12 +58,15 @@ namespace PMS.Application.UseCases.Tasks
         {
             await ValidateTenantAccessAsync("task:create");
 
-            var column = await _boardColumnRepository.FindByIdAsync(taskCreateDto.ColumnId);
-            if (column == null) throw new ColumnNotFoundException($"Column with ID {taskCreateDto.ColumnId} not found");
+            var board = await _boardRepository.FindByIdAsync(taskCreateDto.BoardId);
+            if (board == null) throw new ColumnNotFoundException($"Board with ID {taskCreateDto.BoardId} not found");
 
-            var order = column.Tasks.MaxBy(x => x.Order)?.Order ?? 0;
-            var taskEntity = new TaskEntity(taskCreateDto.Title, taskCreateDto.Description, taskCreateDto.Content,
-                order + 1, column, CurrentTenant, taskCreateDto.DueDate);
+            var column = board.Columns.FirstOrDefault(x => x.Id == taskCreateDto.BoardColumnId);
+            if (column == null) throw new ColumnNotFoundException($"BoardColumn with ID {taskCreateDto.BoardColumnId} not found");
+            
+            var order = (await _taskRepository.FindAsync(x=>x.BoardColumnId == column.Id)).MaxBy(x => x.Order)?.Order ?? 0;
+            var taskEntity = new TaskEntity(taskCreateDto.Title, taskCreateDto.Description,
+                order + 1, column, CurrentTenant);
 
             await _taskRepository.AddAsync(taskEntity);
             await _domainEventDispatcher.DispatchAndClearEvents(new[] { taskEntity });
@@ -72,6 +76,9 @@ namespace PMS.Application.UseCases.Tasks
 
         public async Task<TaskDto?> UpdateTaskAsync(Guid taskId, TaskUpdateDto taskUpdateDto)
         {
+            
+            
+            
             await ValidateTenantAccessAsync("task:update");
 
             var task = await _taskRepository.GetByIdAsync(taskId);
@@ -83,8 +90,6 @@ namespace PMS.Application.UseCases.Tasks
             if (taskUpdateDto.Description != null)
                 task.UpdateDescription(taskUpdateDto.Description);
             
-            if (taskUpdateDto.Content != null)
-                task.UpdateContent(taskUpdateDto.Content);
             
             if (taskUpdateDto.DueDate.HasValue)
                 task.UpdateDueDate(taskUpdateDto.DueDate.Value);
@@ -94,11 +99,15 @@ namespace PMS.Application.UseCases.Tasks
                 task.UpdateOrder(taskUpdateDto.Order.Value);
 
             // اضافه کردن به‌روزرسانی ستون
-            if (taskUpdateDto.BoardColumnId.HasValue)
+            if (taskUpdateDto is { BoardColumnId: not null, BoardId: not null })
             {
-                var newColumn = await _boardColumnRepository.FindByIdAsync(taskUpdateDto.BoardColumnId.Value);
-                if (newColumn == null) throw new ColumnNotFoundException($"Column with ID {taskUpdateDto.BoardColumnId.Value} not found");
-                task.MoveToColumn(newColumn);
+                var board = await _boardRepository.FindByIdAsync(taskUpdateDto.BoardId.Value);
+                if (board == null) throw new ColumnNotFoundException($"Board with ID {taskUpdateDto.BoardId} not found");
+                
+                var column = board.Columns.FirstOrDefault(x => x.Id == taskUpdateDto.BoardColumnId);
+                if (column == null) throw new ColumnNotFoundException($"BoardColumn with ID {taskUpdateDto.BoardColumnId} not found");
+                
+                task.MoveToColumn(column);
             }
             
             await _taskRepository.UpdateAsync(task);
@@ -128,8 +137,7 @@ namespace PMS.Application.UseCases.Tasks
             if (task == null) throw new TaskNotFoundException($"Task with ID {taskId} not found");
 
             var tenantMember = await ValidateTenantAccessAsync("task:create");
-            var projectMember = task.BoardColumn.Board.Sprint.Project.Members
-                .FirstOrDefault(m => m.TenantMemberId == tenantMember.Id);
+            var projectMember = await _projectRepository.GetMemberByTenantMemberIdAsync(tenantMember.Id);
             if (projectMember == null) throw new ProjectMemberNotFoundException("Project member not found");
 
             task.AddComment(projectMember, createDto.Content);
@@ -175,8 +183,7 @@ namespace PMS.Application.UseCases.Tasks
             if (task == null) throw new TaskNotFoundException($"Task with ID {taskId} not found");
 
             var tenantMember = await ValidateTenantAccessAsync("task:assign");
-            var project = task.BoardColumn.Board.Sprint.Project;
-            var projectMember = project.Members.FirstOrDefault(m => m.TenantMemberId == tenantMember.Id);
+            var projectMember = await _projectRepository.GetMemberByIdAsync(projectMemberId);
 
             if (projectMember == null) throw new ProjectMemberNotFoundException($"Project member not found");
 

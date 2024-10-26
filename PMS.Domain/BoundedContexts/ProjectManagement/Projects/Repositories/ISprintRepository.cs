@@ -1,6 +1,6 @@
 using SharedKernel.DomainDrivenDesign.Domain.Repository;
 
-namespace PMS.Domain.BoundedContexts.ProjectManagement.Repositories
+namespace PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories
 {
     public interface ISprintRepository : IGenericRepository<ProjectSprintEntity>
     {

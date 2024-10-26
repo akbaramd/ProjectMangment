@@ -1,7 +1,8 @@
 ﻿using System.Linq.Dynamic.Core;
 using AutoMapper;
 using PMS.Application.UseCases.Tasks.Models;
-using PMS.Domain.BoundedContexts.TaskManagment;
+using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
+using PMS.Domain.BoundedContexts.TaskManagement;
 using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Tasks;

@@ -3,7 +3,12 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PMS.Domain.BoundedContexts.AttachmentManagement;
 using PMS.Domain.BoundedContexts.ProjectManagement;
-using PMS.Domain.BoundedContexts.TaskManagment;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Enums;
+using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
+using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
+using PMS.Domain.BoundedContexts.TaskManagement;
+using PMS.Domain.BoundedContexts.TaskManagement.Kanban.DomainEvents;
 using PMS.Domain.BoundedContexts.TenantManagment;
 using PMS.Domain.BoundedContexts.UserManagment;
 using SharedKernel.DomainDrivenDesign.Domain;
@@ -20,8 +25,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<ProjectEntity> Projects { get; set; }
     public DbSet<ProjectMemberEntity> ProjectsMembers { get; set; }
     public DbSet<ProjectSprintEntity> ProjectSprints { get; set; }
-    public DbSet<ProjectBoardColumnEntity> ProjectBoardColumns { get; set; }
-    public DbSet<ProjectBoardEntity> ProjectBoards { get; set; }
+    public DbSet<KanbanBoardColumnEntity> KanbanBoardColumns { get; set; }
+    public DbSet<KanbanBoardEntity> KanbanBoards { get; set; }
     public DbSet<TaskEntity> Tasks { get; set; }
     public DbSet<TaskAttachmentEntity> TasksAttachments { get; set; }
     public DbSet<TenantPermissionEntity> Permissions { get; set; }
@@ -48,13 +53,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         builder.Entity<ProjectMemberEntity>(entity =>
         {
             entity.HasOne(x => x.Project).WithMany(x=>x.Members).HasForeignKey(x => x.ProjectId);
-            entity.Property(x => x.Access)
+            entity.Property(x => x.AccessEnum)
                 .HasConversion(c => c.Name.ToString(),
-                    v => Enumeration.FromName<ProjectMemberAccess>(v)); // Renaming AspNetUserTokens to UserTokensl
+                    v => Enumeration.FromName<ProjectMemberAccessEnum>(v)); // Renaming AspNetUserTokens to UserTokensl
         });
      
     
-        
+        builder.Entity<KanbanBoardEntity>(entity =>
+        {
+            entity.HasMany(x => x.Columns).WithOne().HasForeignKey(x => x.BoardId);
+            
+        });
         builder.Entity<ProjectEntity>(entity =>
         {
             entity.HasMany(x => x.Members).WithOne(x=>x.Project).HasForeignKey(x => x.ProjectId);

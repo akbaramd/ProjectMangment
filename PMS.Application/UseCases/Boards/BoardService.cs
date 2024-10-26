@@ -5,7 +5,10 @@ using PMS.Application.UseCases.Boards.Models;
 using PMS.Application.UseCases.Boards.Specs;
 using PMS.Application.UseCases.Sprints.Exceptions;
 using PMS.Domain.BoundedContexts.ProjectManagement;
-using PMS.Domain.BoundedContexts.ProjectManagement.Repositories;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
+using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
+using PMS.Domain.BoundedContexts.TaskManagement.Kanban.Repositories;
+using PMS.Domain.BoundedContexts.TaskManagement;
 using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Boards
@@ -68,7 +71,7 @@ namespace PMS.Application.UseCases.Boards
             }
 
             // Create the new board entity
-            var board = new ProjectBoardEntity(boardCreateDto.Name, sprint,CurrentTenant);
+            var board = new KanbanBoardEntity(boardCreateDto.Name, sprint,CurrentTenant);
 
             // Add the board to the repository
             await _boardRepository.AddAsync(board);

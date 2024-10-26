@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using PMS.Domain.BoundedContexts.TaskManagment;
-using PMS.Domain.BoundedContexts.TaskManagment.Repositories;
+using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
+using PMS.Domain.BoundedContexts.TaskManagement.Tasks.Repositories;
+using PMS.Domain.BoundedContexts.TaskManagement;
 using SharedKernel.EntityFrameworkCore;
 
 
@@ -16,9 +17,6 @@ public class TaskRepository : EfGenericRepository<ApplicationDbContext, TaskEnti
     {
         return _context.Tasks
             .Include(t => t.BoardColumn)
-            .ThenInclude(t => t.Board)
-            .ThenInclude(t => t.Sprint)
-            .ThenInclude(t => t.Project)
             .ToList();
     }
 
@@ -26,9 +24,6 @@ public class TaskRepository : EfGenericRepository<ApplicationDbContext, TaskEnti
     {
         return _context.Tasks
             .Include(t => t.BoardColumn)
-            .ThenInclude(t => t.Board)
-            .ThenInclude(t => t.Sprint)
-            .ThenInclude(t => t.Project)
             .FirstOrDefaultAsync(t => t.Id == taskId);
     }
 
@@ -36,9 +31,6 @@ public class TaskRepository : EfGenericRepository<ApplicationDbContext, TaskEnti
     {
         return _context.Tasks
             .Include(t => t.BoardColumn)
-            .ThenInclude(t => t.Board)
-            .ThenInclude(t => t.Sprint)
-            .ThenInclude(t => t.Project)
             .ToList();
     }
 
@@ -47,9 +39,6 @@ public class TaskRepository : EfGenericRepository<ApplicationDbContext, TaskEnti
         return _context.Tasks
             .Where(t => t.BoardColumnId == boardId)
             .Include(t => t.BoardColumn)
-            .ThenInclude(t => t.Board)
-            .ThenInclude(t => t.Sprint)
-            .ThenInclude(t => t.Project)
             .ToListAsync();
     }
 }

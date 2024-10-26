@@ -1,16 +1,16 @@
 using PMS.Domain.BoundedContexts.AttachmentManagement;
-using PMS.Domain.BoundedContexts.ProjectManagement;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
+using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
+using PMS.Domain.BoundedContexts.TaskManagement.Kanban.DomainEvents;
 using PMS.Domain.BoundedContexts.TenantManagment;
 using PMS.Domain.Core;
-using SharedKernel.DomainDrivenDesign.Domain;
 
-namespace PMS.Domain.BoundedContexts.TaskManagment
+namespace PMS.Domain.BoundedContexts.TaskManagement.Tasks
 {
     public class TaskEntity : TenantAggregateRootBase
     {
         public string Title { get; private set; }
         public string Description { get; private set; }
-        public string Content { get; private set; }
 
         public int Order { get; private set; }
         public DateTime? DueDate { get; private set; }
@@ -20,7 +20,7 @@ namespace PMS.Domain.BoundedContexts.TaskManagment
         // Relations
         
         public Guid BoardColumnId { get; private set; }
-        public virtual ProjectBoardColumnEntity BoardColumn { get; private set; }
+        public virtual KanbanBoardColumnEntity BoardColumn { get; private set; }
 
         private readonly List<TaskLabelEntity> _labels = new List<TaskLabelEntity>();
         public virtual ICollection<TaskLabelEntity> Labels => _labels.AsReadOnly();
@@ -36,7 +36,7 @@ namespace PMS.Domain.BoundedContexts.TaskManagment
 
         protected TaskEntity() { }
 
-        public TaskEntity(string title, string description, string content, int order, ProjectBoardColumnEntity initialColumn, TenantEntity tenant, DateTime? dueDate = null)
+        public TaskEntity(string title, string description, int order, KanbanBoardColumnEntity initialColumn, TenantEntity tenant, DateTime? dueDate = null)
             : base(tenant)
         {
             if (string.IsNullOrWhiteSpace(title))
@@ -44,7 +44,6 @@ namespace PMS.Domain.BoundedContexts.TaskManagment
 
             Title = title;
             Description = description;
-            Content = content;
             Order = order;
             BoardColumn = initialColumn;
             BoardColumnId = initialColumn.Id;
@@ -65,7 +64,7 @@ namespace PMS.Domain.BoundedContexts.TaskManagment
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public void MoveToColumn(ProjectBoardColumnEntity newColumnEntity)
+        public void MoveToColumn(KanbanBoardColumnEntity newColumnEntity)
         {
             if (newColumnEntity == null)
                 throw new ArgumentException("Target column cannot be null.");
@@ -90,14 +89,6 @@ namespace PMS.Domain.BoundedContexts.TaskManagment
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public void UpdateContent(string newContent)
-        {
-            if (string.IsNullOrWhiteSpace(newContent))
-                throw new ArgumentException("Task content cannot be empty.");
-
-            Content = newContent;
-            UpdatedAt = DateTime.UtcNow;
-        }
 
         #endregion
 

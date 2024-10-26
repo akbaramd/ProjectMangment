@@ -415,7 +415,7 @@ namespace PMS.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProjectBoards",
+                name: "KanbanBoards",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
@@ -428,15 +428,15 @@ namespace PMS.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectBoards", x => x.Id);
+                    table.PrimaryKey("PK_KanbanBoards", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProjectBoards_ProjectSprints_ProjectSprintId",
+                        name: "FK_KanbanBoards_ProjectSprints_ProjectSprintId",
                         column: x => x.ProjectSprintId,
                         principalTable: "ProjectSprints",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProjectBoards_Tenants_TenantId",
+                        name: "FK_KanbanBoards_Tenants_TenantId",
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
@@ -444,13 +444,13 @@ namespace PMS.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProjectBoardColumns",
+                name: "KanbanBoardColumns",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Order = table.Column<int>(type: "INTEGER", nullable: false),
-                    ProjectBoardId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    KanbanBoardId = table.Column<Guid>(type: "TEXT", nullable: false),
                     BoardId = table.Column<Guid>(type: "TEXT", nullable: false),
                     TenantId = table.Column<Guid>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -458,15 +458,15 @@ namespace PMS.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectBoardColumns", x => x.Id);
+                    table.PrimaryKey("PK_KanbanBoardColumns", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProjectBoardColumns_ProjectBoards_ProjectBoardId",
-                        column: x => x.ProjectBoardId,
-                        principalTable: "ProjectBoards",
+                        name: "FK_KanbanBoardColumns_KanbanBoards_KanbanBoardId",
+                        column: x => x.KanbanBoardId,
+                        principalTable: "KanbanBoards",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProjectBoardColumns_Tenants_TenantId",
+                        name: "FK_KanbanBoardColumns_Tenants_TenantId",
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
@@ -493,9 +493,9 @@ namespace PMS.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_SprintTasks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SprintTasks_ProjectBoardColumns_BoardColumnId",
+                        name: "FK_SprintTasks_KanbanBoardColumns_BoardColumnId",
                         column: x => x.BoardColumnId,
-                        principalTable: "ProjectBoardColumns",
+                        principalTable: "KanbanBoardColumns",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -608,23 +608,23 @@ namespace PMS.Infrastructure.Migrations
                 column: "TenantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectBoardColumns_ProjectBoardId",
-                table: "ProjectBoardColumns",
-                column: "ProjectBoardId");
+                name: "IX_KanbanBoardColumns_KanbanBoardId",
+                table: "KanbanBoardColumns",
+                column: "KanbanBoardId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectBoardColumns_TenantId",
-                table: "ProjectBoardColumns",
+                name: "IX_KanbanBoardColumns_TenantId",
+                table: "KanbanBoardColumns",
                 column: "TenantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectBoards_ProjectSprintId",
-                table: "ProjectBoards",
+                name: "IX_KanbanBoards_ProjectSprintId",
+                table: "KanbanBoards",
                 column: "ProjectSprintId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectBoards_TenantId",
-                table: "ProjectBoards",
+                name: "IX_KanbanBoards_TenantId",
+                table: "KanbanBoards",
                 column: "TenantId");
 
             migrationBuilder.CreateIndex(
@@ -810,13 +810,13 @@ namespace PMS.Infrastructure.Migrations
                 name: "TenantPermissionGroup");
 
             migrationBuilder.DropTable(
-                name: "ProjectBoardColumns");
+                name: "KanbanBoardColumns");
 
             migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "ProjectBoards");
+                name: "KanbanBoards");
 
             migrationBuilder.DropTable(
                 name: "ProjectSprints");

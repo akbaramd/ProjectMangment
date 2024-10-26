@@ -146,7 +146,7 @@ namespace PMS.Infrastructure.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.ProjectBoardColumnEntity", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.KanbanBoardColumnEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -165,7 +165,7 @@ namespace PMS.Infrastructure.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("ProjectBoardId")
+                    b.Property<Guid>("KanbanBoardId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("TenantId")
@@ -176,14 +176,14 @@ namespace PMS.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProjectBoardId");
+                    b.HasIndex("KanbanBoardId");
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("ProjectBoardColumns");
+                    b.ToTable("KanbanBoardColumns");
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.ProjectBoardEntity", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.KanbanBoardEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -214,7 +214,7 @@ namespace PMS.Infrastructure.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("ProjectBoards");
+                    b.ToTable("KanbanBoards");
                 });
 
             modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.ProjectEntity", b =>
@@ -315,7 +315,7 @@ namespace PMS.Infrastructure.Migrations
                     b.ToTable("ProjectSprints");
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagment.TaskAttachmentEntity", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagement.TaskAttachmentEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -341,7 +341,7 @@ namespace PMS.Infrastructure.Migrations
                     b.ToTable("TaskAttachments", (string)null);
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagment.TaskCommentEntity", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagement.TaskCommentEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -370,7 +370,7 @@ namespace PMS.Infrastructure.Migrations
                     b.ToTable("TaskComments", (string)null);
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagment.TaskEntity", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagement.TaskEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -421,7 +421,7 @@ namespace PMS.Infrastructure.Migrations
                     b.ToTable("SprintTasks", (string)null);
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagment.TaskLabelEntity", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagement.TaskLabelEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -798,11 +798,11 @@ namespace PMS.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.ProjectBoardColumnEntity", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.KanbanBoardColumnEntity", b =>
                 {
-                    b.HasOne("PMS.Domain.BoundedContexts.ProjectManagement.ProjectBoardEntity", "ProjectBoard")
+                    b.HasOne("PMS.Domain.BoundedContexts.ProjectManagement.KanbanBoardEntity", "KanbanBoard")
                         .WithMany("Columns")
-                        .HasForeignKey("ProjectBoardId")
+                        .HasForeignKey("KanbanBoardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -812,12 +812,12 @@ namespace PMS.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ProjectBoard");
+                    b.Navigation("KanbanBoard");
 
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.ProjectBoardEntity", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.KanbanBoardEntity", b =>
                 {
                     b.HasOne("PMS.Domain.BoundedContexts.ProjectManagement.ProjectSprintEntity", "ProjectSprint")
                         .WithMany()
@@ -885,18 +885,18 @@ namespace PMS.Infrastructure.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagment.TaskAttachmentEntity", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagement.TaskAttachmentEntity", b =>
                 {
-                    b.HasOne("PMS.Domain.BoundedContexts.TaskManagment.TaskEntity", null)
+                    b.HasOne("PMS.Domain.BoundedContexts.TaskManagement.TaskEntity", null)
                         .WithMany("Attachments")
                         .HasForeignKey("SprintTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagment.TaskCommentEntity", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagement.TaskCommentEntity", b =>
                 {
-                    b.HasOne("PMS.Domain.BoundedContexts.TaskManagment.TaskEntity", null)
+                    b.HasOne("PMS.Domain.BoundedContexts.TaskManagement.TaskEntity", null)
                         .WithMany("Comments")
                         .HasForeignKey("SprintTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -909,9 +909,9 @@ namespace PMS.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagment.TaskEntity", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagement.TaskEntity", b =>
                 {
-                    b.HasOne("PMS.Domain.BoundedContexts.ProjectManagement.ProjectBoardColumnEntity", "ProjectBoardColumn")
+                    b.HasOne("PMS.Domain.BoundedContexts.ProjectManagement.KanbanBoardColumnEntity", "KanbanBoardColumn")
                         .WithMany("Tasks")
                         .HasForeignKey("BoardColumnId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -923,14 +923,14 @@ namespace PMS.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ProjectBoardColumn");
+                    b.Navigation("KanbanBoardColumn");
 
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagment.TaskLabelEntity", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagement.TaskLabelEntity", b =>
                 {
-                    b.HasOne("PMS.Domain.BoundedContexts.TaskManagment.TaskEntity", null)
+                    b.HasOne("PMS.Domain.BoundedContexts.TaskManagement.TaskEntity", null)
                         .WithMany("Labels")
                         .HasForeignKey("SprintTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1011,7 +1011,7 @@ namespace PMS.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PMS.Domain.BoundedContexts.TaskManagment.TaskEntity", null)
+                    b.HasOne("PMS.Domain.BoundedContexts.TaskManagement.TaskEntity", null)
                         .WithMany()
                         .HasForeignKey("TasksId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1033,12 +1033,12 @@ namespace PMS.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.ProjectBoardColumnEntity", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.KanbanBoardColumnEntity", b =>
                 {
                     b.Navigation("Tasks");
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.ProjectBoardEntity", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.ProjectManagement.KanbanBoardEntity", b =>
                 {
                     b.Navigation("Columns");
                 });
@@ -1048,7 +1048,7 @@ namespace PMS.Infrastructure.Migrations
                     b.Navigation("Members");
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagment.TaskEntity", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.TaskManagement.TaskEntity", b =>
                 {
                     b.Navigation("Attachments");
 
