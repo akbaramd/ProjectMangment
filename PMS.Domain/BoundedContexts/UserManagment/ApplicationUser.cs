@@ -1,11 +1,11 @@
 ﻿using System.Security.Cryptography;
+using Bonyan.DomainDrivenDesign.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using PMS.Domain.BoundedContexts.TenantManagment;
-using SharedKernel.DomainDrivenDesign.Domain;
+using PMS.Domain.BoundedContexts.TenantManagement;
 
 namespace PMS.Domain.BoundedContexts.UserManagment
 {
-    public class ApplicationUser : IdentityUser<Guid>,IEntity
+    public class ApplicationUser : IdentityUser<Guid>,IEntity<Guid>
     {
         public string FullName { get; private set; }
         public bool Deletable { get; private set; } = true;
@@ -79,6 +79,11 @@ namespace PMS.Domain.BoundedContexts.UserManagment
         public bool IsLockedOut()
         {
             return LockoutEndTime.HasValue && LockoutEndTime.Value > DateTime.UtcNow;
+        }
+
+        public object[] GetKeys()
+        {
+            return [Id];
         }
     }
 

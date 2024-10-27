@@ -5,7 +5,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AkbarAmd.SharedKernal" Version="1.1.5" />
+    <PackageReference Include="Bonyan.AspNetCore.Persistence.EntityFrameworkCore" Version="1.0.8" />
+    <PackageReference Include="Bonyan.AspNetCore.Persistence.EntityFrameworkCore.Sqlite" Version="1.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.10" />

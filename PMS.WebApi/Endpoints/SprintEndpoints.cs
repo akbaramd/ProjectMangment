@@ -1,8 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PMS.Application.Interfaces;
-using SharedKernel.Tenants.Abstractions;
-using System.Security.Claims;
 using PMS.Application.UseCases.Sprints;
 using PMS.Application.UseCases.Sprints.Models;
 using SharedKernel.Extensions;

@@ -1,19 +1,16 @@
+using Bonyan.DomainDrivenDesign.Domain;
 using Microsoft.EntityFrameworkCore;
-using PMS.Domain.BoundedContexts.TenantManagment;
-using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
-using SharedKernel.EntityFrameworkCore;
+using PMS.Domain.BoundedContexts.TenantManagement;
+using PMS.Domain.BoundedContexts.TenantManagement.Repositories;
 
 namespace PMS.Infrastructure.Data.Repositories;
 
-public class TenantMemberRepository : EfGenericRepository<ApplicationDbContext, TenantMemberEntity>, ITenantMemberRepository
+public class TenantMemberRepository : EfCoreRepository< TenantMemberEntity,Guid,ApplicationDbContext>, ITenantMemberRepository
 {
-    public TenantMemberRepository(ApplicationDbContext context) : base(context)
-    {
-    }
 
     public Task<TenantMemberEntity?> GetUserTenantByUserIdAndTenantIdAsync(Guid userId, Guid tenantId)
     {
-        return _context.TenantMember
+        return _dbContext.TenantMember
             .Include(x=>x.Tenant)
             .Include(x=>x.Roles)
             .ThenInclude(x=>x.Permissions)
@@ -23,7 +20,7 @@ public class TenantMemberRepository : EfGenericRepository<ApplicationDbContext, 
 
     public Task<List<TenantMemberEntity>> GetUsersByTenantIdAsync(Guid tenantId)
     {
-        return _context.TenantMember.Include(x=>x.Tenant)
+        return _dbContext.TenantMember.Include(x=>x.Tenant)
             .Include(x=>x.Roles)
             .ThenInclude(x=>x.Permissions)
             .ThenInclude(x=>x.Group)
@@ -32,7 +29,7 @@ public class TenantMemberRepository : EfGenericRepository<ApplicationDbContext, 
 
     public Task<List<TenantMemberEntity>> GetTenantsByUserIdAsync(Guid userId)
     {
-        return _context.TenantMember.Include(x=>x.Tenant)
+        return _dbContext.TenantMember.Include(x=>x.Tenant)
             .Include(x=>x.Roles)
             .ThenInclude(x=>x.Permissions)
             .ThenInclude(x=>x.Group)
@@ -41,7 +38,7 @@ public class TenantMemberRepository : EfGenericRepository<ApplicationDbContext, 
 
     public Task<bool> IsUserInTenantAsync(Guid id, Guid tenantId)
     {
-        return _context.TenantMember.Include(x=>x.Tenant)
+        return _dbContext.TenantMember.Include(x=>x.Tenant)
             .Include(x=>x.Roles)
             .ThenInclude(x=>x.Permissions)
             .ThenInclude(x=>x.Group)
@@ -50,7 +47,7 @@ public class TenantMemberRepository : EfGenericRepository<ApplicationDbContext, 
 
     public Task<List<TenantMemberEntity>> GetMembersByTenantIdAsync(Guid tenantId)
     {
-        return _context.TenantMember.Include(x=>x.Tenant)
+        return _dbContext.TenantMember.Include(x=>x.Tenant)
             .Include(x=>x.Roles)
             .ThenInclude(x=>x.Permissions)
             .ThenInclude(x=>x.Group)
@@ -59,7 +56,7 @@ public class TenantMemberRepository : EfGenericRepository<ApplicationDbContext, 
 
     public Task<TenantMemberEntity?> GetTenantMemberByPhoneNumberAsync(string phoneNumber, Guid tenantId)
     {
-        return _context.TenantMember
+        return _dbContext.TenantMember
             .Include(x=>x.Tenant)
             .Include(x=>x.Roles)
             .ThenInclude(x=>x.Permissions)
@@ -67,5 +64,8 @@ public class TenantMemberRepository : EfGenericRepository<ApplicationDbContext, 
             .Include(x=>x.User).FirstOrDefaultAsync(ut => ut.User.PhoneNumber == phoneNumber && ut.TenantId == tenantId);
     }
 
-   
+
+    public TenantMemberRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext, serviceProvider)
+    {
+    }
 }

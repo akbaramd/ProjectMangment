@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using PMS.Application.UseCases.Boards.Models;
+﻿using PMS.Application.UseCases.Boards.Models;
 using PMS.Application.UseCases.Projects.Models;
 
 namespace PMS.Application.UseCases.Tasks.Models;

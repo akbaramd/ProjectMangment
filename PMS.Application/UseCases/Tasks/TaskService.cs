@@ -1,18 +1,15 @@
 ﻿using AutoMapper;
+using Bonyan.DomainDrivenDesign.Domain.Events;
 using PMS.Application.Base;
 using PMS.Application.UseCases.Projects.Exceptions;
 using PMS.Application.UseCases.Sprints.Exceptions;
 using PMS.Application.UseCases.Tasks.Exceptions;
 using PMS.Application.UseCases.Tasks.Models;
 using PMS.Application.UseCases.Tasks.Specs;
-using PMS.Domain.BoundedContexts.ProjectManagement;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban.Repositories;
 using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
 using PMS.Domain.BoundedContexts.TaskManagement.Tasks.Repositories;
-using PMS.Domain.BoundedContexts.TaskManagement;
-using PMS.Domain.BoundedContexts.TenantManagment;
-using SharedKernel.DomainDrivenDesign.Domain.DomainEvent;
 using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Tasks

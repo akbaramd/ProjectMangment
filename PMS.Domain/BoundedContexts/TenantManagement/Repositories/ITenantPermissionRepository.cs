@@ -1,4 +1,4 @@
-﻿namespace PMS.Domain.BoundedContexts.TenantManagment.Repositories;
+﻿namespace PMS.Domain.BoundedContexts.TenantManagement.Repositories;
 
 public interface IPermissionRepository
 {

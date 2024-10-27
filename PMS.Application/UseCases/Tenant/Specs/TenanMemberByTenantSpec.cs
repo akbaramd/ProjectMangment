@@ -1,5 +1,5 @@
 using PMS.Application.UseCases.Tenant.Models;
-using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagement;
 using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.Tenant.Specs;

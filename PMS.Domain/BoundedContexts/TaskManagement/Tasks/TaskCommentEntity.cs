@@ -1,5 +1,5 @@
+using Bonyan.DomainDrivenDesign.Domain.Entities;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
-using SharedKernel.DomainDrivenDesign.Domain;
 
 namespace PMS.Domain.BoundedContexts.TaskManagement.Tasks
 {

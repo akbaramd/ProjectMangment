@@ -1,11 +1,10 @@
 using System.Security.Claims;
+using Bonyan.DomainDrivenDesign.Domain.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PMS.Application.Interfaces;
 using PMS.Application.UseCases.Invitations;
 using PMS.Application.UseCases.Invitations.Models;
 using SharedKernel.Extensions;
-using SharedKernel.Tenants.Abstractions;
 
 namespace PMS.WebApi.Endpoints
 {

@@ -1,7 +1,7 @@
+using Bonyan.DomainDrivenDesign.Domain.Enumerations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PMS.Domain.BoundedContexts.TenantManagment;
-using SharedKernel.DomainDrivenDesign.Domain;
+using PMS.Domain.BoundedContexts.TenantManagement;
 
 namespace PMS.Infrastructure.Data.Configurations;
 
@@ -29,6 +29,6 @@ public class InvitationConfiguration : IEntityTypeConfiguration<ProjectInvitatio
             .OnDelete(DeleteBehavior.Cascade); // Delete invitations if the tenantEntity is deleted
 
         builder.Property(x => x.Status)
-            .HasConversion(x => x.Name, c => Enumeration.ParseFromName<InvitationStatus>(c));
+            .HasConversion(x => x.Name, c => Enumeration.FromName<InvitationStatus>(c));
     }
 }

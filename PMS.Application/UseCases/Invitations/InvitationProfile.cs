@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using PMS.Application.UseCases.Invitations.Models;
-using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagement;
 using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Invitations

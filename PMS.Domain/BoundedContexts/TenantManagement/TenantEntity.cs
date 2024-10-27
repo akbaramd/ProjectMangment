@@ -1,8 +1,9 @@
-﻿using SharedKernel.DomainDrivenDesign.Domain;
+﻿using Bonyan.DomainDrivenDesign.Domain.Aggregates;
+using Bonyan.DomainDrivenDesign.Domain.Enumerations;
 
-namespace PMS.Domain.BoundedContexts.TenantManagment;
+namespace PMS.Domain.BoundedContexts.TenantManagement;
 
-public class TenantEntity : AggregateRoot<Guid>
+public class TenantEntity : FullAuditableAggregateRoot<Guid>
 {
     public string Name { get; private set; }
     public string Subdomain { get; private set; }

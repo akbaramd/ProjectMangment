@@ -4,7 +4,6 @@ using PMS.Application.UseCases.Projects;
 using PMS.Application.UseCases.Projects.Models;
 using SharedKernel.Extensions;
 using SharedKernel.Model;
-using SharedKernel.Tenants.Abstractions;
 
 namespace PMS.WebApi.Endpoints
 {

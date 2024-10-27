@@ -1,8 +1,8 @@
-using SharedKernel.DomainDrivenDesign.Domain.Repository;
+using Bonyan.DomainDrivenDesign.Domain.Abstractions;
 
 namespace PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
 
-public interface IProjectRepository : IGenericRepository<ProjectEntity>
+public interface IProjectRepository : IRepository<ProjectEntity,Guid>
 {
     List<ProjectEntity> GetAllWithRelations();
     Task<ProjectEntity?> GetByIdWithRelationsAsync(Guid projectId);

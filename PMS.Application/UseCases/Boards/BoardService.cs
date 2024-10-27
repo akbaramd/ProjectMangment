@@ -4,11 +4,9 @@ using PMS.Application.UseCases.Boards.Exceptions;
 using PMS.Application.UseCases.Boards.Models;
 using PMS.Application.UseCases.Boards.Specs;
 using PMS.Application.UseCases.Sprints.Exceptions;
-using PMS.Domain.BoundedContexts.ProjectManagement;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban.Repositories;
-using PMS.Domain.BoundedContexts.TaskManagement;
 using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Boards

@@ -1,4 +1,4 @@
-﻿namespace PMS.Domain.BoundedContexts.TenantManagment
+﻿namespace PMS.Domain.BoundedContexts.TenantManagement
 {
     public class TenantPermissionGroupEntity  
     {

@@ -1,6 +1,6 @@
-using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagement;
 using PMS.Domain.Core;
-using SharedKernel.DomainDrivenDesign.Domain;
+
 
 namespace PMS.Domain.BoundedContexts.AttachmentManagement
 {

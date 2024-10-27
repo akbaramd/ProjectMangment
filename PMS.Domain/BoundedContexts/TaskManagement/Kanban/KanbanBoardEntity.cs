@@ -1,10 +1,7 @@
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
-using PMS.Domain.BoundedContexts.TenantManagment;
 using PMS.Domain.Core;
-using System.Collections.Generic;
-using System.Linq;
-using System;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban.DomainEvents;
+using PMS.Domain.BoundedContexts.TenantManagement;
 
 namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban
 {
@@ -30,7 +27,7 @@ namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban
             SprintId = sprint.Id;
             InitializeDefaultColumns();
             
-            RegisterDomainEvent(new KanbanBoardCreatedEvent(this.Id, Name, SprintId));
+            AddDomainEvent(new KanbanBoardCreatedEvent(this.Id, Name, SprintId));
         }
 
         private void InitializeDefaultColumns()
@@ -46,7 +43,7 @@ namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban
                 throw new InvalidOperationException("Column with the same name already exists in the board.");
 
             _columns.Add(columnEntity);
-            RegisterDomainEvent(new KanbanBoardColumnAddedEvent(columnEntity.Id, this.Id));
+            AddDomainEvent(new KanbanBoardColumnAddedEvent(columnEntity.Id, this.Id));
         }
 
         public void UpdateDetails(string name)
@@ -55,7 +52,7 @@ namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban
                 throw new ArgumentException("Board name cannot be empty.");
 
             Name = name;
-            RegisterDomainEvent(new KanbanBoardDetailsUpdatedEvent(this.Id, Name));
+            AddDomainEvent(new KanbanBoardDetailsUpdatedEvent(this.Id, Name));
         }
 
         public void RemoveColumn(KanbanBoardColumnEntity columnEntity)
@@ -64,7 +61,7 @@ namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban
                 throw new InvalidOperationException("Column not found in the board.");
 
             _columns.Remove(columnEntity);
-            RegisterDomainEvent(new KanbanBoardColumnRemovedEvent(columnEntity.Id, this.Id));
+            AddDomainEvent(new KanbanBoardColumnRemovedEvent(columnEntity.Id, this.Id));
         }
 
         public void UpdateColumn(Guid columnId, string newName, int newOrder)
@@ -74,7 +71,7 @@ namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban
                 throw new InvalidOperationException("Column not found in the board.");
 
             columnToUpdate.UpdateDetails(newName, newOrder);
-            RegisterDomainEvent(new KanbanBoardColumnUpdatedEvent(columnId, newName, newOrder));
+            AddDomainEvent(new KanbanBoardColumnUpdatedEvent(columnId, newName, newOrder));
         }
     }
 }

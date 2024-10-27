@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PMS.Domain.BoundedContexts.TenantManagment;
-using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
+using PMS.Domain.BoundedContexts.TenantManagement;
+using PMS.Domain.BoundedContexts.TenantManagement.Repositories;
 
 namespace PMS.Infrastructure.Data.Repositories
 {

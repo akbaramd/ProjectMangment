@@ -1,8 +1,7 @@
-﻿using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
-using PMS.Domain.BoundedContexts.TenantManagment;
+﻿using PMS.Domain.BoundedContexts.TenantManagement;
 using PMS.Domain.Core;
 
-namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban.DomainEvents;
+namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban;
 
 public class KanbanBoardColumnEntity : TenantEntityBase
 {

@@ -1,8 +1,8 @@
-using SharedKernel.DomainDrivenDesign.Domain.Repository;
+using Bonyan.DomainDrivenDesign.Domain.Abstractions;
 
 namespace PMS.Domain.BoundedContexts.UserManagment.Repositories
 {
-    public interface IUserRepository : IGenericRepository<ApplicationUser>
+    public interface IUserRepository : IRepository<ApplicationUser,Guid>
     {
         // Add any specific methods related to User if needed
         Task<ApplicationUser?> GetUserByPhoneNumberAsync(string phoneNumber);

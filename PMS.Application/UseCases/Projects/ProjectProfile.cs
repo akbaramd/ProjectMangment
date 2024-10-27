@@ -1,11 +1,8 @@
 using AutoMapper;
 using PMS.Application.UseCases.Boards.Models;
 using PMS.Application.UseCases.Projects.Models;
-using PMS.Domain.BoundedContexts.ProjectManagement;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
-using PMS.Domain.BoundedContexts.TaskManagement;
-using PMS.Domain.BoundedContexts.TaskManagement.Kanban.DomainEvents;
 using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Projects

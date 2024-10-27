@@ -1,7 +1,7 @@
 using AutoMapper;
 using PMS.Application.UseCases.Tenant.Models;
 using PMS.Application.UseCases.User.Models;
-using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagement;
 using PMS.Domain.BoundedContexts.UserManagment;
 
 namespace PMS.Application.UseCases.User

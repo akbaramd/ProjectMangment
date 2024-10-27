@@ -1,8 +1,7 @@
 using PMS.Domain.BoundedContexts.AttachmentManagement;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
-using PMS.Domain.BoundedContexts.TaskManagement.Kanban.DomainEvents;
-using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagement;
 using PMS.Domain.Core;
 
 namespace PMS.Domain.BoundedContexts.TaskManagement.Tasks

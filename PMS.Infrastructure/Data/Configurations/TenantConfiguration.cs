@@ -1,7 +1,7 @@
+using Bonyan.DomainDrivenDesign.Domain.Enumerations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PMS.Domain.BoundedContexts.TenantManagment;
-using SharedKernel.DomainDrivenDesign.Domain;
+using PMS.Domain.BoundedContexts.TenantManagement;
 
 namespace PMS.Infrastructure.Data.Configurations;
 
@@ -36,6 +36,6 @@ public class TenantConfiguration : IEntityTypeConfiguration<TenantEntity>
             .OnDelete(DeleteBehavior.Cascade); // Cascade delete when Tenant is deleted
 
         builder.Property(x => x.Status)
-            .HasConversion(x => x.Name, c => Enumeration.ParseFromName<TenantrStatus>(c));
+            .HasConversion(x => x.Name, c => Enumeration.FromName<TenantrStatus>(c));
     }
 }

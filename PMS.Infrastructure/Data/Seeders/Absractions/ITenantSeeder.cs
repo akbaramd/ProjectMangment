@@ -1,4 +1,4 @@
-using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagement;
 
 namespace PMS.Infrastructure.Data.Seeders.Absractions
 {

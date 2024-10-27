@@ -1,14 +1,11 @@
-using System;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Bonyan.DomainDrivenDesign.Domain.Abstractions;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using PMS.Application.Interfaces;
 using PMS.Application.UseCases.Auth;
 using PMS.Application.UseCases.Auth.Models;
 using SharedKernel.Extensions;
-using SharedKernel.Tenants.Abstractions; // Assuming your RequiredTenant is here
+
+// Assuming your RequiredTenant is here
 
 namespace PMS.WebApi.Endpoints;
 

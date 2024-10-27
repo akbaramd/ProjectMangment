@@ -1,20 +1,16 @@
+using Bonyan.DomainDrivenDesign.Domain;
 using Microsoft.EntityFrameworkCore;
-using PMS.Domain.BoundedContexts.ProjectManagement;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
-using SharedKernel.EntityFrameworkCore;
 
 namespace PMS.Infrastructure.Data.Repositories;
 
-public class ProjectRepository : EfGenericRepository<ApplicationDbContext, ProjectEntity>, IProjectRepository
+public class ProjectRepository : EfCoreRepository< ProjectEntity,Guid,ApplicationDbContext>, IProjectRepository
 {
-    public ProjectRepository(ApplicationDbContext context) : base(context)
-    {
-    }
 
     public List<ProjectEntity> GetAllWithRelations()
     {
-        return _context.Projects
+        return _dbContext.Projects
             .Include(x=>x.Members)
             .ThenInclude(p => p.TenantMember)
             .ThenInclude(p => p.User)
@@ -23,7 +19,7 @@ public class ProjectRepository : EfGenericRepository<ApplicationDbContext, Proje
 
     public Task<ProjectEntity?> GetByIdWithRelationsAsync(Guid projectId)
     {
-        return _context.Projects
+        return _dbContext.Projects
             .Include(x=>x.Members)
             .ThenInclude(p => p.TenantMember)
             .ThenInclude(p => p.User)
@@ -32,7 +28,7 @@ public class ProjectRepository : EfGenericRepository<ApplicationDbContext, Proje
 
     public List<ProjectEntity> GetByTenantId(Guid tenantId)
     {
-        return _context.Projects
+        return _dbContext.Projects
             .Where(p => p.TenantId == tenantId)
             .Include(x=>x.Members)
             .ThenInclude(p => p.TenantMember)
@@ -42,7 +38,7 @@ public class ProjectRepository : EfGenericRepository<ApplicationDbContext, Proje
 
     public async Task<ProjectMemberEntity?> GetMemberByTenantMemberIdAsync(Guid tenantMemberId)
     {
-        return await _context.ProjectsMembers
+        return await _dbContext.ProjectsMembers
             .Include(x => x.TenantMember)
             .ThenInclude(p => p.User)
             .FirstOrDefaultAsync(p => p.TenantMemberId == tenantMemberId);
@@ -50,9 +46,13 @@ public class ProjectRepository : EfGenericRepository<ApplicationDbContext, Proje
 
     public async Task<ProjectMemberEntity?> GetMemberByIdAsync(Guid projectMemberId)
     {
-        return await _context.ProjectsMembers
+        return await _dbContext.ProjectsMembers
             .Include(x => x.TenantMember)
             .ThenInclude(p => p.User)
             .FirstOrDefaultAsync(p => p.Id == projectMemberId);
+    }
+
+    public ProjectRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext, serviceProvider)
+    {
     }
 }

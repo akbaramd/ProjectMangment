@@ -1,8 +1,8 @@
-using SharedKernel.DomainDrivenDesign.Domain.Repository;
+using Bonyan.DomainDrivenDesign.Domain.Abstractions;
 
-namespace PMS.Domain.BoundedContexts.TenantManagment.Repositories
+namespace PMS.Domain.BoundedContexts.TenantManagement.Repositories
 {
-    public interface ITenantMemberRepository : IGenericRepository<TenantMemberEntity>
+    public interface ITenantMemberRepository : IRepository<TenantMemberEntity,Guid>
     {
         
         Task<TenantMemberEntity?> GetUserTenantByUserIdAndTenantIdAsync(Guid userId, Guid tenantId);

@@ -1,19 +1,16 @@
+using Bonyan.DomainDrivenDesign.Domain;
 using Microsoft.EntityFrameworkCore;
-using PMS.Domain.BoundedContexts.TenantManagment;
-using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
-using SharedKernel.EntityFrameworkCore;
+using PMS.Domain.BoundedContexts.TenantManagement;
+using PMS.Domain.BoundedContexts.TenantManagement.Repositories;
 
 namespace PMS.Infrastructure.Data.Repositories;
 
-public class TenantRepository : EfGenericRepository<ApplicationDbContext, TenantEntity>, ITenantRepository
+public class TenantRepository : EfCoreRepository< TenantEntity,Guid,ApplicationDbContext>, ITenantRepository
 {
-    public TenantRepository(ApplicationDbContext context) : base(context)
-    {
-    }
 
     public Task<TenantEntity?> GetTenantBySubdomainAsync(string subdomain)
     {
-        return _context.Tenants.Include(x=>x.Roles)
+        return _dbContext.Tenants.Include(x=>x.Roles)
             .ThenInclude(x=>x.Permissions)
             .ThenInclude(x=>x.Group)
             .FirstOrDefaultAsync(t => t.Subdomain == subdomain);
@@ -21,6 +18,10 @@ public class TenantRepository : EfGenericRepository<ApplicationDbContext, Tenant
 
     public Task<TenantEntity?> GetTenantByNameAsync(string name)
     {
-        return _context.Tenants.FirstOrDefaultAsync(t => t.Name == name);
+        return _dbContext.Tenants.FirstOrDefaultAsync(t => t.Name == name);
+    }
+
+    public TenantRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext, serviceProvider)
+    {
     }
 }

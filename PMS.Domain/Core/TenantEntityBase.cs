@@ -1,5 +1,5 @@
-﻿using PMS.Domain.BoundedContexts.TenantManagment;
-using SharedKernel.DomainDrivenDesign.Domain;
+﻿using Bonyan.DomainDrivenDesign.Domain.Entities;
+using PMS.Domain.BoundedContexts.TenantManagement;
 
 namespace PMS.Domain.Core;
 

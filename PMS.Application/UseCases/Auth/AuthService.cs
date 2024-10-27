@@ -6,7 +6,7 @@ using PMS.Application.UseCases.Auth.Models;
 using PMS.Application.UseCases.Tenant.Exceptions;
 using PMS.Application.UseCases.User.Exceptions;
 using PMS.Application.UseCases.User.Models;
-using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
+using PMS.Domain.BoundedContexts.TenantManagement.Repositories;
 using PMS.Domain.BoundedContexts.UserManagment;
 using PMS.Domain.BoundedContexts.UserManagment.Repositories;
 // Custom exceptions

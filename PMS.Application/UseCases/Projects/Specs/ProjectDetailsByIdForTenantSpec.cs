@@ -1,4 +1,4 @@
-using PMS.Domain.BoundedContexts.ProjectManagement;
+using Bonyan.DomainDrivenDesign.Domain.Specifications;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using SharedKernel.Specification;
 

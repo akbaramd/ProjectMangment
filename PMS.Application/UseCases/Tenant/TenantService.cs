@@ -3,7 +3,7 @@ using PMS.Application.UseCases.Auth.Exceptions;
 using PMS.Application.UseCases.Tenant.Exceptions;
 using PMS.Application.UseCases.Tenant.Models;
 using PMS.Application.UseCases.Tenant.Specs;
-using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
+using PMS.Domain.BoundedContexts.TenantManagement.Repositories;
 using PMS.Domain.BoundedContexts.UserManagment.Repositories;
 using SharedKernel.Model;
 using UnauthorizedAccessException = PMS.Application.Exceptions.UnauthorizedAccessException;

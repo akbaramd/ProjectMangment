@@ -1,4 +1,4 @@
-﻿using SharedKernel.DomainDrivenDesign.Domain.DomainEvent;
+﻿using Bonyan.DomainDrivenDesign.Domain.Events;
 
 namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban.DomainEvents;
 

@@ -1,21 +1,18 @@
+using Bonyan.AspNetCore.Persistence.EntityFrameworkCore;
+using Bonyan.DomainDrivenDesign.Domain.Enumerations;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PMS.Domain.BoundedContexts.AttachmentManagement;
-using PMS.Domain.BoundedContexts.ProjectManagement;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Enums;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
 using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
-using PMS.Domain.BoundedContexts.TaskManagement;
-using PMS.Domain.BoundedContexts.TaskManagement.Kanban.DomainEvents;
-using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagement;
 using PMS.Domain.BoundedContexts.UserManagment;
-using SharedKernel.DomainDrivenDesign.Domain;
 
 namespace PMS.Infrastructure.Data;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+public class ApplicationDbContext : BonyanDbContext<ApplicationDbContext>
 {
     public DbSet<AttachmentEntity> Attachments { get; set; }
     public DbSet<AttachmentCategoryEntity> AttachmentCategories { get; set; }
@@ -34,6 +31,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<TenantEntity> Tenants { get; set; }
     public DbSet<TaskCommentEntity> TaskComments { get; set; }
     public DbSet<TaskLabelEntity> TaskLabels { get; set; }
+    public DbSet<ApplicationUser> Users { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -57,7 +55,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
                 .HasConversion(c => c.Name.ToString(),
                     v => Enumeration.FromName<ProjectMemberAccessEnum>(v)); // Renaming AspNetUserTokens to UserTokensl
         });
-     
+        
     
         builder.Entity<KanbanBoardEntity>(entity =>
         {

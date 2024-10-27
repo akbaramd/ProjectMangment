@@ -1,7 +1,5 @@
 using PMS.Application.UseCases.Boards.Models;
-using PMS.Domain.BoundedContexts.ProjectManagement;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
-using PMS.Domain.BoundedContexts.TaskManagement;
 using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.Boards.Specs;

@@ -1,9 +1,7 @@
+using Bonyan.Modularity;
+using Bonyan.Modularity.Attributes;
 using PMS.Application;
-using PMS.Domain;
 using PMS.Infrastructure;
-using SharedKernel.Modularity;
-using SharedKernel.Modularity.Abstractions;
-using SharedKernel.Modularity.Attributes;
 
 namespace PMS.WebApi;
 

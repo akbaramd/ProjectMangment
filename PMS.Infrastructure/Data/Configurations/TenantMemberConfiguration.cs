@@ -1,7 +1,7 @@
+using Bonyan.DomainDrivenDesign.Domain.Enumerations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PMS.Domain.BoundedContexts.TenantManagment;
-using SharedKernel.DomainDrivenDesign.Domain;
+using PMS.Domain.BoundedContexts.TenantManagement;
 
 namespace PMS.Infrastructure.Data.Configurations;
 
@@ -34,6 +34,6 @@ public class TenantMemberConfiguration : IEntityTypeConfiguration<TenantMemberEn
             .HasForeignKey(x => x.TenantMemberId);
 
         builder.Property(x => x.Status)
-            .HasConversion(x => x.Name, c => Enumeration.ParseFromName<TenantMemberStatus>(c));
+            .HasConversion(x => x.Name, c => Enumeration.FromName<TenantMemberStatus>(c));
     }
 }

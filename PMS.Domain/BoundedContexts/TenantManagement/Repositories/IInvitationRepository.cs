@@ -1,8 +1,8 @@
-using SharedKernel.DomainDrivenDesign.Domain.Repository;
+using Bonyan.DomainDrivenDesign.Domain.Abstractions;
 
-namespace PMS.Domain.BoundedContexts.TenantManagment.Repositories
+namespace PMS.Domain.BoundedContexts.TenantManagement.Repositories
 {
-    public interface IInvitationRepository : IGenericRepository<ProjectInvitationEntity>
+    public interface IInvitationRepository : IRepository<ProjectInvitationEntity,Guid>
     {
         Task<ProjectInvitationEntity?> GetInvitationByEmailAsync(string email);
         Task<List<ProjectInvitationEntity>> GetInvitationsByStatusAsync(InvitationStatus status);

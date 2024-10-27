@@ -1,8 +1,8 @@
-using SharedKernel.DomainDrivenDesign.Domain.Repository;
+using Bonyan.DomainDrivenDesign.Domain.Abstractions;
 
 namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban.Repositories
 {
-    public interface IBoardRepository : IGenericRepository<KanbanBoardEntity>
+    public interface IBoardRepository : IRepository<KanbanBoardEntity,Guid>
     {
        
         List<KanbanBoardEntity> GetAllWithRelations();

@@ -1,9 +1,4 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
 using PMS.Infrastructure.Data.Seeders.Absractions;
-using PMS.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using PMS.Domain.BoundedContexts.TenantManagment;
 
 namespace PMS.Infrastructure.Data.Seeders
 {

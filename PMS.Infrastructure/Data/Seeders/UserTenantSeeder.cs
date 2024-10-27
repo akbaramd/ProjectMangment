@@ -1,9 +1,6 @@
 using PMS.Infrastructure.Data.Seeders.Absractions;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
-using System.Linq;
-using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagement;
 using PMS.Domain.BoundedContexts.UserManagment;
 
 namespace PMS.Infrastructure.Data.Seeders

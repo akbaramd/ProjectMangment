@@ -1,15 +1,9 @@
 using PMS.Infrastructure.IoC;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.OpenApi.Models;
 using PMS.WebApi;
 using PMS.WebApi.Endpoints;
 using SharedKernel;
-using SharedKernel.DomainDrivenDesign.Domain.Extensions;
 using SharedKernel.ExceptionHandling.Extensions;
-using SharedKernel.Mediator.Extensions;
-using SharedKernel.Modularity.Extensions;
 using SharedKernel.Tenants.Extensions;
 using SharedKernel.Tenants.Swaggers.Extensions;
 

@@ -1,7 +1,7 @@
 using PMS.Application.UseCases.Tenant.Exceptions;
 using PMS.Application.UseCases.Tenant.Models;
-using PMS.Domain.BoundedContexts.TenantManagment;
-using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
+using PMS.Domain.BoundedContexts.TenantManagement;
+using PMS.Domain.BoundedContexts.TenantManagement.Repositories;
 
 namespace PMS.Application.UseCases.Tenant
 {

@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Bonyan.DomainDrivenDesign.Domain.Enumerations;
 using PMS.Domain.Core;
-using SharedKernel.DomainDrivenDesign.Domain;
 
-namespace PMS.Domain.BoundedContexts.TenantManagment
+namespace PMS.Domain.BoundedContexts.TenantManagement
 {
     public class ProjectInvitationEntity : TenantEntityBase
     {

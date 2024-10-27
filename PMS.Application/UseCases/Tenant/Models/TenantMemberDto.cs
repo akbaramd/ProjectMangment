@@ -1,5 +1,5 @@
 ﻿using PMS.Application.UseCases.User.Models;
-using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagement;
 
 namespace PMS.Application.UseCases.Tenant.Models;
 

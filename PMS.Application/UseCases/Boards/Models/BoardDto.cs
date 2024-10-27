@@ -1,5 +1,3 @@
-using PMS.Application.UseCases.Sprints.Models;
-
 namespace PMS.Application.UseCases.Boards.Models;
 
 public class BoardDto

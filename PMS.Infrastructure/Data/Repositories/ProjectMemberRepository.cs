@@ -1,16 +1,12 @@
-using Microsoft.EntityFrameworkCore;
-using PMS.Domain.BoundedContexts.ProjectManagement;
+using Bonyan.DomainDrivenDesign.Domain;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
-using SharedKernel.EntityFrameworkCore;
 
 namespace PMS.Infrastructure.Data.Repositories;
 
-public class ProjectMemberRepository : EfGenericRepository<ApplicationDbContext, ProjectMemberEntity>, IProjectMemberRepository
+public class ProjectMemberRepository : EfCoreRepository<ProjectMemberEntity,Guid,ApplicationDbContext>, IProjectMemberRepository
 {
-    public ProjectMemberRepository(ApplicationDbContext context) : base(context)
+    public ProjectMemberRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext, serviceProvider)
     {
     }
-
-  
 }

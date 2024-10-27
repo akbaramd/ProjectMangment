@@ -1,7 +1,7 @@
-﻿using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Enums;
+﻿using Bonyan.DomainDrivenDesign.Domain.Entities;
+using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Enums;
 using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
-using PMS.Domain.BoundedContexts.TenantManagment;
-using SharedKernel.DomainDrivenDesign.Domain;
+using PMS.Domain.BoundedContexts.TenantManagement;
 
 namespace PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 

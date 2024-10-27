@@ -1,12 +1,8 @@
-using System.IO;
-using System.Security.Claims;
 using System.Text.Json;
-using Microsoft.AspNetCore.Identity;
-using PMS.Infrastructure.Data.Seeders.Absractions;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using PMS.Domain.BoundedContexts.TenantManagment;
-using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
+using PMS.Infrastructure.Data.Seeders.Absractions;
+using PMS.Domain.BoundedContexts.TenantManagement;
+using PMS.Domain.BoundedContexts.TenantManagement.Repositories;
 
 namespace PMS.Infrastructure.Data.Seeders
 {

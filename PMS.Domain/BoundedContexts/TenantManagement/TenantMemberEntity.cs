@@ -1,12 +1,10 @@
-﻿using PMS.Domain.BoundedContexts.ProjectManagement;
+﻿using Bonyan.DomainDrivenDesign.Domain.Enumerations;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
-using PMS.Domain.BoundedContexts.TaskManagement;
 using PMS.Domain.BoundedContexts.UserManagment;
 using PMS.Domain.Core;
-using SharedKernel.DomainDrivenDesign.Domain;
 
-namespace PMS.Domain.BoundedContexts.TenantManagment
+namespace PMS.Domain.BoundedContexts.TenantManagement
 {
     public class TenantMemberEntity : TenantEntityBase
     {

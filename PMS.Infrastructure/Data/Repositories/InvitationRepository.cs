@@ -1,38 +1,39 @@
+using Bonyan.DomainDrivenDesign.Domain;
 using Microsoft.EntityFrameworkCore;
-using PMS.Domain.BoundedContexts.TenantManagment;
-using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
-using SharedKernel.EntityFrameworkCore;
+using PMS.Domain.BoundedContexts.TenantManagement;
+using PMS.Domain.BoundedContexts.TenantManagement.Repositories;
 
 namespace PMS.Infrastructure.Data.Repositories;
 
-public class InvitationRepository : EfGenericRepository<ApplicationDbContext, ProjectInvitationEntity>, IInvitationRepository
+public class InvitationRepository : EfCoreRepository<ProjectInvitationEntity,Guid,ApplicationDbContext>, IInvitationRepository
 {
-    public InvitationRepository(ApplicationDbContext context) : base(context)
-    {
-    }
 
     public Task<ProjectInvitationEntity?> GetInvitationByEmailAsync(string email)
     {
-        return _context.TenantInvitations.FirstOrDefaultAsync(invitation => invitation.PhoneNumber == email);
+        return _dbContext.TenantInvitations.FirstOrDefaultAsync(invitation => invitation.PhoneNumber == email);
     }
 
     public Task<List<ProjectInvitationEntity>> GetInvitationsByStatusAsync(InvitationStatus status)
     {
-        return _context.TenantInvitations.Where(invitation => invitation.Status == status).ToListAsync();
+        return _dbContext.TenantInvitations.Where(invitation => invitation.Status == status).ToListAsync();
     }
 
     public Task<List<ProjectInvitationEntity>> GetInvitationsByTenantIdAsync(Guid tenantId)
     {
-        return _context.TenantInvitations.Where(invitation => invitation.TenantId == tenantId).ToListAsync();
+        return _dbContext.TenantInvitations.Where(invitation => invitation.TenantId == tenantId).ToListAsync();
     }
 
     public Task<ProjectInvitationEntity?> GetInvitationByPhoneNumberAndTenantAsync(string phoneNumber, Guid tenantId)
     {
-        return _context.TenantInvitations.FirstOrDefaultAsync(invitation => invitation.PhoneNumber == phoneNumber && invitation.TenantId == tenantId);
+        return _dbContext.TenantInvitations.FirstOrDefaultAsync(invitation => invitation.PhoneNumber == phoneNumber && invitation.TenantId == tenantId);
     }
 
     public IQueryable<ProjectInvitationEntity> Query()
     {
-        return _context.TenantInvitations;
+        return _dbContext.TenantInvitations;
+    }
+
+    public InvitationRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext, serviceProvider)
+    {
     }
 }

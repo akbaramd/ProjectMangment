@@ -1,5 +1,4 @@
 using PMS.Infrastructure.Data.Seeders.Absractions;
-using PMS.Infrastructure.Extensions;
 
 namespace PMS.Infrastructure.Data.Seeders
 {

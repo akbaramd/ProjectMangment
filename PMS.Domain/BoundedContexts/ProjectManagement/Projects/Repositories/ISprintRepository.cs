@@ -1,8 +1,8 @@
-using SharedKernel.DomainDrivenDesign.Domain.Repository;
+using Bonyan.DomainDrivenDesign.Domain.Abstractions;
 
 namespace PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories
 {
-    public interface ISprintRepository : IGenericRepository<ProjectSprintEntity>
+    public interface ISprintRepository : IRepository<ProjectSprintEntity,Guid>
     {
         List<ProjectSprintEntity> GetAllWithRelations();
         Task<ProjectSprintEntity?> GetByIdWithRelationsAsync(Guid sprintId);

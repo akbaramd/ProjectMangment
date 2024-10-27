@@ -1,4 +1,4 @@
-﻿using SharedKernel.DomainDrivenDesign.Domain;
+﻿using Bonyan.DomainDrivenDesign.Domain.Enumerations;
 
 namespace PMS.Domain.BoundedContexts.ProjectManagement.Projects.Enums;
 

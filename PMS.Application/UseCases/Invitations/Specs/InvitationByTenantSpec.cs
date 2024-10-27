@@ -1,5 +1,5 @@
 using PMS.Application.UseCases.Invitations.Models;
-using PMS.Domain.BoundedContexts.TenantManagment;
+using PMS.Domain.BoundedContexts.TenantManagement;
 using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.Invitations.Specs;

@@ -1,12 +1,12 @@
 using System.Security.Claims;
+using Bonyan.DomainDrivenDesign.Domain.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using PMS.Application.UseCases.Tenant.Exceptions;
-using PMS.Domain.BoundedContexts.TenantManagment;
-using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
+using PMS.Domain.BoundedContexts.TenantManagement;
+using PMS.Domain.BoundedContexts.TenantManagement.Repositories;
 using PMS.Domain.BoundedContexts.UserManagment;
 using PMS.Domain.BoundedContexts.UserManagment.Repositories;
-using SharedKernel.Tenants.Abstractions;
 
 namespace PMS.Application.Base
 {

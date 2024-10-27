@@ -1,8 +1,5 @@
-using PMS.Application.UseCases.Projects.Models;
-using PMS.Application.UseCases.Tasks.Models;
-using PMS.Domain.BoundedContexts.ProjectManagement;
+using Bonyan.DomainDrivenDesign.Domain.Specifications;
 using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
-using PMS.Domain.BoundedContexts.TaskManagement;
 using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.Tasks.Specs;

@@ -1,24 +1,24 @@
+using Bonyan.DomainDrivenDesign.Domain;
 using Microsoft.EntityFrameworkCore;
 using PMS.Domain.BoundedContexts.UserManagment;
 using PMS.Domain.BoundedContexts.UserManagment.Repositories;
-using SharedKernel.EntityFrameworkCore;
 
 namespace PMS.Infrastructure.Data.Repositories;
 
-public class UserRepository : EfGenericRepository<ApplicationDbContext, ApplicationUser>, IUserRepository{
-    public UserRepository(ApplicationDbContext context) : base(context)
-    {
-    }
+public class UserRepository : EfCoreRepository< ApplicationUser,Guid,ApplicationDbContext>, IUserRepository{
 
     public Task<ApplicationUser?> GetUserByEmailAsync(string email)
     {
-        return _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        return _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
     public Task<ApplicationUser?> GetUserByPhoneNumberAsync(string phoneNumber)
     {
-        return _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+        return _dbContext.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
     }
 
-    
+
+    public UserRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext, serviceProvider)
+    {
+    }
 }

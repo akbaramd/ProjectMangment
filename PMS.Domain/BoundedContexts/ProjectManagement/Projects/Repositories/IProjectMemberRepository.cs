@@ -1,8 +1,8 @@
-using SharedKernel.DomainDrivenDesign.Domain.Repository;
+using Bonyan.DomainDrivenDesign.Domain.Abstractions;
 
 namespace PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
 
-public interface IProjectMemberRepository: IGenericRepository<ProjectMemberEntity>
+public interface IProjectMemberRepository: IRepository<ProjectMemberEntity,Guid>
 {
     
 }

@@ -1,18 +1,16 @@
 using AutoMapper;
+using Bonyan.DomainDrivenDesign.Domain.Enumerations;
 using PMS.Application.Base;
 using PMS.Application.UseCases.Projects.Exceptions;
 using PMS.Application.UseCases.Projects.Models;
 using PMS.Application.UseCases.Projects.Specs;
 using PMS.Application.UseCases.Tenant.Exceptions;
-using PMS.Domain.BoundedContexts.ProjectManagement;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Enums;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban.Repositories;
-using PMS.Domain.BoundedContexts.TaskManagement;
-using PMS.Domain.BoundedContexts.TenantManagment.Repositories;
-using SharedKernel.DomainDrivenDesign.Domain;
+using PMS.Domain.BoundedContexts.TenantManagement.Repositories;
 using SharedKernel.Model;
 using UnauthorizedAccessException = PMS.Application.Exceptions.UnauthorizedAccessException;
 
