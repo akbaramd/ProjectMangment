@@ -1,16 +1,15 @@
 using AutoMapper;
-using PMS.Application.Base;
+using Bonyan.DomainDrivenDesign.Domain.Model;
 using PMS.Application.UseCases.Projects.Exceptions;
 using PMS.Application.UseCases.Sprints.Exceptions;
 using PMS.Application.UseCases.Sprints.Models;
 using PMS.Application.UseCases.Sprints.Specs;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
-using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Sprints
 {
-    public class SprintService : BaseTenantService, ISprintService
+    public class SprintService :  ISprintService
     {
         private readonly ISprintRepository _sprintRepository;
         private readonly IProjectRepository _projectRepository;

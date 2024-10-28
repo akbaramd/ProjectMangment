@@ -1,7 +1,7 @@
 
+using Bonyan.DomainDrivenDesign.Domain.Specifications;
 using PMS.Application.UseCases.Projects.Models;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
-using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.Projects.Specs;
 

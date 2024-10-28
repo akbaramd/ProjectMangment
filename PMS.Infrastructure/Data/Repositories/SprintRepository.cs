@@ -27,7 +27,7 @@ public class SprintRepository : EfCoreRepository<ProjectSprintEntity,Guid,Applic
             .ToList();
     }
 
-    public SprintRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext, serviceProvider)
+    public SprintRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext,serviceProvider)
     {
     }
 }

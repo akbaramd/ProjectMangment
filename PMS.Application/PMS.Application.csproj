@@ -10,10 +10,27 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 <ItemGroup>
-  <PackageReference Include="AkbarAmd.SharedKernal" Version="1.1.5" />
-  <PackageReference Include="Bonyan.AutoMapper" Version="1.0.8" />
-  <PackageReference Include="Bonyan.DomainDrivenDesign.Application" Version="1.0.8" />
+  <PackageReference Include="Bonyan.AutoMapper" Version="1.0.9" />
+  <PackageReference Include="Bonyan.DomainDrivenDesign.Application" Version="1.0.9" />
   <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
   <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
+</ItemGroup>
+<ItemGroup>
+  <Folder Include="Base\" />
+</ItemGroup>
+<ItemGroup>
+  <Compile Remove="UseCases\Boards\**" />
+  <Compile Remove="UseCases\Sprints\**" />
+  <Compile Remove="UseCases\Tasks\**" />
+</ItemGroup>
+<ItemGroup>
+  <EmbeddedResource Remove="UseCases\Boards\**" />
+  <EmbeddedResource Remove="UseCases\Sprints\**" />
+  <EmbeddedResource Remove="UseCases\Tasks\**" />
+</ItemGroup>
+<ItemGroup>
+  <None Remove="UseCases\Boards\**" />
+  <None Remove="UseCases\Sprints\**" />
+  <None Remove="UseCases\Tasks\**" />
 </ItemGroup>
 </Project>

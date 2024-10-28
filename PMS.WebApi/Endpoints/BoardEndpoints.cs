@@ -1,9 +1,8 @@
+using Bonyan.DomainDrivenDesign.Domain.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PMS.Application.UseCases.Boards;
 using PMS.Application.UseCases.Boards.Models;
-using SharedKernel.Extensions;
-using SharedKernel.Model;
 
 namespace PMS.WebApi.Endpoints
 {

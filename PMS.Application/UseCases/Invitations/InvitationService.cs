@@ -1,15 +1,17 @@
 using AutoMapper;
+using Bonyan.DomainDrivenDesign.Domain.Model;
+using Bonyan.MultiTenant;
+using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
 using Microsoft.EntityFrameworkCore;
 using PMS.Application.Interfaces;
 using PMS.Application.UseCases.Auth.Exceptions;
 using PMS.Application.UseCases.Invitations.Models;
 using PMS.Application.UseCases.Invitations.Specs;
-using PMS.Application.UseCases.Tenant.Exceptions;
+using PMS.Application.UseCases.Tenants.Exceptions;
 using PMS.Application.UseCases.User.Exceptions;
 using PMS.Domain.BoundedContexts.TenantManagement;
 using PMS.Domain.BoundedContexts.TenantManagement.Repositories;
 using PMS.Domain.BoundedContexts.UserManagment.Repositories;
-using SharedKernel.Model;
 using UnauthorizedAccessException = PMS.Application.Exceptions.UnauthorizedAccessException;
 
 namespace PMS.Application.UseCases.Invitations
@@ -22,6 +24,7 @@ namespace PMS.Application.UseCases.Invitations
         private readonly ISmsService _smsService;
         private readonly ITenantMemberRepository _tenantMemberRepository;
         private readonly IMapper _mapper;
+        private readonly ICurrentTenant _currentTenant;
 
         public InvitationService(
             IInvitationRepository invitationRepository,
@@ -29,7 +32,7 @@ namespace PMS.Application.UseCases.Invitations
             ITenantRepository tenantRepository,
             ISmsService smsService,
             ITenantMemberRepository tenantMemberRepository,
-            IMapper mapper)
+            IMapper mapper, ICurrentTenant currentTenant)
         {
             _invitationRepository = invitationRepository;
             _userRepository = userRepository;
@@ -37,18 +40,19 @@ namespace PMS.Application.UseCases.Invitations
             _smsService = smsService;
             _tenantMemberRepository = tenantMemberRepository;
             _mapper = mapper;
+            _currentTenant = currentTenant;
         }
 
         // Get all invitations with pagination and search
-        public async Task<PaginatedResult<InvitationDto>> GetAllInvitationsAsync(InvitationFilterDto paginationParams, string tenantId)
+        public async Task<PaginatedResult<InvitationDto>> GetAllInvitationsAsync(InvitationFilterDto paginationParams)
         {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
+            var tenant = await _tenantRepository.FindOneAsync(x=>x.Key == _currentTenant.Name);
             if (tenant == null)
             {
                 throw new TenantNotFoundException();
             }
 
-            var dto = await _invitationRepository.PaginatedAsync(new InvitationByTenantSpec(tenant.Id, paginationParams));
+            var dto = await _invitationRepository.PaginatedAsync(new InvitationByTenantSpec(tenant.Id.Value, paginationParams));
                
 
            
@@ -61,7 +65,6 @@ namespace PMS.Application.UseCases.Invitations
         public async Task<InvitationDetailsDto> GetInvitationDetailsAsync(Guid invitationId)
         {
             var invitation = await _invitationRepository.Query()
-                .Include(i => i.Tenant)
                 .FirstOrDefaultAsync(i => i.Id == invitationId);
 
             if (invitation == null || invitation.IsExpired() || invitation.Status == InvitationStatus.Canceled)
@@ -80,9 +83,9 @@ namespace PMS.Application.UseCases.Invitations
         }
 
         // Send invitation (with permission check)
-        public async Task SendInvitationAsync(InvitationSendDto invitationSendDto, string tenantId, Guid userId)
+        public async Task SendInvitationAsync(InvitationSendDto invitationSendDto, Guid userId)
         {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
+            var tenant = await _tenantRepository.FindOneAsync(x=>x.Key == _currentTenant.Name);
             if (tenant == null)
             {
                 throw new TenantNotFoundException();
@@ -103,7 +106,7 @@ namespace PMS.Application.UseCases.Invitations
             }
 
             // Check for existing pending invitations
-            var existingInvitation = await _invitationRepository.GetInvitationByPhoneNumberAndTenantAsync(invitationSendDto.PhoneNumber, tenant.Id);
+            var existingInvitation = await _invitationRepository.GetInvitationByPhoneNumberAndTenantAsync(invitationSendDto.PhoneNumber, tenant.Id.Value);
             if (existingInvitation !=null && (existingInvitation.Status == InvitationStatus.Pending || existingInvitation.Status == InvitationStatus.Accepted) && !existingInvitation.IsExpired())
             {
                 throw new InvalidOperationException("There is already a pending invitation for this phone number.");
@@ -122,19 +125,19 @@ namespace PMS.Application.UseCases.Invitations
             else
             {
                 // Create a new invitation
-                existingInvitation = new ProjectInvitationEntity(invitationSendDto.PhoneNumber, tenant, expirationDuration);
+                existingInvitation = new ProjectInvitationEntity(invitationSendDto.PhoneNumber, expirationDuration);
                 await _invitationRepository.AddAsync(existingInvitation);
             }
 
-            var invitationLink = $"http://{tenant.Subdomain}.yourdomain.com/invitation/{existingInvitation.Id}";
+            var invitationLink = $"http://{tenant.Key}.yourdomain.com/invitation/{existingInvitation.Id}";
             var message = $"You have been invited to join {tenant.Name}. Click here: {invitationLink}";
             await _smsService.SendSmsAsync(invitationSendDto.PhoneNumber, message);
         }
 
         // Cancel invitation (with permission check)
-        public async Task CancelInvitationAsync(Guid invitationId, string tenantId, Guid userId)
+        public async Task CancelInvitationAsync(Guid invitationId, Guid userId)
         {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
+            var tenant = await _tenantRepository.FindOneAsync(x=>x.Key == _currentTenant.Name);
             if (tenant == null)
             {
                 throw new TenantNotFoundException();
@@ -148,7 +151,7 @@ namespace PMS.Application.UseCases.Invitations
             }
 
             var invitation = await _invitationRepository.GetByIdAsync(invitationId);
-            if (invitation == null || invitation.TenantId != tenant.Id || invitation.Status == InvitationStatus.Canceled)
+            if (invitation == null || invitation.TenantId != tenant.Id.Value || invitation.Status == InvitationStatus.Canceled)
             {
                 throw new InvalidInvitationTokenException("Invalid or already canceled invitation.");
             }
@@ -158,9 +161,9 @@ namespace PMS.Application.UseCases.Invitations
         }
 
         // Resend invitation
-        public async Task ResendInvitationAsync(Guid invitationId, string tenantId)
+        public async Task ResendInvitationAsync(Guid invitationId)
         {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
+            var tenant = await _tenantRepository.FindOneAsync(x=>x.Key == _currentTenant.Name);
             if (tenant == null)
             {
                 throw new TenantNotFoundException();
@@ -172,7 +175,7 @@ namespace PMS.Application.UseCases.Invitations
                 throw new InvalidInvitationTokenException("Cannot resend an expired or canceled invitation.");
             }
 
-            var invitationLink = $"http://{tenant.Subdomain}.yourdomain.com/invitation/{invitation.Id}";
+            var invitationLink = $"http://{tenant.Key}.yourdomain.com/invitation/{invitation.Id}";
             var message = $"Reminder: You have been invited to join {tenant.Name}. Click here: {invitationLink}";
             await _smsService.SendSmsAsync(invitation.PhoneNumber, message);
         }
@@ -192,14 +195,14 @@ namespace PMS.Application.UseCases.Invitations
                 throw new UserNotFoundException("User not found.");
             }
 
-            var tenant = await _tenantRepository.GetByIdAsync(invitation.TenantId);
+            var tenant = await _tenantRepository.GetByIdAsync(TenantId.FromGuid(invitation.TenantId.Value));
             if (tenant == null)
             {
-                throw new TenantNotFoundException("Tenant not found.");
+                throw new TenantNotFoundException("Tenants not found.");
             }
 
             // Add the user to the tenantEntity
-            await _tenantMemberRepository.AddAsync(new TenantMemberEntity(user, tenant));
+            await _tenantMemberRepository.AddAsync(new TenantMemberEntity(user));
 
             invitation.Accept();
             await _invitationRepository.UpdateAsync(invitation);
@@ -219,16 +222,16 @@ namespace PMS.Application.UseCases.Invitations
         }
 
         // Update invitation
-        public async Task UpdateInvitationAsync(Guid invitationId, InvitationUpdateDto invitationUpdateDto, string tenantId)
+        public async Task UpdateInvitationAsync(Guid invitationId, InvitationUpdateDto invitationUpdateDto)
         {
-            var tenant = await _tenantRepository.GetTenantBySubdomainAsync(tenantId);
+            var tenant = await _tenantRepository.FindOneAsync(x=>x.Key == _currentTenant.Name);
             if (tenant == null)
             {
                 throw new TenantNotFoundException();
             }
 
             var invitation = await _invitationRepository.GetByIdAsync(invitationId);
-            if (invitation == null || invitation.TenantId != tenant.Id || invitation.Status == InvitationStatus.Accepted || invitation.Status == InvitationStatus.Canceled || invitation.IsExpired())
+            if (invitation == null || invitation.TenantId != tenant.Id.Value || invitation.Status == InvitationStatus.Accepted || invitation.Status == InvitationStatus.Canceled || invitation.IsExpired())
             {
                 throw new InvalidInvitationTokenException("Cannot update an accepted, canceled, or expired invitation.");
             }

@@ -22,8 +22,8 @@ namespace PMS.Domain.BoundedContexts.TenantManagement
      public virtual ICollection<TaskEntity> Tasks { get; private set; } = new List<TaskEntity>();
         protected TenantMemberEntity() { }
 
-        public TenantMemberEntity(ApplicationUser user, TenantEntity tenant)
-            : base(tenant)
+        public TenantMemberEntity(ApplicationUser user)
+           
         {
             UserId = user.Id;
             User = user;

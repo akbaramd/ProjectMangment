@@ -1,4 +1,3 @@
-using PMS.Domain.BoundedContexts.TenantManagement;
 using PMS.Domain.Core;
 
 namespace PMS.Domain.BoundedContexts.AttachmentManagement
@@ -10,7 +9,7 @@ namespace PMS.Domain.BoundedContexts.AttachmentManagement
         public virtual ICollection<AttachmentEntity> Attachments { get; set; } = new List<AttachmentEntity>();
         protected AttachmentCategoryEntity() { }
 
-        public AttachmentCategoryEntity(TenantEntity tenant ,string title):base(tenant)
+        public AttachmentCategoryEntity(string title)
         {
             Title = title;
         }

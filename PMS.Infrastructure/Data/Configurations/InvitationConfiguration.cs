@@ -22,12 +22,7 @@ public class InvitationConfiguration : IEntityTypeConfiguration<ProjectInvitatio
         builder.Property(i => i.SentAt)
             .IsRequired();
 
-        // Relationship with Tenant
-        builder.HasOne(i => i.Tenant)
-            .WithMany()
-            .HasForeignKey(i => i.TenantId)
-            .OnDelete(DeleteBehavior.Cascade); // Delete invitations if the tenantEntity is deleted
-
+       
         builder.Property(x => x.Status)
             .HasConversion(x => x.Name, c => Enumeration.FromName<InvitationStatus>(c));
     }

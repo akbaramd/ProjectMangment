@@ -3,8 +3,10 @@ using Bonyan.AspNetCore.Persistence.EntityFrameworkCore;
 using Bonyan.Modularity;
 using Bonyan.Modularity.Abstractions;
 using Bonyan.Modularity.Attributes;
+using Bonyan.MultiTenant;
+using Bonyan.Persistence.EntityFrameworkCore.Sqlite;
+using Bonyan.TenantManagement.EntityFrameworkCore.Bonyan.TenantManagement.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -14,7 +16,6 @@ using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban.Repositories;
 using PMS.Domain.BoundedContexts.TaskManagement.Tasks.Repositories;
 using PMS.Domain.BoundedContexts.TenantManagement.Repositories;
-using PMS.Domain.BoundedContexts.UserManagment;
 using PMS.Domain.BoundedContexts.UserManagment.Repositories;
 using PMS.Infrastructure.Data;
 using PMS.Infrastructure.Data.Repositories;
@@ -25,9 +26,20 @@ using PMS.Infrastructure.Services;
 namespace PMS.Infrastructure;
 
 [DependOn(
-    typeof(BonyanPersistenceEntityFrameworkModule), typeof(DomainModule))]
+    typeof(BonyanPersistenceEntityFrameworkModule),
+    typeof(BonyanTenantManagementEntityFrameworkModule),
+    typeof(DomainModule))]
 public class InfrastructureModule : Module
 {
+    public override Task OnPreConfigureAsync(ModularityContext context)
+    {
+        context.Configure<BonyanMultiTenancyOptions>(c =>
+        {
+            c.IsEnabled = true;
+        });
+        return base.OnPreConfigureAsync(context);
+    }
+
     public override Task OnConfigureAsync(ModularityContext context)
     {
         // Register repository services
@@ -37,7 +49,6 @@ public class InfrastructureModule : Module
         context.Services.AddScoped<IProjectRepository, ProjectRepository>();
         context.Services.AddScoped<IInvitationRepository, InvitationRepository>();
         context.Services.AddScoped<ITenantMemberRepository, TenantMemberRepository>();
-        context.Services.AddScoped<ITenantRepository, TenantRepository>();
         context.Services.AddScoped<IPermissionRepository, PermissionRepository>();
         context.Services.AddScoped<IRoleRepository, RoleRepository>();
         context.Services.AddScoped<IUserRepository, UserRepository>();
@@ -54,8 +65,10 @@ public class InfrastructureModule : Module
         context.Services.AddSingleton<ISmsService, FakeSmsService>();
         context.Services.AddScoped<IJwtService, JwtService>();
         // Configure database context
-        context.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlite("Data Source=pms.db"));
+        context.Configure<EntityFrameworkDbContextOptions>(c =>
+        {
+            c.UseSqlite("Data Source=pms.db");
+        });
 
         // Identity
         context.AddBonyanDbContext<ApplicationDbContext>(c => { c.AddDefaultRepositories(true); });

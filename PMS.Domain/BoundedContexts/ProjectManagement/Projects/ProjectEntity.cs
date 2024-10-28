@@ -1,5 +1,4 @@
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Enums;
-using PMS.Domain.BoundedContexts.TenantManagement;
 using PMS.Domain.Core;
 
 namespace PMS.Domain.BoundedContexts.ProjectManagement.Projects
@@ -19,8 +18,8 @@ namespace PMS.Domain.BoundedContexts.ProjectManagement.Projects
         {
         }
 
-        public ProjectEntity(string name, string description, DateTime startDate, TenantEntity tenant)
-            : base(tenant)
+        public ProjectEntity(string name, string description, DateTime startDate)
+           
         {
             Name = name;
             Description = description;

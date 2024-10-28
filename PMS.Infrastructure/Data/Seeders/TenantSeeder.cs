@@ -1,3 +1,4 @@
+using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
 using PMS.Infrastructure.Data.Seeders.Absractions;
 using Microsoft.EntityFrameworkCore;
 using PMS.Domain.BoundedContexts.TenantManagement;
@@ -19,7 +20,7 @@ namespace PMS.Infrastructure.Data.Seeders
         }
 
         // The SeedTenantAsync method accepts PermissionsData and syncs roles and permissions accordingly
-        public async Task<TenantEntity> SeedTenantAsync(string name, string subdomain, PermissionsData permissionsData)
+        public async Task<Tenant> SeedTenantAsync(string name, string subdomain, PermissionsData permissionsData)
         {
             var tenant = await _dbContext.Tenants.FirstOrDefaultAsync(t => t.Name == name);
             
@@ -31,7 +32,7 @@ namespace PMS.Infrastructure.Data.Seeders
             else
             {
                 // Create a new tenantEntity and seed the roles
-                tenant = new TenantEntity(name, subdomain);
+                tenant = new Tenant(subdomain,name);
                 _dbContext.Tenants.Add(tenant);
                 await _dbContext.SaveChangesAsync();
 
@@ -43,14 +44,14 @@ namespace PMS.Infrastructure.Data.Seeders
         }
 
         // Synchronize the roles for an existing tenantEntity
-        private async Task SyncRolesForTenantAsync(TenantEntity tenantEntity, PermissionsData permissionsData)
+        private async Task SyncRolesForTenantAsync(Tenant tenantEntity, PermissionsData permissionsData)
         {
             var existingRoles =  _roleManager.GetByTenantId(tenantEntity.Id);
 
             // For each role in PermissionsData, either update or create the role
             foreach (var roleData in permissionsData.Roles)
             {
-                var existingRole = existingRoles.FirstOrDefault(r => r.TenantId == tenantEntity.Id && r.Key == roleData.RoleName.ToLower().Replace(" ","-"));
+                var existingRole = existingRoles.FirstOrDefault(r => r.TenantId == tenantEntity.Id.Value && r.Key == roleData.RoleName.ToLower().Replace(" ","-"));
                 
                 if (existingRole != null)
                 {
@@ -60,7 +61,7 @@ namespace PMS.Infrastructure.Data.Seeders
                 else
                 {
                     // Role does not exist in the database, create it and sync permissions
-                    var newRole = new TenantRoleEntity(roleData.RoleName, tenantEntity, deletable: false, isSystemRole: false);
+                    var newRole = new TenantRoleEntity(roleData.RoleName,tenantEntity.Id, deletable: false, isSystemRole: false);
                     await _roleManager.AddAsync(newRole);
                     await ReassignPermissionsForRole(newRole, roleData.Permissions);
                 }
@@ -70,12 +71,12 @@ namespace PMS.Infrastructure.Data.Seeders
         }
 
         // Seed roles for a newly created tenantEntity
-        private async Task SeedRolesForTenantAsync(TenantEntity tenantEntity, PermissionsData permissionsData)
+        private async Task SeedRolesForTenantAsync(Tenant tenantEntity, PermissionsData permissionsData)
         {
             foreach (var roleData in permissionsData.Roles)
             {
                 // Create the role
-                var role = new TenantRoleEntity(roleData.RoleName,tenantEntity, deletable: false, isSystemRole: false);
+                var role = new TenantRoleEntity(roleData.RoleName,tenantEntity.Id,deletable: false, isSystemRole: false);
                 await _roleManager.AddAsync(role);
 
                 // Assign permissions from PermissionsData

@@ -1,7 +1,7 @@
 using AutoMapper;
+using Bonyan.DomainDrivenDesign.Domain.Model;
 using PMS.Application.UseCases.Sprints.Models;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
-using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Sprints;
 

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Bonyan.DomainDrivenDesign.Domain.Model;
 using PMS.Application.UseCases.Invitations.Models;
 using PMS.Domain.BoundedContexts.TenantManagement;
-using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Invitations
 {
@@ -11,7 +11,6 @@ namespace PMS.Application.UseCases.Invitations
         {
             // Map between domain entity and DTO
             CreateMap<ProjectInvitationEntity, InvitationDto>()
-                .ForMember(dest => dest.Tenant, opt => opt.MapFrom(src => src.Tenant))
                 .ForMember(dest => dest.TenantId, opt => opt.MapFrom(src => src.TenantId.ToString()));
 
             // Map between DTO and domain entity

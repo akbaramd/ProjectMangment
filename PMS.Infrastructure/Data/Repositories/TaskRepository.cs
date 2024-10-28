@@ -37,7 +37,7 @@ public class TaskRepository : EfCoreRepository< TaskEntity,Guid,ApplicationDbCon
             .ToListAsync();
     }
 
-    public TaskRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext, serviceProvider)
+    public TaskRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext,serviceProvider)
     {
     }
 }

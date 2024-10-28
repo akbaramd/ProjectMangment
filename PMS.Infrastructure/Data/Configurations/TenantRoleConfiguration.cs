@@ -9,10 +9,6 @@ namespace PMS.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<TenantRoleEntity> builder)
         {
             builder.Property(x => x.Key).HasColumnName("Key");
-            builder.HasOne(x => x.Tenant)
-                   .WithMany(c => c.Roles)
-                   .HasForeignKey(x => x.TenantId)
-                   .IsRequired(false);
             builder.ToTable("TenantRoles");
         }
     }

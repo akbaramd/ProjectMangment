@@ -1,7 +1,6 @@
 using PMS.Domain.BoundedContexts.AttachmentManagement;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
-using PMS.Domain.BoundedContexts.TenantManagement;
 using PMS.Domain.Core;
 
 namespace PMS.Domain.BoundedContexts.TaskManagement.Tasks
@@ -35,8 +34,8 @@ namespace PMS.Domain.BoundedContexts.TaskManagement.Tasks
 
         protected TaskEntity() { }
 
-        public TaskEntity(string title, string description, int order, KanbanBoardColumnEntity initialColumn, TenantEntity tenant, DateTime? dueDate = null)
-            : base(tenant)
+        public TaskEntity(string title, string description, int order, KanbanBoardColumnEntity initialColumn,  DateTime? dueDate = null)
+           
         {
             if (string.IsNullOrWhiteSpace(title))
                 throw new ArgumentException("Task title cannot be empty.");

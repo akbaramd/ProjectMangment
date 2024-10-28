@@ -6,7 +6,7 @@ namespace PMS.Infrastructure.Data.Repositories;
 
 public class ProjectMemberRepository : EfCoreRepository<ProjectMemberEntity,Guid,ApplicationDbContext>, IProjectMemberRepository
 {
-    public ProjectMemberRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext, serviceProvider)
+    public ProjectMemberRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext,serviceProvider)
     {
     }
 }

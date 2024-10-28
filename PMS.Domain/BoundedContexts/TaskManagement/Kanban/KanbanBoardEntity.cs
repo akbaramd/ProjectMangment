@@ -1,7 +1,6 @@
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using PMS.Domain.Core;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban.DomainEvents;
-using PMS.Domain.BoundedContexts.TenantManagement;
 
 namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban
 {
@@ -16,8 +15,8 @@ namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban
         public Guid SprintId { get; private set; }
         public virtual ProjectSprintEntity Sprint { get; private set; }
 
-        public KanbanBoardEntity(string name, ProjectSprintEntity sprint, TenantEntity tenant)
-            : base(tenant)
+        public KanbanBoardEntity(string name, ProjectSprintEntity sprint)
+          
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Board name cannot be empty.");
@@ -32,9 +31,9 @@ namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban
 
         private void InitializeDefaultColumns()
         {
-            AddColumn(new KanbanBoardColumnEntity("ToDo", 1, Tenant));
-            AddColumn(new KanbanBoardColumnEntity("Doing", 2, Tenant));
-            AddColumn(new KanbanBoardColumnEntity("Done", 3, Tenant));
+            AddColumn(new KanbanBoardColumnEntity("ToDo", 1));
+            AddColumn(new KanbanBoardColumnEntity("Doing", 2));
+            AddColumn(new KanbanBoardColumnEntity("Done", 3));
         }
 
         public void AddColumn(KanbanBoardColumnEntity columnEntity)

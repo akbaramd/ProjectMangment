@@ -1,5 +1,5 @@
+using Bonyan.DomainDrivenDesign.Domain.Model;
 using PMS.Application.UseCases.Boards.Models;
-using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Boards
 {

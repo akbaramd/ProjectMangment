@@ -1,8 +1,6 @@
-﻿using Bonyan.DomainDrivenDesign.Domain.Abstractions;
-using Microsoft.AspNetCore.Authorization;
-using PMS.Application.UseCases.Tenant;
-using PMS.Application.UseCases.Tenant.Models;
-using SharedKernel.Extensions;
+﻿using Microsoft.AspNetCore.Authorization;
+using PMS.Application.UseCases.Tenants;
+using PMS.Application.UseCases.Tenants.Models;
 
 namespace PMS.WebApi.Endpoints
 {
@@ -21,7 +19,7 @@ namespace PMS.WebApi.Endpoints
         {
             if (tenantAccessor.Tenant == null)
             {
-                return Results.BadRequest("Tenant is required.");
+                return Results.BadRequest("Tenants is required.");
             }
 
             await authService.AddRoleAsync(tenantAccessor.Tenant, createRoleDto);
@@ -34,7 +32,7 @@ namespace PMS.WebApi.Endpoints
         {
             if (tenantAccessor.Tenant == null)
             {
-                return Results.BadRequest("Tenant is required.");
+                return Results.BadRequest("Tenants is required.");
             }
 
             await authService.UpdateRoleAsync(tenantAccessor.Tenant, roleId, updateRoleDto);
@@ -47,7 +45,7 @@ namespace PMS.WebApi.Endpoints
         {
             if (tenantAccessor.Tenant == null)
             {
-                return Results.BadRequest("Tenant is required.");
+                return Results.BadRequest("Tenants is required.");
             }
 
             await authService.DeleteRoleAsync(tenantAccessor.Tenant, roleId);
@@ -60,7 +58,7 @@ namespace PMS.WebApi.Endpoints
         {
             if (tenantAccessor.Tenant == null)
             {
-                return Results.BadRequest("Tenant is required.");
+                return Results.BadRequest("Tenants is required.");
             }
 
             var roles = await authService.GetRolesForTenantAsync(tenantAccessor.Tenant);

@@ -1,10 +1,8 @@
 using System.Security.Claims;
-using Bonyan.DomainDrivenDesign.Domain.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PMS.Application.UseCases.Invitations;
 using PMS.Application.UseCases.Invitations.Models;
-using SharedKernel.Extensions;
 
 namespace PMS.WebApi.Endpoints
 {
@@ -23,20 +21,13 @@ namespace PMS.WebApi.Endpoints
                     [FromQuery] string? search,
                     [FromQuery] string? sortDirection,
                     [FromQuery] string? sortBy,
-                [FromServices] IInvitationService invitationService,
-                [FromServices] ITenantAccessor tenantAccessor) =>
+                [FromServices] IInvitationService invitationService) =>
             {
-                if (tenantAccessor.Tenant == null)
-                {
-                    return Results.BadRequest("Tenant is required.");
-                }
+              
 
-               
-
-                var invitations = await invitationService.GetAllInvitationsAsync(new InvitationFilterDto(take,skip,search,sortBy,sortDirection), tenantAccessor.Tenant);
+                var invitations = await invitationService.GetAllInvitationsAsync(new InvitationFilterDto(take,skip,search,sortBy,sortDirection));
                 return Results.Ok(invitations);
-            })
-            .RequiredTenant();
+            });
 
             // Get invitation detail (no tenantEntity required)
             invitationsGroup.MapGet("/{invitationId:guid}", [AllowAnonymous] async (Guid invitationId, [FromServices] IInvitationService invitationService) =>
@@ -46,12 +37,9 @@ namespace PMS.WebApi.Endpoints
             });
 
             // Send invitation (tenantEntity required)
-            invitationsGroup.MapPost("/", [Authorize] async ([FromBody] InvitationSendDto sendInvitationDto,ClaimsPrincipal user, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
+            invitationsGroup.MapPost("/", [Authorize] async ([FromBody] InvitationSendDto sendInvitationDto,ClaimsPrincipal user, [FromServices] IInvitationService invitationService) =>
             {
-                if (tenantAccessor.Tenant == null)
-                {
-                    return Results.BadRequest("Tenant is required.");
-                }
+               
                 // Extract the user ID from the JWT claims
                 var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
                 if (userIdClaim == null)
@@ -63,10 +51,9 @@ namespace PMS.WebApi.Endpoints
                 {
                     return Results.BadRequest("Invalid user ID.");
                 }
-                await invitationService.SendInvitationAsync(sendInvitationDto, tenantAccessor.Tenant,userId);
+                await invitationService.SendInvitationAsync(sendInvitationDto,userId);
                 return Results.Ok("Invitation sent successfully.");
-            })
-            .RequiredTenant();
+            });
 
             // Accept invitation (no tenantEntity required)
             invitationsGroup.MapPost("/{invitationId:guid}/accept", [AllowAnonymous] async (Guid invitationId, [FromServices] IInvitationService invitationService) =>
@@ -83,12 +70,9 @@ namespace PMS.WebApi.Endpoints
             });
 
             // Cancel invitation (tenantEntity required)
-            invitationsGroup.MapPost("/{invitationId:guid}/cancel", [Authorize] async (Guid invitationId,ClaimsPrincipal user, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
+            invitationsGroup.MapPost("/{invitationId:guid}/cancel", [Authorize] async (Guid invitationId,ClaimsPrincipal user, [FromServices] IInvitationService invitationService) =>
             {
-                if (tenantAccessor.Tenant == null)
-                {
-                    return Results.BadRequest("Tenant is required.");
-                }
+               
                 // Extract the user ID from the JWT claims
                 var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
                 if (userIdClaim == null)
@@ -100,36 +84,26 @@ namespace PMS.WebApi.Endpoints
                 {
                     return Results.BadRequest("Invalid user ID.");
                 }
-                await invitationService.CancelInvitationAsync(invitationId, tenantAccessor.Tenant,userId);
+                await invitationService.CancelInvitationAsync(invitationId,userId);
                 return Results.Ok("Invitation canceled.");
-            })
-            .RequiredTenant();
+            });
 
             // Resend invitation (tenantEntity required)
-            invitationsGroup.MapPost("/{invitationId:guid}/resend", [Authorize] async (Guid invitationId, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
+            invitationsGroup.MapPost("/{invitationId:guid}/resend", [Authorize] async (Guid invitationId, [FromServices] IInvitationService invitationService) =>
             {
-                if (tenantAccessor.Tenant == null)
-                {
-                    return Results.BadRequest("Tenant is required.");
-                }
-
-                await invitationService.ResendInvitationAsync(invitationId, tenantAccessor.Tenant);
+                
+                await invitationService.ResendInvitationAsync(invitationId);
                 return Results.Ok("Invitation resent successfully.");
-            })
-            .RequiredTenant();
+            });
 
             // Update invitation (tenantEntity required)
-            invitationsGroup.MapPut("/{invitationId:guid}", [Authorize] async (Guid invitationId, [FromBody] InvitationUpdateDto updateInvitationDto, [FromServices] IInvitationService invitationService, [FromServices] ITenantAccessor tenantAccessor) =>
+            invitationsGroup.MapPut("/{invitationId:guid}", [Authorize] async (Guid invitationId, [FromBody] InvitationUpdateDto updateInvitationDto, [FromServices] IInvitationService invitationService) =>
             {
-                if (tenantAccessor.Tenant == null)
-                {
-                    return Results.BadRequest("Tenant is required.");
-                }
+          
 
-                await invitationService.UpdateInvitationAsync(invitationId, updateInvitationDto, tenantAccessor.Tenant);
+                await invitationService.UpdateInvitationAsync(invitationId, updateInvitationDto);
                 return Results.Ok("Invitation updated successfully.");
-            })
-            .RequiredTenant();
+            });
 
             return app;
         }

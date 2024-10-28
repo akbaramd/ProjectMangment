@@ -1,5 +1,4 @@
-﻿using PMS.Domain.BoundedContexts.TenantManagement;
-using PMS.Domain.Core;
+﻿using PMS.Domain.Core;
 
 namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban;
 
@@ -13,8 +12,8 @@ public class KanbanBoardColumnEntity : TenantEntityBase
     
     protected KanbanBoardColumnEntity() { }
 
-    public KanbanBoardColumnEntity(string name, int order, TenantEntity tenant)
-        : base(tenant)
+    public KanbanBoardColumnEntity(string name, int order)
+        
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Column name cannot be empty.");

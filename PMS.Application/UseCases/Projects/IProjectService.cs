@@ -1,5 +1,5 @@
+using Bonyan.DomainDrivenDesign.Domain.Model;
 using PMS.Application.UseCases.Projects.Models;
-using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Projects
 {
@@ -8,7 +8,7 @@ namespace PMS.Application.UseCases.Projects
         // Project CRUD operations
         Task<PaginatedResult<ProjectDto>> GetProjectsAsync(ProjectFilterDto filter);
         Task<ProjectDto> GetProjectDetailsAsync(Guid projectId);
-        Task<ProjectDto> CreateProjectAsync(ProjectCreateDto projectCreateDto);
+        Task<ProjectDto> CreateProjectAsync(ProjectCreateDto projectCreateDto,Guid userId);
         Task<bool> DeleteProjectAsync(Guid projectId);
         Task<ProjectDto?> UpdateProjectAsync(Guid projectId, ProjectUpdateDto projectUpdateDto);
 

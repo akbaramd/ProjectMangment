@@ -1,5 +1,5 @@
 using System.Net;
-using ApplicationException = SharedKernel.DomainDrivenDesign.Application.Exceptions.ApplicationException;
+using ApplicationException = Bonyan.DomainDrivenDesign.Application.Exceptions.ApplicationException;
 
 namespace PMS.Application.UseCases.Projects.Exceptions
 {

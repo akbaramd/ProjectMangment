@@ -1,4 +1,3 @@
-using PMS.Domain.BoundedContexts.TenantManagement;
 using PMS.Domain.Core;
 
 namespace PMS.Domain.BoundedContexts.ProjectManagement.Projects;
@@ -14,8 +13,7 @@ public class ProjectSprintEntity : TenantAggregateRootBase
 
         protected ProjectSprintEntity() { }
 
-        public ProjectSprintEntity(ProjectEntity entity,string name, DateTime startDate, DateTime endDate, TenantEntity tenant)
-            : base(tenant)
+        public ProjectSprintEntity(ProjectEntity entity,string name, DateTime startDate, DateTime endDate)
         {
             if (endDate <= startDate)
                 throw new InvalidOperationException("End date must be after start date.");

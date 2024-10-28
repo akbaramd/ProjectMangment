@@ -18,8 +18,8 @@ namespace PMS.Domain.BoundedContexts.TenantManagement
             // Initialize non-nullable properties for EF Core
         }
 
-        public ProjectInvitationEntity(string phoneNumber, TenantEntity tenant,TimeSpan expirationDuration)
-            : base(tenant)  // Use the real tenant when using this constructor in your business logic
+        public ProjectInvitationEntity(string phoneNumber,TimeSpan expirationDuration)
+     // Use the real tenant when using this constructor in your business logic
         {
             PhoneNumber = phoneNumber;
             SentAt = DateTime.UtcNow;

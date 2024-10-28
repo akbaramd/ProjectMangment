@@ -30,9 +30,9 @@ namespace PMS.Infrastructure.IoC
                     }
 
                     // Get DatabaseSeeder and run seeding process
-                    var databaseSeeder = services.GetRequiredService<DatabaseSeeder>();
+                    // var databaseSeeder = services.GetRequiredService<DatabaseSeeder>();
                     logger.LogInformation("Starting database seeding...");
-                    await databaseSeeder.SeedDefaultUserAsync();
+                    // await databaseSeeder.SeedDefaultUserAsync();
                     logger.LogInformation("Database seeding completed.");
                 }
                 catch (Exception ex)

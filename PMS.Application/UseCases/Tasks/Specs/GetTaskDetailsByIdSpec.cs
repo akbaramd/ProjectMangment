@@ -1,6 +1,5 @@
 using Bonyan.DomainDrivenDesign.Domain.Specifications;
 using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
-using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.Tasks.Specs;
 

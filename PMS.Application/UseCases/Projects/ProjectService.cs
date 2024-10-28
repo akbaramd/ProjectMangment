@@ -1,22 +1,24 @@
 using AutoMapper;
 using Bonyan.DomainDrivenDesign.Domain.Enumerations;
-using PMS.Application.Base;
+using Bonyan.DomainDrivenDesign.Domain.Model;
+using Bonyan.MultiTenant;
+using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
+using Bonyan.User.Bonyan.Security;
 using PMS.Application.UseCases.Projects.Exceptions;
 using PMS.Application.UseCases.Projects.Models;
 using PMS.Application.UseCases.Projects.Specs;
-using PMS.Application.UseCases.Tenant.Exceptions;
+using PMS.Application.UseCases.Tenants.Exceptions;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Enums;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban.Repositories;
 using PMS.Domain.BoundedContexts.TenantManagement.Repositories;
-using SharedKernel.Model;
 using UnauthorizedAccessException = PMS.Application.Exceptions.UnauthorizedAccessException;
 
 namespace PMS.Application.UseCases.Projects
 {
-    public class ProjectService : BaseTenantService, IProjectService
+    public class ProjectService :  IProjectService
     {
         private readonly IProjectRepository _projectRepository;
         private readonly ISprintRepository _sprintRepository;
@@ -24,6 +26,7 @@ namespace PMS.Application.UseCases.Projects
         private readonly ITenantMemberRepository _tenantMemberRepository;
         private readonly IProjectMemberRepository _projectMemberRepository;
         private readonly IMapper _mapper;
+        private readonly ICurrentTenant _currentTenant;
 
         public ProjectService(
             IProjectRepository projectRepository,
@@ -32,8 +35,8 @@ namespace PMS.Application.UseCases.Projects
             ITenantMemberRepository tenantMemberRepository,
             IProjectMemberRepository projectMemberRepository,
             IMapper mapper,
-            IServiceProvider serviceProvider)
-            : base(serviceProvider)
+            ICurrentTenant  currentTenant
+           )
         {
             _projectRepository = projectRepository;
             _sprintRepository = sprintRepository;
@@ -41,16 +44,16 @@ namespace PMS.Application.UseCases.Projects
             _tenantMemberRepository = tenantMemberRepository;
             _projectMemberRepository = projectMemberRepository;
             _mapper = mapper;
+            _currentTenant = currentTenant;
         }
 
         // Get projects for the current tenantEntity with optional filtering
         public async Task<PaginatedResult<ProjectDto>> GetProjectsAsync(ProjectFilterDto filter)
         {
             // Ensure the tenantEntity is validated (both exists and user is a part of it)
-            await ValidateTenantAccessAsync("project:read");
 
             // Fetching projects based on tenantEntity ID
-            var projects = await _projectRepository.PaginatedAsync(new ProjectsByTenantSpec(CurrentTenant.Id, filter));
+            var projects = await _projectRepository.PaginatedAsync(new ProjectsByTenantSpec(_currentTenant.Id.Value, filter));
             return _mapper.Map<PaginatedResult<ProjectDto>>(projects);
         }
 
@@ -58,12 +61,11 @@ namespace PMS.Application.UseCases.Projects
         public async Task<ProjectDto> GetProjectDetailsAsync(Guid projectId)
         {
             // Ensure the tenantEntity is validated (both exists and user is a part of it)
-            await ValidateTenantAccessAsync("project:read");
 
             // Fetch project by ID for the current tenantEntity
             var project =
                 await _projectRepository.FindOneAsync(
-                    new ProjectDetailsByIdForTenantSpec( CurrentTenant.Id,projectId));
+                    new ProjectDetailsByIdForTenantSpec( _currentTenant.Id.Value,projectId));
             if (project == null)
             {
                 throw new ProjectNotFoundException();
@@ -73,32 +75,30 @@ namespace PMS.Application.UseCases.Projects
         }
 
         // Create a new project in the current tenantEntity
-        public async Task<ProjectDto> CreateProjectAsync(ProjectCreateDto projectCreateDto)
+        public async Task<ProjectDto> CreateProjectAsync(ProjectCreateDto projectCreateDto,Guid id)
         {
             // Ensure the tenantEntity is validated and the user has permission to create a project
-            await ValidateTenantAccessAsync("project:create");
 
             // Check if the current user has permission to remove members
-            var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(CurrentUser.Id, CurrentTenant.Id);
+            var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(id, TenantId.FromGuid(_currentTenant.Id.Value));
             if (tenantMember == null )
             {
                 throw new UnauthorizedAccessException("not found.");
             }
             
             // Create a new project entity
-            var project = new ProjectEntity(projectCreateDto.Name, projectCreateDto.Description, projectCreateDto.StartDate,
-                CurrentTenant);
+            var project = new ProjectEntity(projectCreateDto.Name, projectCreateDto.Description, projectCreateDto.StartDate);
             project.AddMember(new ProjectMemberEntity(tenantMember,project,ProjectMemberAccessEnum.ProductOwner));
             await _projectRepository.AddAsync(project);
             
             
             // Create a default sprint for the project
             var defaultSprint = new ProjectSprintEntity(project,"Default Sprint", projectCreateDto.StartDate,
-                projectCreateDto.StartDate.AddMonths(1), CurrentTenant);
+                projectCreateDto.StartDate.AddMonths(1));
             await _sprintRepository.AddAsync(defaultSprint);
 
             // Create a default Kanban board with columns (ToDo, Doing, Done)
-            var board = new KanbanBoardEntity("Default Kanban Board", defaultSprint, CurrentTenant);
+            var board = new KanbanBoardEntity("Default Kanban Board", defaultSprint);
             await _boardRepository.AddAsync(board);
 
             return _mapper.Map<ProjectDto>(project);
@@ -108,11 +108,10 @@ namespace PMS.Application.UseCases.Projects
         public async Task<ProjectDto?> UpdateProjectAsync(Guid projectId, ProjectUpdateDto projectUpdateDto)  
         {
             // Ensure the tenantEntity is validated and the user has permission to update the project
-            await ValidateTenantAccessAsync("project:update");
 
             // Fetch the project by ID
             var project = await _projectRepository.GetByIdAsync(projectId);
-            if (project == null || project.TenantId != CurrentTenant.Id)
+            if (project == null || project.TenantId != _currentTenant.Id.Value)
             {
                 throw new ProjectNotFoundException();
             }
@@ -128,11 +127,10 @@ namespace PMS.Application.UseCases.Projects
         public async Task<bool> DeleteProjectAsync(Guid projectId)
         {
             // Ensure the tenantEntity is validated and the user has permission to delete the project
-            await ValidateTenantAccessAsync("project:remove");
 
             // Fetch the project by ID
             var project = await _projectRepository.GetByIdAsync(projectId);
-            if (project == null || project.TenantId != CurrentTenant.Id)
+            if (project == null || project.TenantId != _currentTenant.Id.Value)
             {
                 throw new ProjectNotFoundException();
             }
@@ -145,10 +143,9 @@ namespace PMS.Application.UseCases.Projects
         // Add a member to a project
         public async Task<ProjectMemberDto> AddMemberAsync(Guid projectId,  ProjectAddMemberDto projectAddMemberDto)
         {
-            await ValidateTenantAccessAsync("project:member:add");
 
             var project = await _projectRepository.GetByIdAsync(projectId);
-            if (project == null || project.TenantId != CurrentTenant.Id)
+            if (project == null || project.TenantId != _currentTenant.Id.Value)
             {
                 throw new ProjectNotFoundException();
             }
@@ -157,7 +154,7 @@ namespace PMS.Application.UseCases.Projects
             var tenantMember = await _tenantMemberRepository.GetByIdAsync(projectAddMemberDto.TenantMemberId);
             if (tenantMember == null)
             {
-                throw new TenantNotFoundException("Tenant Member not Found");
+                throw new TenantNotFoundException("Tenants Member not Found");
             }
             
             var member = new ProjectMemberEntity( tenantMember, project, Enumeration.FromName<ProjectMemberAccessEnum>(projectAddMemberDto.Role));
@@ -170,10 +167,9 @@ namespace PMS.Application.UseCases.Projects
         // Remove a member from a project
         public async Task<bool> RemoveMemberAsync(Guid projectId, Guid memberId)
         {
-            await ValidateTenantAccessAsync("project:member:remove");
 
             var project = await _projectRepository.GetByIdAsync(projectId);
-            if (project == null || project.TenantId != CurrentTenant.Id)
+            if (project == null || project.TenantId != _currentTenant.Id.Value)
             {
                 throw new ProjectNotFoundException();
             }
@@ -194,10 +190,9 @@ namespace PMS.Application.UseCases.Projects
         public async Task<PaginatedResult<ProjectMemberDto>> GetMembersAsync(Guid projectId,
             ProjectMemberFilterDto filter)
         {
-            await ValidateTenantAccessAsync("project:member:read");
 
             var project = await _projectRepository.GetByIdAsync(projectId);
-            if (project == null || project.TenantId != CurrentTenant.Id)
+            if (project == null || project.TenantId != _currentTenant.Id.Value)
             {
                 throw new ProjectNotFoundException();
             }
@@ -212,10 +207,9 @@ namespace PMS.Application.UseCases.Projects
         public async Task<ProjectMemberDto> UpdateMemberAsync(Guid projectId, Guid memberId,
             ProjectUpdateMemberDto projectUpdateMemberDto)
         {
-            await ValidateTenantAccessAsync("project:member:update");
 
             var project = await _projectRepository.GetByIdAsync(projectId);
-            if (project == null || project.TenantId != CurrentTenant.Id)
+            if (project == null || project.TenantId != _currentTenant.Id.Value)
             {
                 throw new ProjectNotFoundException();
             }
@@ -226,7 +220,7 @@ namespace PMS.Application.UseCases.Projects
                 throw new MemberNotFoundException("cannot be found member");
             }
 
-            project.UpdateMemberAccess(memberId,Enumeration.ParseFromName<ProjectMemberAccessEnum>(projectUpdateMemberDto.Role));
+            project.UpdateMemberAccess(memberId,Enumeration.FromName<ProjectMemberAccessEnum>(projectUpdateMemberDto.Role));
             await _projectRepository.UpdateAsync(project);
 
             return _mapper.Map<ProjectMemberDto>(member);

@@ -12,13 +12,25 @@ public class UserRepository : EfCoreRepository< ApplicationUser,Guid,Application
         return _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
+    public async Task<IEnumerable<string>> GetUserRolesAsync(Guid userId)
+    {
+        var user =await _dbContext.Users.FirstOrDefaultAsync(x => x.Id.Equals(userId));
+
+        return new[] { ""};
+    }
+
+    public Task<bool> CheckPasswordAsync(ApplicationUser user, string password)
+    {
+        return Task.FromResult(user.PasswordHash != null && user.PasswordHash.Equals(password));
+    }
+
     public Task<ApplicationUser?> GetUserByPhoneNumberAsync(string phoneNumber)
     {
         return _dbContext.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
     }
 
 
-    public UserRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext, serviceProvider)
+    public UserRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext,serviceProvider)
     {
     }
 }

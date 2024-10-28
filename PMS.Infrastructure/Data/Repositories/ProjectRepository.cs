@@ -52,7 +52,7 @@ public class ProjectRepository : EfCoreRepository< ProjectEntity,Guid,Applicatio
             .FirstOrDefaultAsync(p => p.Id == projectMemberId);
     }
 
-    public ProjectRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext, serviceProvider)
+    public ProjectRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext,serviceProvider)
     {
     }
 }

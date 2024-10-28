@@ -47,7 +47,7 @@ public class BoardRepository : EfCoreRepository< KanbanBoardEntity,Guid,Applicat
             .ToList();
     }
 
-    public BoardRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext, serviceProvider)
+    public BoardRepository(ApplicationDbContext dbContext,IServiceProvider serviceProvider) : base(dbContext,serviceProvider)
     {
     }
 }

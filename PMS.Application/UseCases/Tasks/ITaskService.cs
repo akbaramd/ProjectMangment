@@ -1,5 +1,5 @@
-﻿using PMS.Application.UseCases.Tasks.Models;
-using SharedKernel.Model;
+﻿using Bonyan.DomainDrivenDesign.Domain.Model;
+using PMS.Application.UseCases.Tasks.Models;
 
 namespace PMS.Application.UseCases.Tasks
 {

@@ -1,4 +1,5 @@
 using Bonyan.DomainDrivenDesign.Domain;
+using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
 using Microsoft.EntityFrameworkCore;
 using PMS.Domain.BoundedContexts.TenantManagement;
 using PMS.Domain.BoundedContexts.TenantManagement.Repositories;
@@ -13,9 +14,9 @@ public class RoleRepository : EfCoreRepository< TenantRoleEntity,Guid,Applicatio
         return _dbContext.TenantRole.FirstOrDefaultAsync(r => r.Key == roleName);
     }
 
-    public List<TenantRoleEntity> GetByTenantId(Guid tenantId)
+    public List<TenantRoleEntity> GetByTenantId(TenantId tenantId)
     {
-        return _dbContext.TenantRole.Include(x=>x.Permissions).ThenInclude(x=>x.Group).Where(x => x.TenantId == tenantId).ToList();
+        return _dbContext.TenantRole.Include(x=>x.Permissions).ThenInclude(x=>x.Group).Where(x => x.TenantId == tenantId.Value).ToList();
     }
     
     public new Task<TenantRoleEntity?> GetByIdAsync(Guid tenantId)
@@ -23,7 +24,7 @@ public class RoleRepository : EfCoreRepository< TenantRoleEntity,Guid,Applicatio
         return _dbContext.TenantRole.Include(x=>x.Permissions).ThenInclude(x=>x.Group).FirstOrDefaultAsync(x => x.Id == tenantId);
     }
 
-    public RoleRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext, serviceProvider)
+    public RoleRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext,serviceProvider)
     {
     }
 }

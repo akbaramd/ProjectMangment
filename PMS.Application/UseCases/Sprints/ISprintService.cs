@@ -1,5 +1,5 @@
+using Bonyan.DomainDrivenDesign.Domain.Model;
 using PMS.Application.UseCases.Sprints.Models;
-using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Sprints
 {

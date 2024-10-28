@@ -1,6 +1,6 @@
+using Bonyan.DomainDrivenDesign.Domain.Specifications;
 using PMS.Application.UseCases.Invitations.Models;
 using PMS.Domain.BoundedContexts.TenantManagement;
-using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.Invitations.Specs;
 
@@ -18,7 +18,6 @@ public class InvitationByTenantSpec : PaginatedAndSortableSpecification<ProjectI
 
     public override void Handle(ISpecificationContext<ProjectInvitationEntity> context)
     {
-        context.AddInclude(x => x.Tenant);
         context.AddCriteria(x => x.TenantId == TenantId);
         if (Dto.Search != null && !string.IsNullOrWhiteSpace(Dto.Search))
         {

@@ -1,4 +1,4 @@
-using PMS.Application.UseCases.Tenant.Models;
+using PMS.Application.UseCases.Tenants.Models;
 using PMS.Domain.BoundedContexts.TenantManagement;
 
 namespace PMS.Application.UseCases.Invitations.Models;

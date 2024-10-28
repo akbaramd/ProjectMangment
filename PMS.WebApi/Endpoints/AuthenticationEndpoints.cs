@@ -1,9 +1,7 @@
 using System.Security.Claims;
-using Bonyan.DomainDrivenDesign.Domain.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using PMS.Application.UseCases.Auth;
 using PMS.Application.UseCases.Auth.Models;
-using SharedKernel.Extensions;
 
 // Assuming your RequiredTenant is here
 
@@ -25,25 +23,20 @@ public static class AuthenticationEndpoints
         });
 
         // Login endpoint (tenantEntity required)
-        authGroup.MapPost("/login", [AllowAnonymous] async (AuthLoginDto loginDto, IAuthService authService, ITenantAccessor tenantAccessor) =>
-        {
-            if (tenantAccessor.Tenant == null)
+        authGroup.MapPost("/login", [AllowAnonymous]
+            async (AuthLoginDto loginDto, IAuthService authService) =>
             {
-                return Results.BadRequest("Tenant is required.");
-            }
+               
 
-            var response = await authService.LoginAsync(loginDto, tenantAccessor.Tenant);
-            return Results.Ok(response);
-        }).RequiredTenant();  
+                var response = await authService.LoginAsync(loginDto);
+                return Results.Ok(response);
+            });
 
         // Profile endpoint (tenantEntity required)
         authGroup.MapGet("/profile",
-            [Authorize] async (ClaimsPrincipal user, IAuthService authService, ITenantAccessor tenantAccessor) =>
+            [Authorize] async (ClaimsPrincipal user, IAuthService authService) =>
             {
-                if (tenantAccessor.Tenant == null)
-                {
-                    return Results.BadRequest("Tenant is required.");
-                }
+
 
                 // Extract the user ID from the JWT claims
                 var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
@@ -58,9 +51,9 @@ public static class AuthenticationEndpoints
                 }
 
                 // Call the service to get the user profile
-                var userProfile = await authService.GetUserProfileAsync(userId, tenantAccessor.Tenant);
+                var userProfile = await authService.GetUserProfileAsync(userId);
                 return Results.Ok(userProfile);
-            }).RequiredTenant();  
+            });
 
         // Roles and Permissions Endpoints
 

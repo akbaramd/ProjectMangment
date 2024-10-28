@@ -1,6 +1,6 @@
+using Bonyan.DomainDrivenDesign.Domain.Specifications;
 using PMS.Application.UseCases.Boards.Models;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
-using SharedKernel.Specification;
 
 namespace PMS.Application.UseCases.Boards.Specs;
 

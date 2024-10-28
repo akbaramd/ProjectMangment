@@ -1,9 +1,7 @@
 using AutoMapper;
-using PMS.Application.UseCases.Boards.Models;
+using Bonyan.DomainDrivenDesign.Domain.Model;
 using PMS.Application.UseCases.Projects.Models;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
-using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
-using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Projects
 {
@@ -16,14 +14,14 @@ namespace PMS.Application.UseCases.Projects
             CreateMap<ProjectMemberEntity, ProjectMemberDto>().ReverseMap();
             CreateMap<ProjectEntity, ProjectDto>().ReverseMap();
            
-            CreateMap<KanbanBoardEntity, BoardDto>().ReverseMap();
-            CreateMap<KanbanBoardColumnEntity, BoardColumnDto>().ReverseMap();
+            // CreateMap<KanbanBoardEntity, BoardDto>().ReverseMap();
+            // CreateMap<KanbanBoardColumnEntity, BoardColumnDto>().ReverseMap();
             
 
             // Paginated Result Mappings
             CreateMap<PaginatedResult<ProjectEntity>, PaginatedResult<ProjectDto>>().ReverseMap();
 
-            CreateMap<PaginatedResult<KanbanBoardEntity>, PaginatedResult<BoardDto>>().ReverseMap();
+            // CreateMap<PaginatedResult<KanbanBoardEntity>, PaginatedResult<BoardDto>>().ReverseMap();
             CreateMap<PaginatedResult<ProjectMemberEntity>, PaginatedResult<ProjectMemberDto>>().ReverseMap();
         }
     }

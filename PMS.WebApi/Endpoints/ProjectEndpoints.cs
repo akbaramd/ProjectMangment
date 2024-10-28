@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Bonyan.DomainDrivenDesign.Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PMS.Application.UseCases.Projects;
 using PMS.Application.UseCases.Projects.Models;
-using SharedKernel.Extensions;
-using SharedKernel.Model;
 
 namespace PMS.WebApi.Endpoints
 {
@@ -18,15 +18,17 @@ namespace PMS.WebApi.Endpoints
             // Create a new project (tenant required)
             projectGroup.MapPost("/", [Authorize] async (
                 [FromBody] ProjectCreateDto createProjectDto,
+                [FromServices] ClaimsPrincipal FromServices,
                 [FromServices] IProjectService projectService) =>
-            {
-                var project = await projectService.CreateProjectAsync(createProjectDto);
+                {
+                    var id = Guid.Parse(FromServices.Claims.First(x => x.Type == ClaimTypes.Sid).Value);
+                var project = await projectService.CreateProjectAsync(createProjectDto,id);
                 return Results.Ok(project);
             })
             .Produces<ProjectDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status401Unauthorized)
-            .RequiredTenant();
+       ;
 
             // Get list of projects for the tenant (tenant required)
             projectGroup.MapGet("/", [Authorize] async (
@@ -40,7 +42,7 @@ namespace PMS.WebApi.Endpoints
             })
             .Produces<PaginatedResult<ProjectDto>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)
-            .RequiredTenant();
+       ;
 
             // Get project details by ID (tenant required)
             projectGroup.MapGet("/{projectId:guid}", [Authorize] async (
@@ -53,7 +55,7 @@ namespace PMS.WebApi.Endpoints
             .Produces<ProjectDetailDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
-            .RequiredTenant();
+       ;
 
             // Update a project (tenant required)
             projectGroup.MapPut("/{projectId:guid}", [Authorize] async (
@@ -73,7 +75,7 @@ namespace PMS.WebApi.Endpoints
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status401Unauthorized)
-            .RequiredTenant();
+       ;
 
             // Delete a project (tenant required)
             projectGroup.MapDelete("/{projectId:guid}", [Authorize] async (
@@ -91,7 +93,7 @@ namespace PMS.WebApi.Endpoints
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
-            .RequiredTenant();
+       ;
 
             // ----- Member Endpoints -----
 
@@ -108,7 +110,7 @@ namespace PMS.WebApi.Endpoints
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
-            .RequiredTenant();
+       ;
 
             // Remove a member from a project
             projectGroup.MapDelete("/{projectId:guid}/members/{memberId:guid}", [Authorize] async (
@@ -127,7 +129,7 @@ namespace PMS.WebApi.Endpoints
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
-            .RequiredTenant();
+       ;
 
             // Get members of a project
             projectGroup.MapGet("/{projectId:guid}/members", [Authorize] async (
@@ -144,13 +146,14 @@ namespace PMS.WebApi.Endpoints
             .Produces<PaginatedResult<ProjectMemberDto>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
-            .RequiredTenant();
+       ;
 
             // Update a project member
             projectGroup.MapPut("/{projectId:guid}/members/{memberId:guid}", [Authorize] async (
                 Guid projectId,
                 Guid memberId,
                 [FromBody] ProjectUpdateMemberDto updateMemberDto,
+                [FromServices] ClaimsPrincipal FromServices,
                 [FromServices] IProjectService projectService) =>
             {
                 var updatedMember = await projectService.UpdateMemberAsync(projectId, memberId, updateMemberDto);
@@ -160,7 +163,7 @@ namespace PMS.WebApi.Endpoints
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
-            .RequiredTenant();
+       ;
 
             return app;
         }

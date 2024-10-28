@@ -1,4 +1,5 @@
-﻿using PMS.Domain.Core;
+﻿using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
+using PMS.Domain.Core;
 
 namespace PMS.Domain.BoundedContexts.TenantManagement
 {
@@ -22,8 +23,9 @@ namespace PMS.Domain.BoundedContexts.TenantManagement
         
         public TenantRoleEntity() : base() { }
 
-        public TenantRoleEntity(string key , TenantEntity tenant , bool deletable = true,bool isSystemRole = true): base(tenant) 
+        public TenantRoleEntity(string key ,TenantId tenantId, bool deletable = true,bool isSystemRole = true)
         {
+            TenantId = tenantId.Value;
             Title = key;
             Key = key.ToLower().Replace(" ","-");
             IsSystemRole = isSystemRole;

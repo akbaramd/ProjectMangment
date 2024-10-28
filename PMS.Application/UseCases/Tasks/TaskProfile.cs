@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Bonyan.DomainDrivenDesign.Domain.Model;
 using PMS.Application.UseCases.Tasks.Models;
 using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
-using SharedKernel.Model;
 
 namespace PMS.Application.UseCases.Tasks;
 

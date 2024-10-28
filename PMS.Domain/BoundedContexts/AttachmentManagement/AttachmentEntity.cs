@@ -18,7 +18,7 @@ namespace PMS.Domain.BoundedContexts.AttachmentManagement
 
         protected AttachmentEntity() { }
 
-        public AttachmentEntity(TenantEntity entity,string fileName, string filePath ,AttachmentCategoryEntity? categoryy = null):base(entity)
+        public AttachmentEntity(Guid? entity,string fileName, string filePath ,AttachmentCategoryEntity? categoryy = null)
         {
             FileName = fileName;
             FilePath = filePath;

@@ -33,7 +33,7 @@ public class InvitationRepository : EfCoreRepository<ProjectInvitationEntity,Gui
         return _dbContext.TenantInvitations;
     }
 
-    public InvitationRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext, serviceProvider)
+    public InvitationRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext,serviceProvider)
     {
     }
 }
