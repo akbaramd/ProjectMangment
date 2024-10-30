@@ -1,9 +1,8 @@
 using AutoMapper;
-using Bonyan.DomainDrivenDesign.Domain.Enumerations;
-using Bonyan.DomainDrivenDesign.Domain.Model;
+using Bonyan.Layer.Domain.Enumerations;
+using Bonyan.Layer.Domain.Model;
 using Bonyan.MultiTenant;
-using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
-using Bonyan.User.Bonyan.Security;
+using Bonyan.TenantManagement.Domain;
 using PMS.Application.UseCases.Projects.Exceptions;
 using PMS.Application.UseCases.Projects.Models;
 using PMS.Application.UseCases.Projects.Specs;

@@ -1,5 +1,5 @@
-using Bonyan.DomainDrivenDesign.Domain.Abstractions;
-using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
+using Bonyan.Layer.Domain.Abstractions;
+using Bonyan.TenantManagement.Domain;
 
 namespace PMS.Domain.BoundedContexts.TenantManagement.Repositories
 {

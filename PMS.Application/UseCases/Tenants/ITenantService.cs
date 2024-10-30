@@ -1,4 +1,4 @@
-﻿using Bonyan.DomainDrivenDesign.Domain.Model;
+﻿using Bonyan.Layer.Domain.Model;
 using PMS.Application.UseCases.Tenants.Models;
 
 namespace PMS.Application.UseCases.Tenants

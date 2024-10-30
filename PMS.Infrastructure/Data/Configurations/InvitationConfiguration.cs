@@ -1,4 +1,4 @@
-using Bonyan.DomainDrivenDesign.Domain.Enumerations;
+using Bonyan.Layer.Domain.Enumerations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PMS.Domain.BoundedContexts.TenantManagement;

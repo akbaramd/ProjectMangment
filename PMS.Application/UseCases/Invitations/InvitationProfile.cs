@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Bonyan.DomainDrivenDesign.Domain.Model;
+using Bonyan.Layer.Domain.Model;
 using PMS.Application.UseCases.Invitations.Models;
 using PMS.Domain.BoundedContexts.TenantManagement;
 

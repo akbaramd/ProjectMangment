@@ -1,5 +1,4 @@
-using Bonyan.DomainDrivenDesign.Domain;
-using Microsoft.EntityFrameworkCore;
+using Bonyan.Layer.Domain;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
 
@@ -10,19 +9,19 @@ public class SprintRepository : EfCoreRepository<ProjectSprintEntity,Guid,Applic
 
     public List<ProjectSprintEntity> GetAllWithRelations()
     {
-        return _dbContext.ProjectSprints
+        return  await (await GetDbContextAsync()).ProjectSprints
             .ToList();
     }
 
     public Task<ProjectSprintEntity?> GetByIdWithRelationsAsync(Guid sprintId)
     {
-        return _dbContext.ProjectSprints
+        return  await (await GetDbContextAsync()).ProjectSprints
             .FirstOrDefaultAsync(s => s.Id == sprintId);
     }
 
     public List<ProjectSprintEntity> GetByProjectId(Guid projectId)
     {
-        return _dbContext.ProjectSprints
+        return  await (await GetDbContextAsync()).ProjectSprints
             .Where(s => s.ProjectId == projectId)
             .ToList();
     }

@@ -1,8 +1,7 @@
-using Bonyan.AspNetCore.Persistence.EntityFrameworkCore;
-using Bonyan.DomainDrivenDesign.Domain.Enumerations;
-using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
-using Bonyan.TenantManagement.EntityFrameworkCore.Bonyan.TenantManagement.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+using Bonyan.EntityFrameworkCore;
+using Bonyan.Layer.Domain.Enumerations;
+using Bonyan.TenantManagement.Domain;
+using Bonyan.TenantManagement.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PMS.Domain.BoundedContexts.AttachmentManagement;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
@@ -32,9 +31,9 @@ public class ApplicationDbContext : BonyanDbContext<ApplicationDbContext>,IBonya
     public DbSet<TenantPermissionGroupEntity> PermissionGroups { get; set; }
     public DbSet<TaskCommentEntity> TaskComments { get; set; }
     public DbSet<TaskLabelEntity> TaskLabels { get; set; }
-    public DbSet<ApplicationUser> Users { get; set; }
+    public DbSet<UserEntity> Users { get; set; }
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options,IServiceProvider serviceProvider) : base(options,serviceProvider)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
@@ -49,8 +48,6 @@ public class ApplicationDbContext : BonyanDbContext<ApplicationDbContext>,IBonya
         base.OnModelCreating(builder);
 
         builder.ConfigureTenantManagementByConvention();
-        
-       
         
         builder.Entity<ProjectMemberEntity>(entity =>
         {

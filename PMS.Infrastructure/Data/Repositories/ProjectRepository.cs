@@ -1,5 +1,4 @@
-using Bonyan.DomainDrivenDesign.Domain;
-using Microsoft.EntityFrameworkCore;
+using Bonyan.Layer.Domain;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
 
@@ -10,7 +9,7 @@ public class ProjectRepository : EfCoreRepository< ProjectEntity,Guid,Applicatio
 
     public List<ProjectEntity> GetAllWithRelations()
     {
-        return _dbContext.Projects
+        return  await (await GetDbContextAsync()).Projects
             .Include(x=>x.Members)
             .ThenInclude(p => p.TenantMember)
             .ThenInclude(p => p.User)
@@ -19,7 +18,7 @@ public class ProjectRepository : EfCoreRepository< ProjectEntity,Guid,Applicatio
 
     public Task<ProjectEntity?> GetByIdWithRelationsAsync(Guid projectId)
     {
-        return _dbContext.Projects
+        return  await (await GetDbContextAsync()).Projects
             .Include(x=>x.Members)
             .ThenInclude(p => p.TenantMember)
             .ThenInclude(p => p.User)
@@ -28,7 +27,7 @@ public class ProjectRepository : EfCoreRepository< ProjectEntity,Guid,Applicatio
 
     public List<ProjectEntity> GetByTenantId(Guid tenantId)
     {
-        return _dbContext.Projects
+        return  await (await GetDbContextAsync()).Projects
             .Where(p => p.TenantId == tenantId)
             .Include(x=>x.Members)
             .ThenInclude(p => p.TenantMember)
@@ -38,7 +37,7 @@ public class ProjectRepository : EfCoreRepository< ProjectEntity,Guid,Applicatio
 
     public async Task<ProjectMemberEntity?> GetMemberByTenantMemberIdAsync(Guid tenantMemberId)
     {
-        return await _dbContext.ProjectsMembers
+        return await  await (await GetDbContextAsync()).ProjectsMembers
             .Include(x => x.TenantMember)
             .ThenInclude(p => p.User)
             .FirstOrDefaultAsync(p => p.TenantMemberId == tenantMemberId);
@@ -46,7 +45,7 @@ public class ProjectRepository : EfCoreRepository< ProjectEntity,Guid,Applicatio
 
     public async Task<ProjectMemberEntity?> GetMemberByIdAsync(Guid projectMemberId)
     {
-        return await _dbContext.ProjectsMembers
+        return await  await (await GetDbContextAsync()).ProjectsMembers
             .Include(x => x.TenantMember)
             .ThenInclude(p => p.User)
             .FirstOrDefaultAsync(p => p.Id == projectMemberId);

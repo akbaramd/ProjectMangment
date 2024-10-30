@@ -1,4 +1,4 @@
-﻿using Bonyan.DomainDrivenDesign.Domain.Enumerations;
+﻿using Bonyan.Layer.Domain.Enumerations;
 using PMS.Domain.Core;
 
 namespace PMS.Domain.BoundedContexts.TenantManagement

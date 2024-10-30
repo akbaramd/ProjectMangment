@@ -1,11 +1,10 @@
 using System.Text;
-using Bonyan.AspNetCore.Persistence.EntityFrameworkCore;
+using Bonyan.EntityFrameworkCore;
 using Bonyan.Modularity;
 using Bonyan.Modularity.Abstractions;
 using Bonyan.Modularity.Attributes;
 using Bonyan.MultiTenant;
-using Bonyan.Persistence.EntityFrameworkCore.Sqlite;
-using Bonyan.TenantManagement.EntityFrameworkCore.Bonyan.TenantManagement.EntityFrameworkCore;
+using Bonyan.TenantManagement.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,18 +19,17 @@ using PMS.Domain.BoundedContexts.UserManagment.Repositories;
 using PMS.Infrastructure.Data;
 using PMS.Infrastructure.Data.Repositories;
 using PMS.Infrastructure.Data.Seeders;
-using PMS.Infrastructure.Data.Seeders.Absractions;
 using PMS.Infrastructure.Services;
 
 namespace PMS.Infrastructure;
 
 [DependOn(
-    typeof(BonyanPersistenceEntityFrameworkModule),
+    typeof(BonyanEntityFrameworkModule),
     typeof(BonyanTenantManagementEntityFrameworkModule),
     typeof(DomainModule))]
 public class InfrastructureModule : Module
 {
-    public override Task OnPreConfigureAsync(ModularityContext context)
+    public override Task OnPreConfigureAsync(ServiceConfigurationContext context)
     {
         context.Configure<BonyanMultiTenancyOptions>(c =>
         {
@@ -40,25 +38,25 @@ public class InfrastructureModule : Module
         return base.OnPreConfigureAsync(context);
     }
 
-    public override Task OnConfigureAsync(ModularityContext context)
+    public override Task OnConfigureAsync(ServiceConfigurationContext context)
     {
         // Register repository services
-        context.Services.AddScoped<ITaskRepository, TaskRepository>();
-        context.Services.AddScoped<IBoardRepository, BoardRepository>();
-        context.Services.AddScoped<ISprintRepository, SprintRepository>();
-        context.Services.AddScoped<IProjectRepository, ProjectRepository>();
-        context.Services.AddScoped<IInvitationRepository, InvitationRepository>();
+        // context.Services.AddScoped<ITaskRepository, TaskRepository>();
+        // context.Services.AddScoped<IBoardRepository, BoardRepository>();
+        // context.Services.AddScoped<ISprintRepository, SprintRepository>();
+        // context.Services.AddScoped<IProjectRepository, ProjectRepository>();
+        // context.Services.AddScoped<IInvitationRepository, InvitationRepository>();
+        // context.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+        // context.Services.AddScoped<IRoleRepository, RoleRepository>();
         context.Services.AddScoped<ITenantMemberRepository, TenantMemberRepository>();
-        context.Services.AddScoped<IPermissionRepository, PermissionRepository>();
-        context.Services.AddScoped<IRoleRepository, RoleRepository>();
         context.Services.AddScoped<IUserRepository, UserRepository>();
-        context.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
+        // context.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
         // Register seeder services
-        context.Services.AddScoped<IPermissionSeeder, PermissionSeeder>();
-        context.Services.AddScoped<IRoleSeeder, RoleSeeder>();
-        context.Services.AddScoped<IUserSeeder, UserSeeder>();
-        context.Services.AddScoped<ITenantSeeder, TenantSeeder>();
-        context.Services.AddScoped<IUserTenantSeeder, UserTenantSeeder>();
+        // context.Services.AddScoped<IPermissionSeeder, PermissionSeeder>();
+        // context.Services.AddScoped<IRoleSeeder, RoleSeeder>();
+        // context.Services.AddScoped<IUserSeeder, UserSeeder>();
+        // context.Services.AddScoped<ITenantSeeder, TenantSeeder>();
+        // context.Services.AddScoped<IUserTenantSeeder, UserTenantSeeder>();
         context.Services.AddScoped<DatabaseSeeder>();
 
         context.Services.AddSingleton<IAttachmentFileService, AttachmentFileService>();

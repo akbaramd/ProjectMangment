@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Bonyan.DomainDrivenDesign.Domain.Model;
-using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
+using Bonyan.Layer.Domain.Model;
+using Bonyan.TenantManagement.Domain;
 using PMS.Application.UseCases.Auth.Exceptions;
 using PMS.Application.UseCases.Tenants.Exceptions;
 using PMS.Application.UseCases.Tenants.Models;
@@ -40,17 +40,17 @@ namespace PMS.Application.UseCases.Tenants
                 throw new TenantNotFoundException("Tenants not found.");
             }
 
-            // Check if user is part of the tenant
+            // Check if userEntity is part of the tenant
             var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
             if (tenantMember == null)
             {
-                throw new UnauthorizedException("User is not a member of this tenant.");
+                throw new UnauthorizedException("UserEntity is not a member of this tenant.");
             }
 
             // Check if the tenant member has 'tenant:read' permission
             if (!tenantMember.HasPermission("tenant:read"))
             {
-                throw new UnauthorizedAccessException("User does not have permission to view tenant details.");
+                throw new UnauthorizedAccessException("UserEntity does not have permission to view tenant details.");
             }
 
             // Map tenant entity to TenantDto
@@ -76,7 +76,7 @@ namespace PMS.Application.UseCases.Tenants
                 throw new TenantNotFoundException("Tenants not found.");
             }
 
-            // Check if the current user has permission to remove members
+            // Check if the current userEntity has permission to remove members
             var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
             if (tenantMember == null || 
                 !tenantMember.HasPermission("member:remove"))
@@ -111,7 +111,7 @@ namespace PMS.Application.UseCases.Tenants
                 throw new TenantNotFoundException("Tenants not found.");
             }
 
-            // Check if the current user has permission to update member roles
+            // Check if the current userEntity has permission to update member roles
             var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
             if (tenantMember == null || 
                 !tenantMember.HasPermission("member:update"))
@@ -149,7 +149,7 @@ namespace PMS.Application.UseCases.Tenants
                 throw new TenantNotFoundException("Tenants not found.");
             }
 
-            // Check if the user has the permission to view members
+            // Check if the userEntity has the permission to view members
             var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
             if (tenantMember == null || 
                 !tenantMember.HasPermission("tenant:read"))
@@ -176,7 +176,7 @@ namespace PMS.Application.UseCases.Tenants
                 throw new TenantNotFoundException("Tenants not found.");
             }
 
-            // Check if the user has the permission to view members
+            // Check if the userEntity has the permission to view members
             var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(userId, tenant.Id);
             if (tenantMember == null || 
                 !tenantMember.HasPermission(permissionKey))

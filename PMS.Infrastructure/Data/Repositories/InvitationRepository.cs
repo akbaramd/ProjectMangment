@@ -1,5 +1,4 @@
-using Bonyan.DomainDrivenDesign.Domain;
-using Microsoft.EntityFrameworkCore;
+using Bonyan.Layer.Domain;
 using PMS.Domain.BoundedContexts.TenantManagement;
 using PMS.Domain.BoundedContexts.TenantManagement.Repositories;
 
@@ -10,27 +9,27 @@ public class InvitationRepository : EfCoreRepository<ProjectInvitationEntity,Gui
 
     public Task<ProjectInvitationEntity?> GetInvitationByEmailAsync(string email)
     {
-        return _dbContext.TenantInvitations.FirstOrDefaultAsync(invitation => invitation.PhoneNumber == email);
+        return  await (await GetDbContextAsync()).TenantInvitations.FirstOrDefaultAsync(invitation => invitation.PhoneNumber == email);
     }
 
     public Task<List<ProjectInvitationEntity>> GetInvitationsByStatusAsync(InvitationStatus status)
     {
-        return _dbContext.TenantInvitations.Where(invitation => invitation.Status == status).ToListAsync();
+        return  await (await GetDbContextAsync()).TenantInvitations.Where(invitation => invitation.Status == status).ToListAsync();
     }
 
     public Task<List<ProjectInvitationEntity>> GetInvitationsByTenantIdAsync(Guid tenantId)
     {
-        return _dbContext.TenantInvitations.Where(invitation => invitation.TenantId == tenantId).ToListAsync();
+        return  await (await GetDbContextAsync()).TenantInvitations.Where(invitation => invitation.TenantId == tenantId).ToListAsync();
     }
 
     public Task<ProjectInvitationEntity?> GetInvitationByPhoneNumberAndTenantAsync(string phoneNumber, Guid tenantId)
     {
-        return _dbContext.TenantInvitations.FirstOrDefaultAsync(invitation => invitation.PhoneNumber == phoneNumber && invitation.TenantId == tenantId);
+        return  await (await GetDbContextAsync()).TenantInvitations.FirstOrDefaultAsync(invitation => invitation.PhoneNumber == phoneNumber && invitation.TenantId == tenantId);
     }
 
     public IQueryable<ProjectInvitationEntity> Query()
     {
-        return _dbContext.TenantInvitations;
+        return  await (await GetDbContextAsync()).TenantInvitations;
     }
 
     public InvitationRepository(ApplicationDbContext dbContext, IServiceProvider serviceProvider) : base(dbContext,serviceProvider)

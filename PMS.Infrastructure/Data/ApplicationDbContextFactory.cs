@@ -18,6 +18,6 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
         {
             c.IsEnabled = true;
         });
-        return new ApplicationDbContext(optionsBuilder.Options,services.BuildServiceProvider());
+        return new ApplicationDbContext(optionsBuilder.Options);
     }
 }

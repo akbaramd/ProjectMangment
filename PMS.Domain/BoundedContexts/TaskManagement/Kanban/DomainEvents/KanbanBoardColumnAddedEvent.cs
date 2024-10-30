@@ -1,4 +1,4 @@
-﻿using Bonyan.DomainDrivenDesign.Domain.Events;
+﻿using Bonyan.Layer.Domain.Events;
 
 namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban.DomainEvents;
 

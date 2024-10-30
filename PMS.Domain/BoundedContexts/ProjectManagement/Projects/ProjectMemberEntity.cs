@@ -1,4 +1,4 @@
-﻿using Bonyan.DomainDrivenDesign.Domain.Entities;
+﻿using Bonyan.Layer.Domain.Entities;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Enums;
 using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
 using PMS.Domain.BoundedContexts.TenantManagement;

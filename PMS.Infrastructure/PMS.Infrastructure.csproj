@@ -5,9 +5,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Bonyan.AspNetCore.Persistence.EntityFrameworkCore" Version="1.0.9" />
-    <PackageReference Include="Bonyan.AspNetCore.Persistence.EntityFrameworkCore.Sqlite" Version="1.0.9" />
-    <PackageReference Include=" Bonyan.TenantManagement.EntityFrameworkCore" Version="1.0.9" />
+    <PackageReference Include=" Bonyan.TenantManagement.EntityFrameworkCore" Version="1.1.1" />
+    <PackageReference Include="Bonyan.EntityFrameworkCore" Version="1.1.1" />
+    <PackageReference Include="Bonyan.EntityFrameworkCore.Sqlite" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.10" />
@@ -17,5 +17,15 @@
   <ItemGroup>
     <ProjectReference Include="..\PMS.Domain\PMS.Domain.csproj" />
     <ProjectReference Include="..\PMS.Application\PMS.Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Data\Repositories\RoleRepository.cs" />
+    <Compile Remove="Data\Repositories\SprintRepository.cs" />
+    <Compile Remove="Data\Repositories\TaskRepository.cs" />
+    <Compile Remove="Data\Repositories\BoardRepository.cs" />
+    <Compile Remove="Data\Repositories\ProjectMemberRepository.cs" />
+    <Compile Remove="Data\Repositories\PermissionRepository.cs" />
+    <Compile Remove="Data\Repositories\InvitationRepository.cs" />
+    <Compile Remove="Data\Repositories\ProjectRepository.cs" />
   </ItemGroup>
 </Project>

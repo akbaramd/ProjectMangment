@@ -1,4 +1,4 @@
-using Bonyan.DomainDrivenDesign.Domain.Enumerations;
+using Bonyan.Layer.Domain.Enumerations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PMS.Domain.BoundedContexts.TenantManagement;
@@ -14,8 +14,8 @@ public class TenantMemberConfiguration : IEntityTypeConfiguration<TenantMemberEn
             .IsRequired();
 
 
-        // Relationship with User
-        builder.HasOne(ut => ut.User)
+        // Relationship with UserEntity
+        builder.HasOne(ut => ut.UserEntity)
             .WithMany(u => u.UserTenants)
             .HasForeignKey(ut => ut.UserId)
             .OnDelete(DeleteBehavior.Cascade);

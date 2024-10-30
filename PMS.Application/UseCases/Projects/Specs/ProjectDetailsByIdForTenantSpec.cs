@@ -1,4 +1,4 @@
-using Bonyan.DomainDrivenDesign.Domain.Specifications;
+using Bonyan.Layer.Domain.Specifications;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 
 namespace PMS.Application.UseCases.Projects.Specs;

@@ -1,4 +1,4 @@
-using Bonyan.DomainDrivenDesign.Domain.Specifications;
+using Bonyan.Layer.Domain.Specifications;
 using PMS.Application.UseCases.Tenants.Models;
 using PMS.Domain.BoundedContexts.TenantManagement;
 
@@ -18,11 +18,11 @@ public class TenanMemberByTenantSpec : PaginatedAndSortableSpecification<TenantM
 
     public override void Handle(ISpecificationContext<TenantMemberEntity> context)
     {
-        context.AddInclude(x => x.User).AddInclude(x=>x.Roles).ThenInclude(x=>x.Permissions);
+        context.AddInclude(x => x.UserEntity).AddInclude(x=>x.Roles).ThenInclude(x=>x.Permissions);
         context.AddCriteria(x => x.TenantId == TenantId);
         if (Dto.Search != null && !string.IsNullOrWhiteSpace(Dto.Search))
         {
-            context.AddCriteria(c => c.User.FullName.Contains(Dto.Search));
+            context.AddCriteria(c => c.UserEntity.FullName.Contains(Dto.Search));
         }
         
     }

@@ -10,8 +10,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 <ItemGroup>
-  <PackageReference Include="Bonyan.AutoMapper" Version="1.0.9" />
-  <PackageReference Include="Bonyan.DomainDrivenDesign.Application" Version="1.0.9" />
+  <PackageReference Include="Bonyan.AutoMapper" Version="1.1.1" />
+  <PackageReference Include="Bonyan.TenantManagement.Application" Version="1.1.1" />
   <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
   <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
 </ItemGroup>
@@ -22,15 +22,21 @@
   <Compile Remove="UseCases\Boards\**" />
   <Compile Remove="UseCases\Sprints\**" />
   <Compile Remove="UseCases\Tasks\**" />
+  <Compile Remove="UseCases\Invitations\**" />
+  <Compile Remove="UseCases\Projects\**" />
 </ItemGroup>
 <ItemGroup>
   <EmbeddedResource Remove="UseCases\Boards\**" />
   <EmbeddedResource Remove="UseCases\Sprints\**" />
   <EmbeddedResource Remove="UseCases\Tasks\**" />
+  <EmbeddedResource Remove="UseCases\Invitations\**" />
+  <EmbeddedResource Remove="UseCases\Projects\**" />
 </ItemGroup>
 <ItemGroup>
   <None Remove="UseCases\Boards\**" />
   <None Remove="UseCases\Sprints\**" />
   <None Remove="UseCases\Tasks\**" />
+  <None Remove="UseCases\Invitations\**" />
+  <None Remove="UseCases\Projects\**" />
 </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿using Bonyan.DomainDrivenDesign.Domain.Enumerations;
+﻿using Bonyan.Layer.Domain.Enumerations;
 
 namespace PMS.Domain.BoundedContexts.ProjectManagement.Projects.Enums;
 

@@ -1,4 +1,4 @@
-using Bonyan.DomainDrivenDesign.Domain;
+using Bonyan.Layer.Domain;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects.Repositories;
 

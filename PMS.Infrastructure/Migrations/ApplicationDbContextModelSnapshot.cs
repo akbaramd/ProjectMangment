@@ -582,7 +582,7 @@ namespace PMS.Infrastructure.Migrations
                     b.ToTable("TenantRoles", (string)null);
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.UserManagment.ApplicationUser", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.UserManagment.UserEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -847,13 +847,13 @@ namespace PMS.Infrastructure.Migrations
 
             modelBuilder.Entity("PMS.Domain.BoundedContexts.TenantManagement.TenantMemberEntity", b =>
                 {
-                    b.HasOne("PMS.Domain.BoundedContexts.UserManagment.ApplicationUser", "User")
+                    b.HasOne("PMS.Domain.BoundedContexts.UserManagment.UserEntity", "UserEntity")
                         .WithMany("UserTenants")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("UserEntity");
                 });
 
             modelBuilder.Entity("PMS.Domain.BoundedContexts.TenantManagement.TenantPermissionEntity", b =>
@@ -953,7 +953,7 @@ namespace PMS.Infrastructure.Migrations
                     b.Navigation("Permissions");
                 });
 
-            modelBuilder.Entity("PMS.Domain.BoundedContexts.UserManagment.ApplicationUser", b =>
+            modelBuilder.Entity("PMS.Domain.BoundedContexts.UserManagment.UserEntity", b =>
                 {
                     b.Navigation("UserTenants");
                 });

@@ -1,4 +1,4 @@
-using Bonyan.DomainDrivenDesign.Domain.Specifications;
+using Bonyan.Layer.Domain.Specifications;
 using PMS.Application.UseCases.Invitations.Models;
 using PMS.Domain.BoundedContexts.TenantManagement;
 

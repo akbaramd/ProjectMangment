@@ -1,4 +1,4 @@
-using Bonyan.DomainDrivenDesign.Domain.Abstractions;
+using Bonyan.Layer.Domain.Abstractions;
 
 namespace PMS.Domain.BoundedContexts.TaskManagement.Kanban.Repositories
 {

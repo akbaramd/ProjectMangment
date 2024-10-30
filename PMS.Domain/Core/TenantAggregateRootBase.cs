@@ -1,4 +1,4 @@
-﻿using Bonyan.DomainDrivenDesign.Domain.Aggregates;
+﻿using Bonyan.Layer.Domain.Aggregates;
 using Bonyan.MultiTenant;
 
 
@@ -23,5 +23,5 @@ public abstract class TenantAggregateRootBase : AggregateRoot<Guid>,IMultiTenant
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public Guid? TenantId { get; private set; }
+    public Guid? TenantId { get;  set; }
 }

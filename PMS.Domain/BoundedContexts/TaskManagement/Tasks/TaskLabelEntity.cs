@@ -1,4 +1,4 @@
-using Bonyan.DomainDrivenDesign.Domain.Entities;
+using Bonyan.Layer.Domain.Entities;
 
 namespace PMS.Domain.BoundedContexts.TaskManagement.Tasks
 {

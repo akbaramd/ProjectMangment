@@ -1,6 +1,6 @@
 using AutoMapper;
-using Bonyan.DomainDrivenDesign.Domain.Model;
-using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
+using Bonyan.Layer.Domain.Model;
+using Bonyan.TenantManagement.Domain;
 using PMS.Application.UseCases.Tenants.Models;
 using PMS.Domain.BoundedContexts.TenantManagement;
 
@@ -16,7 +16,7 @@ namespace PMS.Application.UseCases.Tenants
 
             // Map TenantMember to TenantMemberDto and include UserDto
             CreateMap<TenantMemberEntity, TenantMemberDto>()
-                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User)); // Include User
+                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.UserEntity)); // Include UserEntity
 
 
             CreateMap<PaginatedResult<TenantMemberEntity>, PaginatedResult<TenantMemberDto>>();

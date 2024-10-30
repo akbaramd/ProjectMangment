@@ -1,15 +1,15 @@
-using Bonyan.DomainDrivenDesign.Domain;
+using Bonyan.Layer.Domain;
 using Bonyan.Modularity;
 using Bonyan.Modularity.Abstractions;
 using Bonyan.Modularity.Attributes;
-using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
+using Bonyan.TenantManagement.Domain;
 
 namespace PMS.Domain;
 
-[DependOn(typeof(BonyanDomainDrivenDesignDomainModule),typeof(BonyanTenantManagementDomainModule))]
+[DependOn(typeof(BonyanTenantManagementDomainModule))]
 public class DomainModule : Module
 {
-    public override Task OnConfigureAsync(ModularityContext context)
+    public override Task OnConfigureAsync(ServiceConfigurationContext context)
     {
         return base.OnConfigureAsync(context);
     }

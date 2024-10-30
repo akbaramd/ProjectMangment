@@ -1,7 +1,7 @@
 using AutoMapper;
-using Bonyan.DomainDrivenDesign.Domain.Model;
+using Bonyan.Layer.Domain.Model;
 using Bonyan.MultiTenant;
-using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
+using Bonyan.TenantManagement.Domain;
 using Microsoft.EntityFrameworkCore;
 using PMS.Application.Interfaces;
 using PMS.Application.UseCases.Auth.Exceptions;

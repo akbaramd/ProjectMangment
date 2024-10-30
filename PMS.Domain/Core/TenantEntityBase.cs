@@ -1,12 +1,11 @@
-﻿using Bonyan.DomainDrivenDesign.Domain.Entities;
+﻿using Bonyan.Layer.Domain.Entities;
 using Bonyan.MultiTenant;
-using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
 
 namespace PMS.Domain.Core;
 
 public abstract class TenantEntityBase : Entity<Guid>,IMultiTenant
 {
-    public Guid? TenantId { get; protected set; }
+    public Guid? TenantId { get;  set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
 

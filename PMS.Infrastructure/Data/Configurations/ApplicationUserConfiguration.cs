@@ -4,9 +4,9 @@ using PMS.Domain.BoundedContexts.UserManagment;
 
 namespace PMS.Infrastructure.Data.Configurations;
 
-public class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
+public class ApplicationUserConfiguration : IEntityTypeConfiguration<UserEntity>
 {
-    public void Configure(EntityTypeBuilder<ApplicationUser> builder)
+    public void Configure(EntityTypeBuilder<UserEntity> builder)
     {
         builder.HasKey(u => u.Id);
 
@@ -18,11 +18,11 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
             .HasConversion<string>()
             .IsRequired();
 
-        // One-to-Many relationship: User can belong to many UserTenants
+        // One-to-Many relationship: UserEntity can belong to many UserTenants
         builder.HasMany(u => u.UserTenants)
-            .WithOne(ut => ut.User)
+            .WithOne(ut => ut.UserEntity)
             .HasForeignKey(ut => ut.UserId)
-            .OnDelete(DeleteBehavior.Cascade); // Cascade delete when User is deleted
+            .OnDelete(DeleteBehavior.Cascade); // Cascade delete when UserEntity is deleted
 
         builder.ToTable("Users");
     }

@@ -1,4 +1,4 @@
-﻿using Bonyan.DomainDrivenDesign.Domain.Enumerations;
+﻿using Bonyan.Layer.Domain.Enumerations;
 using PMS.Domain.BoundedContexts.ProjectManagement.Projects;
 using PMS.Domain.BoundedContexts.TaskManagement.Tasks;
 using PMS.Domain.BoundedContexts.UserManagment;
@@ -9,7 +9,7 @@ namespace PMS.Domain.BoundedContexts.TenantManagement
     public class TenantMemberEntity : TenantEntityBase
     {
         public Guid UserId { get; private set; }
-        public virtual ApplicationUser User { get; private set; }
+        public virtual UserEntity UserEntity { get; private set; }
         public TenantMemberStatus Status { get; private set; }
         public Guid SprintTaskId { get; private set; } // اضافه کردن این ویژگی
 
@@ -22,15 +22,15 @@ namespace PMS.Domain.BoundedContexts.TenantManagement
      public virtual ICollection<TaskEntity> Tasks { get; private set; } = new List<TaskEntity>();
         protected TenantMemberEntity() { }
 
-        public TenantMemberEntity(ApplicationUser user)
+        public TenantMemberEntity(UserEntity userEntity)
            
         {
-            UserId = user.Id;
-            User = user;
+            UserId = userEntity.Id;
+            UserEntity = userEntity;
             Status = TenantMemberStatus.Active;
         }
 
-        // Change the status of the user within the tenantEntity (Active, Inactive, Banned)
+        // Change the status of the userEntity within the tenantEntity (Active, Inactive, Banned)
         public void ChangeStatus(TenantMemberStatus memberStatus)
         {
             if (Status == memberStatus)
@@ -60,7 +60,7 @@ namespace PMS.Domain.BoundedContexts.TenantManagement
             _roles.Remove(roleEntity);
         }
 
-        // Check if the user has a specific role
+        // Check if the userEntity has a specific role
         public bool HasRole(TenantRoleEntity roleEntity)
         {
             return _roles.Any(r => r.Id == roleEntity.Id);
@@ -72,7 +72,7 @@ namespace PMS.Domain.BoundedContexts.TenantManagement
             _roles.Clear();
         }
 
-        // Method to check if a specific permission key exists within the user's roles
+        // Method to check if a specific permission key exists within the userEntity's roles
         public bool HasPermission(string permissionKey)
         {
             return _roles.Any(role => role.Permissions.Any(permission => permission.Key == permissionKey));

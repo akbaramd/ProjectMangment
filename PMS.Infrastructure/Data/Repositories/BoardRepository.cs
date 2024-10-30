@@ -1,5 +1,4 @@
-using Bonyan.DomainDrivenDesign.Domain;
-using Microsoft.EntityFrameworkCore;
+using Bonyan.Layer.Domain;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban;
 using PMS.Domain.BoundedContexts.TaskManagement.Kanban.Repositories;
 
@@ -12,28 +11,28 @@ public class BoardRepository : EfCoreRepository< KanbanBoardEntity,Guid,Applicat
 
     public new Task<KanbanBoardEntity?> GetByIdAsync(Guid id)
     {
-        return _dbContext.KanbanBoards
+        return  await (await GetDbContextAsync()).KanbanBoards
             .Include(b => b.Columns)
             .FirstOrDefaultAsync(x=>x.Id == id);
     }
 
     public List<KanbanBoardEntity> GetAllWithRelations()
     {
-        return _dbContext.KanbanBoards
+        return  await (await GetDbContextAsync()).KanbanBoards
             .Include(b => b.Columns)
             .ToList();
     }
 
     public Task<KanbanBoardEntity?> GetByIdWithRelationsAsync(Guid boardId)
     {
-        return _dbContext.KanbanBoards
+        return  await (await GetDbContextAsync()).KanbanBoards
             .Include(b => b.Columns)
             .FirstOrDefaultAsync(b => b.Id == boardId);
     }
 
     public List<KanbanBoardEntity> GetByTenantId(Guid tenantId)
     {
-        return _dbContext.KanbanBoards
+        return  await (await GetDbContextAsync()).KanbanBoards
             .Where(b => b.TenantId == tenantId)
             .Include(b => b.Columns)
             .ToList();
@@ -41,7 +40,7 @@ public class BoardRepository : EfCoreRepository< KanbanBoardEntity,Guid,Applicat
 
     public List<KanbanBoardEntity> GetBoardsBySprintIdAsync(Guid sprintId)
     {
-        return _dbContext.KanbanBoards
+        return  await (await GetDbContextAsync()).KanbanBoards
             .Where(b => b.SprintId == sprintId)
             .Include(b => b.Columns)
             .ToList();

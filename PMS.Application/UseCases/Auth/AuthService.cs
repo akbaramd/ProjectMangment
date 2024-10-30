@@ -1,6 +1,5 @@
 using Bonyan.MultiTenant;
-using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
-using Microsoft.EntityFrameworkCore;
+using Bonyan.TenantManagement.Domain;
 using PMS.Application.Interfaces;
 using PMS.Application.UseCases.Auth.Exceptions;
 using PMS.Application.UseCases.Auth.Models;
@@ -47,15 +46,15 @@ namespace PMS.Application.UseCases.Auth
             var existingUser = await _userRepository.GetUserByPhoneNumberAsync(authRegisterDto.PhoneNumber);
             if (existingUser != null)
             {
-                throw new UserAlreadyRegisteredException("User already exists.");
+                throw new UserAlreadyRegisteredException("UserEntity already exists.");
             }
 
-            var user = new ApplicationUser(authRegisterDto.FullName, authRegisterDto.PhoneNumber, authRegisterDto.Email, deletable: false);
+            var user = new UserEntity(authRegisterDto.FullName, authRegisterDto.PhoneNumber, authRegisterDto.Email, deletable: false);
             user.GenerateRefreshToken();
             var creationResult = await _userRepository.AddAsync(user);
 
-            // Add user to the "User" role after successful registration
-            // await _userRepository.AddToRoleAsync(user, "User");
+            // Add userEntity to the "UserEntity" role after successful registration
+            // await _userRepository.AddToRoleAsync(userEntity, "UserEntity");
         }
 
         public async Task<AuthJwtDto> LoginAsync(AuthLoginDto authLoginDto)
@@ -72,11 +71,11 @@ namespace PMS.Application.UseCases.Auth
                 throw new InvalidCredentialsException();
             }
 
-            // Check if the user is locked out
+            // Check if the userEntity is locked out
             if (user.IsLockedOut())
             {
                 var lockoutMinutes = Math.Pow(2, user.FailedLoginAttempts / 3 - 1);
-                throw new AccountLockedException($"User is locked out. Try again in {lockoutMinutes} minutes.");
+                throw new AccountLockedException($"UserEntity is locked out. Try again in {lockoutMinutes} minutes.");
             }
 
             // Validate password
@@ -94,7 +93,7 @@ namespace PMS.Application.UseCases.Auth
             var isUserInTenant = await _tenantMemberRepository.IsUserInTenantAsync(user.Id, tenant.Id);
             if (!isUserInTenant)
             {
-                throw new UnauthorizedAccessException("User is not part of the tenantEntity.");
+                throw new UnauthorizedAccessException("UserEntity is not part of the tenantEntity.");
             }
 
             var roles = await _userRepository.GetUserRolesAsync(user.Id);
@@ -138,7 +137,7 @@ namespace PMS.Application.UseCases.Auth
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
             {
-                throw new UserNotFoundException("User not found.");
+                throw new UserNotFoundException("UserEntity not found.");
             }
 
             var tenant = await _tenantRepository.FindOneAsync(x => x.Key == _currentTenant.Name);
@@ -150,7 +149,7 @@ namespace PMS.Application.UseCases.Auth
             var tenantMember = await _tenantMemberRepository.GetUserTenantByUserIdAndTenantIdAsync(user.Id, tenant.Id);
             if (tenantMember == null)
             {
-                throw new UnauthorizedAccessException("User is not part of this tenantEntity.");
+                throw new UnauthorizedAccessException("UserEntity is not part of this tenantEntity.");
             }
 
             var roles = await _userRepository.GetUserRolesAsync(user.Id);

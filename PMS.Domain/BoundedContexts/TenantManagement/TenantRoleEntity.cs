@@ -1,4 +1,4 @@
-﻿using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
+﻿using Bonyan.TenantManagement.Domain;
 using PMS.Domain.Core;
 
 namespace PMS.Domain.BoundedContexts.TenantManagement

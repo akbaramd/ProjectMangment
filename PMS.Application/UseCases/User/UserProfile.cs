@@ -10,8 +10,8 @@ namespace PMS.Application.UseCases.User
     {
         public UserProfile()
         {
-            // Map User to UserDto
-            CreateMap<ApplicationUser, UserProfileDto>();
+            // Map UserEntity to UserDto
+            CreateMap<UserEntity, UserProfileDto>();
             CreateMap<TenantRoleDto, TenantRoleEntity>().ReverseMap();
             CreateMap<TenantPermissionDto, TenantPermissionEntity>().ReverseMap();
             CreateMap<TenantPermissionGroupDto, TenantPermissionGroupEntity>().ReverseMap();

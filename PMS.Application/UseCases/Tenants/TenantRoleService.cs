@@ -1,4 +1,4 @@
-using Bonyan.TenantManagement.Domain.Bonyan.TenantManagement.Domain;
+using Bonyan.TenantManagement.Domain;
 using PMS.Application.UseCases.Tenants.Exceptions;
 using PMS.Application.UseCases.Tenants.Models;
 using PMS.Domain.BoundedContexts.TenantManagement;

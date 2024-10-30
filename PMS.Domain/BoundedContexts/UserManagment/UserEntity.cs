@@ -1,11 +1,11 @@
 ﻿using System.Security.Cryptography;
-using Bonyan.DomainDrivenDesign.Domain.Entities;
+using Bonyan.Layer.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using PMS.Domain.BoundedContexts.TenantManagement;
 
 namespace PMS.Domain.BoundedContexts.UserManagment
 {
-    public class ApplicationUser : IdentityUser<Guid>,IEntity<Guid>
+    public class UserEntity : IdentityUser<Guid>,IEntity<Guid>
     {
         public string FullName { get; private set; }
         public bool Deletable { get; private set; } = true;
@@ -26,9 +26,9 @@ namespace PMS.Domain.BoundedContexts.UserManagment
         public int FailedLoginAttempts { get; private set; } = 0;
         public DateTime? LockoutEndTime { get; private set; }
 
-        protected ApplicationUser() { }
+        protected UserEntity() { }
 
-        public ApplicationUser(string fullName, string mobileNumber, string email, bool deletable = true)
+        public UserEntity(string fullName, string mobileNumber, string email, bool deletable = true)
         {
             Id = Guid.NewGuid();
             FullName = fullName;
@@ -39,7 +39,7 @@ namespace PMS.Domain.BoundedContexts.UserManagment
             Deletable = deletable;
         }
 
-        // Change user status
+        // Change userEntity status
         public void ChangeStatus(UserStatus status)
         {
             Status = status;
@@ -75,7 +75,7 @@ namespace PMS.Domain.BoundedContexts.UserManagment
             LockoutEndTime = null;
         }
 
-        // Check if the user is currently locked out
+        // Check if the userEntity is currently locked out
         public bool IsLockedOut()
         {
             return LockoutEndTime.HasValue && LockoutEndTime.Value > DateTime.UtcNow;

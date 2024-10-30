@@ -58,9 +58,6 @@ app.UseAuthorization();
 
 await app.UseCore();
 app.MapAuthenticationEndpoints();
-app.MapInvitationEndpoints();
-app.MapTenantEndpoints();
-
-app.MapProjectEndpoints();
+app.MapTenantManagementEndpoints();
 
 app.Run();

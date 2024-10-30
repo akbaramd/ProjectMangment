@@ -38,7 +38,7 @@ public static class AuthenticationEndpoints
             {
 
 
-                // Extract the user ID from the JWT claims
+                // Extract the userEntity ID from the JWT claims
                 var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
                 if (userIdClaim == null)
                 {
@@ -47,10 +47,10 @@ public static class AuthenticationEndpoints
 
                 if (!Guid.TryParse(userIdClaim.Value, out var userId))
                 {
-                    return Results.BadRequest("Invalid user ID.");
+                    return Results.BadRequest("Invalid userEntity ID.");
                 }
 
-                // Call the service to get the user profile
+                // Call the service to get the userEntity profile
                 var userProfile = await authService.GetUserProfileAsync(userId);
                 return Results.Ok(userProfile);
             });

@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PMS.Infrastructure.Data;
-using PMS.Infrastructure.Data.Seeders;
 
 namespace PMS.Infrastructure.IoC
 {

@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bonyan.AspNetCore" Version="1.0.9" />
+    <PackageReference Include="Bonyan.AspNetCore" Version="1.1.1" />
+    <PackageReference Include="Bonyan.TenantManagement.Web" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.10" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
   </ItemGroup>
@@ -27,6 +28,8 @@
     <Compile Remove="Endpoints\MemberEndpoints.cs" />
     <Compile Remove="Endpoints\SprintEndpoints.cs" />
     <Compile Remove="Endpoints\TenantRoleEndpoints.cs" />
+    <Compile Remove="Endpoints\InvitationEndpoints.cs" />
+    <Compile Remove="Endpoints\ProjectEndpoints.cs" />
   </ItemGroup>
 
 </Project>
